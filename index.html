@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZRX PROJETO</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #000000; color: #ffffff; display: flex; justify-content: center; padding: 15px; }
+        .container {
+            width: 100%; max-width: 400px; border: 3px solid #ff0000;
+            background-color: #000000; border-radius: 12px; padding: 20px; text-align: center;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+        }
+        .logo-img {
+            width: 130px; height: 130px; border-radius: 50%;
+            border: 2px solid #ff0000; object-fit: cover; margin-bottom: 15px;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+        }
+        h2 { color: #ff0000; margin-bottom: 15px; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-plat {
+            width: 100%; padding: 12px; margin: 6px 0; background-color: #1a0000;
+            color: #ffffff; border: 1px solid #ff0000; border-radius: 6px;
+            font-weight: bold; cursor: pointer; font-size: 0.95rem; transition: 0.2s;
+        }
+        .btn-plat:active { background-color: #ff0000; }
+        .brand { color: #ff0000; margin: 18px 0 8px 0; font-weight: bold; font-size: 1.3rem; letter-spacing: 2px; }
+        .btn-ext {
+            width: 100%; padding: 12px; background-color: #ff0000; color: #ffffff;
+            border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px;
+            font-size: 0.85rem; letter-spacing: 0.5px;
+        }
+        .btn-ext:active { background-color: #990000; }
+        .form-group { text-align: left; margin-bottom: 12px; }
+        label { display: block; font-size: 0.8rem; color: #ff0000; margin-bottom: 4px; font-weight: bold; }
+        input {
+            width: 100%; padding: 10px; background-color: #121212; color: #ffffff;
+            border: 1px solid #333; border-radius: 4px; outline: none;
+        }
+        input:focus { border-color: #ff0000; }
+        .btn-cat {
+            width: 100%; padding: 10px; margin: 3px 0; background-color: #2b0000;
+            color: #ffffff; border: 1px solid #ff0000; border-radius: 4px; font-weight: bold;
+        }
+        .btn-cat:active { background-color: #ff0000; }
+        .btn-voltar { background: none; border: none; color: #ff0000; font-weight: bold; cursor: pointer; float: left; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- TELA 1: PLATAFORMAS -->
+    <div id="tela-inicial">
+        <img src="logo.png" alt="ZRX Logo" class="logo-img">
+        <h2>SELECIONE A PLATAFORMA</h2>
+        
+        <button class="btn-plat" onclick="abrirFormulario('WhatsApp')">WhatsApp</button>
+        <button class="btn-plat" onclick="abrirFormulario('Kwai')">Kwai</button>
+        <button class="btn-plat" onclick="abrirFormulario('Telegram')">Telegram</button>
+        <button class="btn-plat" onclick="abrirFormulario('Instagram')">Instagram</button>
+
+        <div class="brand">ZRX PROJETO</div>
+        <button class="btn-ext" onclick="abrirLinkApp()">OBTER TEXTOS / APP EXTERNO</button>
+    </div>
+
+    <!-- TELA 2: FORMULÁRIO -->
+    <div id="tela-formulario" class="hidden">
+        <button class="btn-voltar" onclick="voltar()">← Voltar</button>
+        <h2 id="titulo-plat" style="margin-top: 25px;"></h2>
+
+        <div class="form-group">
+            <label id="lbl-alvo">NÚMERO OU ID DO ALVO:</label>
+            <input type="text" id="input-alvo" placeholder="Digite aqui...">
+        </div>
+
+        <div class="form-group">
+            <label id="lbl-meu">SEU NÚMERO / ID (OPCIONAL):</label>
+            <input type="text" id="input-meu" placeholder="Digite aqui...">
+        </div>
+
+        <h2 style="font-size: 0.9rem; margin-top: 15px;">OPÇÕES DE DENÚNCIA:</h2>
+        <button class="btn-cat" onclick="enviar('Spam')">Spam</button>
+        <button class="btn-cat" onclick="enviar('Assédio')">Assédio</button>
+        <button class="btn-cat" onclick="enviar('+18')">+18</button>
+        <button class="btn-cat" onclick="enviar('Aliciamento')">Aliciamento</button>
+        <button class="btn-cat" onclick="enviar('Violência')">Violência</button>
+        <button class="btn-cat" onclick="enviar('Ameaça')">Ameaça</button>
+
+        <button class="btn-ext" onclick="abrirLinkApp()" style="margin-top: 12px;">OBTER TEXTOS (ZRX)</button>
+    </div>
+</div>
+
+<script>
+    const emailsSuporte = {
+        "WhatsApp": ["support@whatsapp.com", "android_web@support.whatsapp.com", "iphone_web@support.whatsapp.com", "smb_web@support.whatsapp.com", "accessibility@whatsapp.com", "terms@whatsapp.com", "ip@whatsapp.com", "press@whatsapp.com"],
+        "Kwai": ["support@kuaishousupport.freshdesk.com", "customer-service@kwai.com", "customer-servicer@kwai.com", "comcustomer-service@kwai.com", "report@kwai.com"],
+        "Telegram": ["support@telegram.org", "abuse@telegram.org", "dmca@telegram.org", "security@telegram.org", "sms@telegram.org", "stopca@telegram.org"],
+        "Instagram": ["support@instagram.com", "phish@instagram.com", "disabled@instagram.com", "appeals@instagram.com", "ip@instagram.com", "press@instagram.com"]
+    };
+
+    let plataformaAtual = "";
+
+    function abrirLinkApp() {
+        window.open('https://6339917.igen.app/', '_blank');
+    }
+
+    function abrirFormulario(plat) {
+        plataformaAtual = plat;
+        document.getElementById('tela-inicial').classList.add('hidden');
+        document.getElementById('tela-formulario').classList.remove('hidden');
+        document.getElementById('titulo-plat').innerText = "PLATAFORMA: " + plat.toUpperCase();
+
+        if (plat === "Kwai") {
+            document.getElementById('lbl-alvo').innerText = "ID DO ALVO:";
+            document.getElementById('lbl-meu').innerText = "MEU KWAI.ID:";
+        } else {
+            document.getElementById('lbl-alvo').innerText = "NÚMERO OU ID DO ALVO:";
+            document.getElementById('lbl-meu').innerText = "SEU NÚMERO / ID (OPCIONAL):";
+        }
+    }
+
+    function voltar() {
+        document.getElementById('tela-formulario').classList.add('hidden');
+        document.getElementById('tela-inicial').classList.remove('hidden');
+    }
+
+    function enviar(categoria) {
+        const alvo = document.getElementById('input-alvo').value.trim();
+        const meu = document.getElementById('input-meu').value.trim();
+
+        if (!alvo) return;
+
+        const destinatarios = emailsSuporte[plataformaAtual].join(',');
+        const assunto = encodeURIComponent(`Solicitação de Análise - ${plataformaAtual} (${categoria})`);
+        const corpo = encodeURIComponent(`Prezada equipe de suporte do ${plataformaAtual},\n\nGostaria de solicitar a verificação do seguinte perfil/número:\nIdentificador do Alvo: ${alvo}\nMeu Identificador: ${meu}\nMotivo da consulta: ${categoria}\n\nSolicito a análise do conteúdo conforme as diretrizes da plataforma.`);
+
+        window.location.href = `mailto:${destinatarios}?subject=${assunto}&body=${corpo}`;
+    }
+</script>
+</body>
+</html>
+
