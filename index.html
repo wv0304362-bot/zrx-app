@@ -23,12 +23,16 @@
     
     .btn-external { width: 100%; padding: 12px; background: #ff0000; border: none; color: #fff; border-radius: 8px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; margin-bottom: 10px; display: block; }
     
-    .violation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-    .btn-violation { padding: 8px; background: #222; border: 1px solid #ff0000; color: #ff0000; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: bold; }
+    .input-group { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: 5px; }
+
+    .violation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; margin-top: 5px; }
+    .btn-violation { padding: 10px; background: #222; border: 1px solid #ff0000; color: #ff0000; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
     .btn-violation.selected { background: #ff0000; color: #fff; }
 
-    input, textarea, select { width: 100%; padding: 12px; background: #111; border: 1px solid #ff0000; border-radius: 6px; color: #fff; outline: none; }
-    .btn-action { width: 100%; padding: 12px; background: #ff0000; border: none; color: #fff; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
+    input, textarea { width: 100%; padding: 12px; background: #111; border: 1px solid #ff0000; border-radius: 6px; color: #fff; outline: none; font-size: 0.9rem; }
+    textarea { min-height: 100px; resize: vertical; }
+
+    .btn-action { width: 100%; padding: 12px; background: #ff0000; border: none; color: #fff; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; margin-top: 5px; }
 
     /* Inputs de Arquivo Escondidos */
     input[type="file"] { display: none; }
@@ -69,7 +73,7 @@
       <button class="btn-platform" onclick="selectPlatform('Instagram')">Instagram</button>
 
       <div id="step1-area" style="display:none;" class="input-group">
-        <div id="dynamic-fields"></div>
+        <div id="dynamic-fields" class="input-group"></div>
         <button class="btn-action" onclick="showStep2()">Selecionar Violação</button>
       </div>
 
@@ -81,9 +85,8 @@
           <button class="btn-violation" onclick="selectViolation('ALICIAMENTO')">ALICIAMENTO</button>
           <button class="btn-violation" onclick="selectViolation('+18')">+18</button>
         </div>
-        <select id="email-select"></select>
-        <textarea id="texto-denuncia" placeholder="Detalhes adicionais..." rows="3"></textarea>
-        <button class="btn-action" onclick="sendEmail()">Enviar Denúncia</button>
+        <textarea id="texto-denuncia" placeholder="Detalhes adicionais da denúncia..." rows="4"></textarea>
+        <button class="btn-action" onclick="sendEmail()">Enviar Denúncia para Todos os E-mails</button>
       </div>
     </div>
   </div>
@@ -136,10 +139,10 @@
     let selectedViolation = '';
     
     const emailData = {
-      'WhatsApp': { 'Suporte': 'support@whatsapp.com', 'Legal': 'legal@whatsapp.com', 'Abuso': 'abuso@whatsapp.com', 'Imprensa': 'press@whatsapp.com' },
-      'Kwai': { 'Report': 'Report@kwai.com', 'Serviço 1': 'customer-servicer@kwai.com', 'Serviço 2': 'comcustomer-service@kwai.com', 'Serviço 3': 'customer-service@kwai.com', 'Freshdesk': 'support@kuaishousupport.freshdesk.com' },
-      'Telegram': { 'Suporte': 'support@telegram.org', 'Abuso': 'abuse@telegram.org', 'Recuperação': 'recover@telegram.org', 'SMS': 'sms@telegram.org' },
-      'Instagram': { 'Suporte': 'support@instagram.com', 'Phishing': 'phish@instagram.com', 'Abuso': 'abuse@instagram.com', 'Privacidade': 'privacy@instagram.com' }
+      'WhatsApp': ['support@whatsapp.com', 'legal@whatsapp.com', 'abuso@whatsapp.com', 'press@whatsapp.com'],
+      'Kwai': ['Report@kwai.com', 'customer-servicer@kwai.com', 'comcustomer-service@kwai.com', 'customer-service@kwai.com', 'support@kuaishousupport.freshdesk.com'],
+      'Telegram': ['support@telegram.org', 'abuse@telegram.org', 'recover@telegram.org', 'sms@telegram.org'],
+      'Instagram': ['support@instagram.com', 'phish@instagram.com', 'abuse@instagram.com', 'privacy@instagram.com']
     };
 
     function handleFileSelect(event, key) {
@@ -165,9 +168,6 @@
       container.innerHTML = (p === 'Kwai') ? 
         '<input type="text" id="field-alvo" placeholder="ID DO ALVO:"><input type="text" id="field-kwai-id" placeholder="MEU KWAI.ID:">' :
         '<input type="text" id="field-alvo" placeholder="ID / LINK DO ALVO:">';
-      const sel = document.getElementById('email-select');
-      sel.innerHTML = '';
-      for (const [k, e] of Object.entries(emailData[p])) sel.innerHTML += `<option value="${e}">${k} (${e})</option>`;
     }
 
     function selectViolation(v) {
@@ -176,15 +176,29 @@
       event.target.classList.add('selected');
     }
 
-    function showStep2() { document.getElementById('step2-area').style.display = 'flex'; }
+    function showStep2() { 
+      const alvo = document.getElementById('field-alvo').value;
+      if (!alvo) {
+        alert('Por favor, informe o ID/Link do alvo!');
+        return;
+      }
+      document.getElementById('step2-area').style.display = 'flex'; 
+    }
     
     function sendEmail() {
-      const email = document.getElementById('email-select').value;
       const alvo = document.getElementById('field-alvo').value;
       const kwai = document.getElementById('field-kwai-id') ? document.getElementById('field-kwai-id').value : '';
       const texto = document.getElementById('texto-denuncia').value;
-      if(!selectedViolation) { alert('Selecione uma violação!'); return; }
-      window.location.href = `mailto:${email}?subject=Denuncia ${currentPlatform} - ${selectedViolation}&body=Plataforma: ${currentPlatform}%0D%0AViolação: ${selectedViolation}%0D%0AAlvo: ${alvo}%0D%0A${kwai ? 'Meu ID: '+kwai+'%0D%0A' : ''}%0D%0ADetalhes:%0D%0A${texto}`;
+
+      if(!selectedViolation) { 
+        alert('Selecione uma violação!'); 
+        return; 
+      }
+
+      // Concatena todos os e-mails da plataforma selecionada com vírgula
+      const allEmails = emailData[currentPlatform].join(',');
+
+      window.location.href = `mailto:${allEmails}?subject=Denuncia ${currentPlatform} - ${selectedViolation}&body=Plataforma: ${currentPlatform}%0D%0AViolação: ${selectedViolation}%0D%0AAlvo: ${alvo}%0D%0A${kwai ? 'Meu ID: '+kwai+'%0D%0A' : ''}%0D%0ADetalhes:%0D%0A${texto}`;
     }
 
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
