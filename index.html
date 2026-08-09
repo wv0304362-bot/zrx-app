@@ -1,143 +1,246 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZRX PROJETO</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #000000; color: #ffffff; display: flex; justify-content: center; padding: 15px; }
-        .container {
-            width: 100%; max-width: 400px; border: 3px solid #ff0000;
-            background-color: #000000; border-radius: 12px; padding: 20px; text-align: center;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
-        }
-        .logo-img {
-            width: 130px; height: 130px; border-radius: 50%;
-            border: 2px solid #ff0000; object-fit: cover; margin-bottom: 15px;
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
-        }
-        h2 { color: #ff0000; margin-bottom: 15px; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-plat {
-            width: 100%; padding: 12px; margin: 6px 0; background-color: #1a0000;
-            color: #ffffff; border: 1px solid #ff0000; border-radius: 6px;
-            font-weight: bold; cursor: pointer; font-size: 0.95rem; transition: 0.2s;
-        }
-        .btn-plat:active { background-color: #ff0000; }
-        .brand { color: #ff0000; margin: 18px 0 8px 0; font-weight: bold; font-size: 1.3rem; letter-spacing: 2px; }
-        .btn-ext {
-            width: 100%; padding: 12px; background-color: #ff0000; color: #ffffff;
-            border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px;
-            font-size: 0.85rem; letter-spacing: 0.5px;
-        }
-        .btn-ext:active { background-color: #990000; }
-        .form-group { text-align: left; margin-bottom: 12px; }
-        label { display: block; font-size: 0.8rem; color: #ff0000; margin-bottom: 4px; font-weight: bold; }
-        input {
-            width: 100%; padding: 10px; background-color: #121212; color: #ffffff;
-            border: 1px solid #333; border-radius: 4px; outline: none;
-        }
-        input:focus { border-color: #ff0000; }
-        .btn-cat {
-            width: 100%; padding: 10px; margin: 3px 0; background-color: #2b0000;
-            color: #ffffff; border: 1px solid #ff0000; border-radius: 4px; font-weight: bold;
-        }
-        .btn-cat:active { background-color: #ff0000; }
-        .btn-voltar { background: none; border: none; color: #ff0000; font-weight: bold; cursor: pointer; float: left; }
-        .hidden { display: none; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZRX PROJETO</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+    body { background-color: #000; color: #fff; min-height: 100vh; display: flex; flex-direction: column; background-size: cover; background-position: center; }
+    
+    /* Topo com Menu Lateral (3 Barrinhas) e Perfil */
+    .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(0,0,0,0.85); border-bottom: 2px solid #ff0000; }
+    .profile-info { display: flex; align-items: center; gap: 10px; }
+    .profile-img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #ff0000; object-fit: cover; background: #222; }
+    .menu-btn { background: none; border: none; color: #ff0000; font-size: 1.8rem; cursor: pointer; }
+
+    /* Container Principal */
+    .main-container { flex: 1; width: 100%; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .card { width: 100%; max-width: 450px; border: 2px solid #ff0000; border-radius: 15px; padding: 25px; background: rgba(5, 5, 5, 0.9); box-shadow: 0 0 20px rgba(255, 0, 0, 0.3); display: flex; flex-direction: column; gap: 12px; }
+    
+    .btn-platform { width: 100%; padding: 12px; background: #151515; border: 1px solid #444; color: #fff; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .btn-platform.active { border-color: #ff0000; background: #300000; }
+    
+    .btn-external { width: 100%; padding: 12px; background: #ff0000; border: none; color: #fff; border-radius: 8px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; margin-bottom: 10px; display: block; }
+    
+    .violation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .btn-violation { padding: 8px; background: #222; border: 1px solid #ff0000; color: #ff0000; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: bold; }
+    .btn-violation.selected { background: #ff0000; color: #fff; }
+
+    input, textarea, select { width: 100%; padding: 12px; background: #111; border: 1px solid #ff0000; border-radius: 6px; color: #fff; outline: none; }
+    .btn-action { width: 100%; padding: 12px; background: #ff0000; border: none; color: #fff; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
+
+    /* Modais / Menus */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 999; justify-content: center; align-items: center; padding: 20px; }
+    .modal-content { width: 100%; max-width: 420px; background: #1a1a1a; border: 1px solid #ff0000; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px; max-height: 90vh; overflow-y: auto; }
+
+    .vault-item { background: #0d0d0d; border: 1px solid #333; padding: 10px; border-radius: 6px; display: flex; flex-direction: column; gap: 5px; }
+    .vault-item-header { display: flex; justify-content: space-between; align-items: center; }
+    .vault-title { font-weight: bold; color: #ff0000; font-size: 0.9rem; }
+    .btn-sm { padding: 5px 8px; background: #222; border: 1px solid #ff0000; color: #fff; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
+  </style>
 </head>
 <body>
 
-<div class="container">
-    <!-- TELA 1: PLATAFORMAS -->
-    <div id="tela-inicial">
-        <img src="logo.png" alt="ZRX Logo" class="logo-img">
-        <h2>SELECIONE A PLATAFORMA</h2>
-        
-        <button class="btn-plat" onclick="abrirFormulario('WhatsApp')">WhatsApp</button>
-        <button class="btn-plat" onclick="abrirFormulario('Kwai')">Kwai</button>
-        <button class="btn-plat" onclick="abrirFormulario('Telegram')">Telegram</button>
-        <button class="btn-plat" onclick="abrirFormulario('Instagram')">Instagram</button>
-
-        <div class="brand">ZRX PROJETO</div>
-        <button class="btn-ext" onclick="abrirLinkApp()">OBTER TEXTOS / APP EXTERNO</button>
+  <div class="top-bar">
+    <button class="menu-btn" onclick="openModal('menu-modal')">☰</button>
+    <div class="profile-info">
+      <img id="display-avatar" class="profile-img" src="https://via.placeholder.com/50">
+      <span id="display-username" style="font-weight:bold;">Carregando...</span>
     </div>
+  </div>
 
-    <!-- TELA 2: FORMULÁRIO -->
-    <div id="tela-formulario" class="hidden">
-        <button class="btn-voltar" onclick="voltar()">← Voltar</button>
-        <h2 id="titulo-plat" style="margin-top: 25px;"></h2>
+  <div class="main-container">
+    <div class="card">
+      <h2 style="color:#ff0000; text-align:center; font-size: 1.2rem;">PLATAFORMAS</h2>
+      
+      <a href="https://6339917.igen.app/" class="btn-external">OBTER TEXTOS / APP EXTERNO</a>
 
-        <div class="form-group">
-            <label id="lbl-alvo">NÚMERO OU ID DO ALVO:</label>
-            <input type="text" id="input-alvo" placeholder="Digite aqui...">
+      <button class="btn-platform" onclick="selectPlatform('WhatsApp')">WhatsApp</button>
+      <button class="btn-platform" onclick="selectPlatform('Kwai')">Kwai</button>
+      <button class="btn-platform" onclick="selectPlatform('Telegram')">Telegram</button>
+      <button class="btn-platform" onclick="selectPlatform('Instagram')">Instagram</button>
+
+      <div id="step1-area" style="display:none;" class="input-group">
+        <div id="dynamic-fields"></div>
+        <button class="btn-action" onclick="showStep2()">Selecionar Violação</button>
+      </div>
+
+      <div id="step2-area" style="display:none;" class="input-group">
+        <div class="violation-grid" id="violation-btns">
+          <button class="btn-violation" onclick="selectViolation('SPAM')">SPAM</button>
+          <button class="btn-violation" onclick="selectViolation('ASSÉDIO')">ASSÉDIO</button>
+          <button class="btn-violation" onclick="selectViolation('AMEAÇA')">AMEAÇA</button>
+          <button class="btn-violation" onclick="selectViolation('ALICIAMENTO')">ALICIAMENTO</button>
+          <button class="btn-violation" onclick="selectViolation('+18')">+18</button>
         </div>
-
-        <div class="form-group">
-            <label id="lbl-meu">SEU NÚMERO / ID (OPCIONAL):</label>
-            <input type="text" id="input-meu" placeholder="Digite aqui...">
-        </div>
-
-        <h2 style="font-size: 0.9rem; margin-top: 15px;">OPÇÕES DE DENÚNCIA:</h2>
-        <button class="btn-cat" onclick="enviar('Spam')">Spam</button>
-        <button class="btn-cat" onclick="enviar('Assédio')">Assédio</button>
-        <button class="btn-cat" onclick="enviar('+18')">+18</button>
-        <button class="btn-cat" onclick="enviar('Aliciamento')">Aliciamento</button>
-        <button class="btn-cat" onclick="enviar('Violência')">Violência</button>
-        <button class="btn-cat" onclick="enviar('Ameaça')">Ameaça</button>
-
-        <button class="btn-ext" onclick="abrirLinkApp()" style="margin-top: 12px;">OBTER TEXTOS (ZRX)</button>
+        <select id="email-select"></select>
+        <textarea id="texto-denuncia" placeholder="Detalhes adicionais..." rows="3"></textarea>
+        <button class="btn-action" onclick="sendEmail()">Enviar Denúncia</button>
+      </div>
     </div>
-</div>
+  </div>
 
-<script>
-    const emailsSuporte = {
-        "WhatsApp": ["support@whatsapp.com", "android_web@support.whatsapp.com", "iphone_web@support.whatsapp.com", "smb_web@support.whatsapp.com", "accessibility@whatsapp.com", "terms@whatsapp.com", "ip@whatsapp.com", "press@whatsapp.com"],
-        "Kwai": ["support@kuaishousupport.freshdesk.com", "customer-service@kwai.com", "customer-servicer@kwai.com", "comcustomer-service@kwai.com", "report@kwai.com"],
-        "Telegram": ["support@telegram.org", "abuse@telegram.org", "dmca@telegram.org", "security@telegram.org", "sms@telegram.org", "stopca@telegram.org"],
-        "Instagram": ["support@instagram.com", "phish@instagram.com", "disabled@instagram.com", "appeals@instagram.com", "ip@instagram.com", "press@instagram.com"]
+  <!-- Modal do Menu Lateral (3 Barrinhas) -->
+  <div id="menu-modal" class="modal">
+    <div class="modal-content">
+      <h3 style="color:#ff0000; text-align:center;">MENU</h3>
+      <button class="btn-action" onclick="closeModal('menu-modal'); openModal('config-modal');">⚙️ Configurações</button>
+      <button class="btn-action" onclick="closeModal('menu-modal'); openModal('vault-modal');">📦 Caixa de Textos / Travas</button>
+      <button class="btn-sm" style="margin-top:10px;" onclick="closeModal('menu-modal')">Fechar Menu</button>
+    </div>
+  </div>
+
+  <!-- Modal Configurações -->
+  <div id="config-modal" class="modal">
+    <div class="modal-content">
+      <h3 style="color:#ff0000; text-align:center;">Configurações</h3>
+      <input type="text" id="in-name" placeholder="Nome">
+      <input type="text" id="in-avatar" placeholder="URL da Foto de Perfil">
+      <input type="text" id="in-bg" placeholder="URL da Imagem de Fundo">
+      <button class="btn-action" onclick="saveSettings()">Salvar & Reiniciar</button>
+      <button class="btn-sm" onclick="closeModal('config-modal')">Voltar</button>
+    </div>
+  </div>
+
+  <!-- Modal Caixa de Textos / Travas -->
+  <div id="vault-modal" class="modal">
+    <div class="modal-content">
+      <h3 style="color:#ff0000; text-align:center;">Caixa de Textos / Travas</h3>
+      
+      <!-- Form para Adicionar -->
+      <input type="text" id="vault-title-in" placeholder="Nome da Caixa (ex: Trava 1, Texto Spam)">
+      <textarea id="vault-text-in" placeholder="Cole seu texto ou trava aqui..." rows="3"></textarea>
+      <button class="btn-action" onclick="addVaultItem()">Salvar Novo Texto</button>
+
+      <hr style="border-color:#333; margin: 5px 0;">
+
+      <!-- Lista de Salvos -->
+      <div id="vault-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+
+      <button class="btn-sm" onclick="closeModal('vault-modal')" style="margin-top:5px;">Voltar</button>
+    </div>
+  </div>
+
+  <script>
+    let currentPlatform = '';
+    let selectedViolation = '';
+    
+    const emailData = {
+      'WhatsApp': { 'Suporte': 'support@whatsapp.com', 'Legal': 'legal@whatsapp.com', 'Abuso': 'abuso@whatsapp.com', 'Imprensa': 'press@whatsapp.com' },
+      'Kwai': { 'Report': 'Report@kwai.com', 'Serviço 1': 'customer-servicer@kwai.com', 'Serviço 2': 'comcustomer-service@kwai.com', 'Serviço 3': 'customer-service@kwai.com', 'Freshdesk': 'support@kuaishousupport.freshdesk.com' },
+      'Telegram': { 'Suporte': 'support@telegram.org', 'Abuso': 'abuse@telegram.org', 'Recuperação': 'recover@telegram.org', 'SMS': 'sms@telegram.org' },
+      'Instagram': { 'Suporte': 'support@instagram.com', 'Phishing': 'phish@instagram.com', 'Abuso': 'abuse@instagram.com', 'Privacidade': 'privacy@instagram.com' }
     };
 
-    let plataformaAtual = "";
-
-    function abrirLinkApp() {
-        window.open('https://6339917.igen.app/', '_blank');
+    function selectPlatform(p) {
+      currentPlatform = p;
+      document.querySelectorAll('.btn-platform').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('step1-area').style.display = 'flex';
+      document.getElementById('step2-area').style.display = 'none';
+      const container = document.getElementById('dynamic-fields');
+      container.innerHTML = (p === 'Kwai') ? 
+        '<input type="text" id="field-alvo" placeholder="ID DO ALVO:"><input type="text" id="field-kwai-id" placeholder="MEU KWAI.ID:">' :
+        '<input type="text" id="field-alvo" placeholder="ID / LINK DO ALVO:">';
+      const sel = document.getElementById('email-select');
+      sel.innerHTML = '';
+      for (const [k, e] of Object.entries(emailData[p])) sel.innerHTML += `<option value="${e}">${k} (${e})</option>`;
     }
 
-    function abrirFormulario(plat) {
-        plataformaAtual = plat;
-        document.getElementById('tela-inicial').classList.add('hidden');
-        document.getElementById('tela-formulario').classList.remove('hidden');
-        document.getElementById('titulo-plat').innerText = "PLATAFORMA: " + plat.toUpperCase();
-
-        if (plat === "Kwai") {
-            document.getElementById('lbl-alvo').innerText = "ID DO ALVO:";
-            document.getElementById('lbl-meu').innerText = "MEU KWAI.ID:";
-        } else {
-            document.getElementById('lbl-alvo').innerText = "NÚMERO OU ID DO ALVO:";
-            document.getElementById('lbl-meu').innerText = "SEU NÚMERO / ID (OPCIONAL):";
-        }
+    function selectViolation(v) {
+      selectedViolation = v;
+      document.querySelectorAll('.btn-violation').forEach(b => b.classList.remove('selected'));
+      event.target.classList.add('selected');
     }
 
-    function voltar() {
-        document.getElementById('tela-formulario').classList.add('hidden');
-        document.getElementById('tela-inicial').classList.remove('hidden');
+    function showStep2() { document.getElementById('step2-area').style.display = 'flex'; }
+    
+    function sendEmail() {
+      const email = document.getElementById('email-select').value;
+      const alvo = document.getElementById('field-alvo').value;
+      const kwai = document.getElementById('field-kwai-id') ? document.getElementById('field-kwai-id').value : '';
+      const texto = document.getElementById('texto-denuncia').value;
+      if(!selectedViolation) { alert('Selecione uma violação!'); return; }
+      window.location.href = `mailto:${email}?subject=Denuncia ${currentPlatform} - ${selectedViolation}&body=Plataforma: ${currentPlatform}%0D%0AViolação: ${selectedViolation}%0D%0AAlvo: ${alvo}%0D%0A${kwai ? 'Meu ID: '+kwai+'%0D%0A' : ''}%0D%0ADetalhes:%0D%0A${texto}`;
     }
 
-    function enviar(categoria) {
-        const alvo = document.getElementById('input-alvo').value.trim();
-        const meu = document.getElementById('input-meu').value.trim();
-
-        if (!alvo) return;
-
-        const destinatarios = emailsSuporte[plataformaAtual].join(',');
-        const assunto = encodeURIComponent(`Solicitação de Análise - ${plataformaAtual} (${categoria})`);
-        const corpo = encodeURIComponent(`Prezada equipe de suporte do ${plataformaAtual},\n\nGostaria de solicitar a verificação do seguinte perfil/número:\nIdentificador do Alvo: ${alvo}\nMeu Identificador: ${meu}\nMotivo da consulta: ${categoria}\n\nSolicito a análise do conteúdo conforme as diretrizes da plataforma.`);
-
-        window.location.href = `mailto:${destinatarios}?subject=${assunto}&body=${corpo}`;
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    
+    function saveSettings() {
+      localStorage.setItem('n', document.getElementById('in-name').value);
+      localStorage.setItem('a', document.getElementById('in-avatar').value);
+      localStorage.setItem('b', document.getElementById('in-bg').value);
+      location.reload();
     }
-</script>
+
+    /* Lógica da Caixa de Textos / Travas */
+    function getVault() {
+      return JSON.parse(localStorage.getItem('zrx_vault') || '[]');
+    }
+
+    function renderVault() {
+      const vault = getVault();
+      const list = document.getElementById('vault-list');
+      list.innerHTML = '';
+      
+      if(vault.length === 0) {
+        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">Nenhum item salvo ainda.</span>';
+        return;
+      }
+
+      vault.forEach((item, index) => {
+        list.innerHTML += `
+          <div class="vault-item">
+            <div class="vault-item-header">
+              <span class="vault-title">${item.title}</span>
+              <div>
+                <button class="btn-sm" onclick="copyVault(${index})">Copiar</button>
+                <button class="btn-sm" onclick="deleteVault(${index})" style="border-color:#555; color:#aaa;">X</button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function addVaultItem() {
+      const title = document.getElementById('vault-title-in').value;
+      const text = document.getElementById('vault-text-in').value;
+      if(!title || !text) { alert('Preencha o nome e o texto!'); return; }
+      
+      const vault = getVault();
+      vault.push({ title, text });
+      localStorage.setItem('zrx_vault', JSON.stringify(vault));
+      
+      document.getElementById('vault-title-in').value = '';
+      document.getElementById('vault-text-in').value = '';
+      renderVault();
+    }
+
+    function copyVault(index) {
+      const vault = getVault();
+      navigator.clipboard.writeText(vault[index].text);
+      alert('Texto "' + vault[index].title + '" copiado com sucesso!');
+    }
+
+    function deleteVault(index) {
+      const vault = getVault();
+      vault.splice(index, 1);
+      localStorage.setItem('zrx_vault', JSON.stringify(vault));
+      renderVault();
+    }
+    
+    window.onload = () => {
+      const n = localStorage.getItem('n');
+      if(!n) openModal('config-modal');
+      document.getElementById('display-username').innerText = n || 'Usuário';
+      document.getElementById('display-avatar').src = localStorage.getItem('a') || 'https://via.placeholder.com/50';
+      if(localStorage.getItem('b')) document.body.style.backgroundImage = `url('${localStorage.getItem('b')}')`;
+      renderVault();
+    };
+  </script>
 </body>
 </html>
 
