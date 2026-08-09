@@ -10,7 +10,7 @@
     
     /* Topo com Menu Lateral (3 Barrinhas) e Perfil */
     .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(0,0,0,0.85); border-bottom: 2px solid #ff0000; }
-    .profile-info { display: flex; align-items: center; gap: 10px; }
+    .profile-info { display: flex; align-items: center; gap: 10px; cursor: pointer; }
     .profile-img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #ff0000; object-fit: cover; background: #222; }
     .menu-btn { background: none; border: none; color: #ff0000; font-size: 1.8rem; cursor: pointer; }
 
@@ -30,6 +30,9 @@
     input, textarea, select { width: 100%; padding: 12px; background: #111; border: 1px solid #ff0000; border-radius: 6px; color: #fff; outline: none; }
     .btn-action { width: 100%; padding: 12px; background: #ff0000; border: none; color: #fff; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
 
+    /* Inputs de Arquivo Escondidos */
+    input[type="file"] { display: none; }
+
     /* Modais / Menus */
     .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 999; justify-content: center; align-items: center; padding: 20px; }
     .modal-content { width: 100%; max-width: 420px; background: #1a1a1a; border: 1px solid #ff0000; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px; max-height: 90vh; overflow-y: auto; }
@@ -42,9 +45,13 @@
 </head>
 <body>
 
+  <!-- Inputs invisíveis para acionar a galeria do celular -->
+  <input type="file" id="file-avatar" accept="image/*" onchange="handleFileSelect(event, 'a')">
+  <input type="file" id="file-bg" accept="image/*" onchange="handleFileSelect(event, 'b')">
+
   <div class="top-bar">
     <button class="menu-btn" onclick="openModal('menu-modal')">☰</button>
-    <div class="profile-info">
+    <div class="profile-info" onclick="document.getElementById('file-avatar').click()" title="Toque para mudar a foto de perfil">
       <img id="display-avatar" class="profile-img" src="https://via.placeholder.com/50">
       <span id="display-username" style="font-weight:bold;">Carregando...</span>
     </div>
@@ -96,8 +103,10 @@
     <div class="modal-content">
       <h3 style="color:#ff0000; text-align:center;">Configurações</h3>
       <input type="text" id="in-name" placeholder="Nome">
-      <input type="text" id="in-avatar" placeholder="URL da Foto de Perfil">
-      <input type="text" id="in-bg" placeholder="URL da Imagem de Fundo">
+      
+      <button class="btn-platform" onclick="document.getElementById('file-avatar').click()">📷 Selecionar Perfil da Galeria</button>
+      <button class="btn-platform" onclick="document.getElementById('file-bg').click()">🖼️ Selecionar Fundo da Galeria</button>
+      
       <button class="btn-action" onclick="saveSettings()">Salvar & Reiniciar</button>
       <button class="btn-sm" onclick="closeModal('config-modal')">Voltar</button>
     </div>
@@ -132,6 +141,19 @@
       'Telegram': { 'Suporte': 'support@telegram.org', 'Abuso': 'abuse@telegram.org', 'Recuperação': 'recover@telegram.org', 'SMS': 'sms@telegram.org' },
       'Instagram': { 'Suporte': 'support@instagram.com', 'Phishing': 'phish@instagram.com', 'Abuso': 'abuse@instagram.com', 'Privacidade': 'privacy@instagram.com' }
     };
+
+    function handleFileSelect(event, key) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          localStorage.setItem(key, e.target.result);
+          if (key === 'a') document.getElementById('display-avatar').src = e.target.result;
+          if (key === 'b') document.body.style.backgroundImage = `url('${e.target.result}')`;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
 
     function selectPlatform(p) {
       currentPlatform = p;
@@ -170,8 +192,6 @@
     
     function saveSettings() {
       localStorage.setItem('n', document.getElementById('in-name').value);
-      localStorage.setItem('a', document.getElementById('in-avatar').value);
-      localStorage.setItem('b', document.getElementById('in-bg').value);
       location.reload();
     }
 
@@ -236,6 +256,7 @@
       const n = localStorage.getItem('n');
       if(!n) openModal('config-modal');
       document.getElementById('display-username').innerText = n || 'Usuário';
+      document.getElementById('in-name').value = n || '';
       document.getElementById('display-avatar').src = localStorage.getItem('a') || 'https://via.placeholder.com/50';
       if(localStorage.getItem('b')) document.body.style.backgroundImage = `url('${localStorage.getItem('b')}')`;
       renderVault();
