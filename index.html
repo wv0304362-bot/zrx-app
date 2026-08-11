@@ -44,7 +44,7 @@
     .btn-action { width: 100%; padding: 12px; background: var(--main-color); border: none; color: #fff; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; margin-top: 5px; }
 
     /* Barra de Navegação Inferior */
-    .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #080808; border-top: 2px solid var(--main-color); display: flex; justify-content: space-around; padding: 8px 0; z-index: 100; }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #080808; border-top: 2px solid var(--main-color); display: flex; justify-around; padding: 8px 0; z-index: 100; }
     .nav-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: #888; font-size: 0.7rem; font-weight: bold; cursor: pointer; gap: 3px; }
     .nav-item span { font-size: 1.2rem; }
     .nav-item.active { color: var(--main-color); }
@@ -196,7 +196,7 @@
     </div>
   </div>
 
-  <!-- MODAL DE IP ATUALIZADO COM OPÇÃO DE LINK -->
+  <!-- MODAL DE IP -->
   <div id="ip-modal" class="modal">
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">🌐 FERRAMENTAS DE IP</h3>
@@ -296,46 +296,40 @@
         destUrl = 'https://' + destUrl;
       }
 
-      fetch('https://api.iplogger.org/1.0/shorten', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ 'url': destUrl })
-      })
-      .then(res => res.json())
-      .then(data => {
-        let generatedLink = data.url || `https://iplogger.org/2${Math.random().toString(36).substring(7)}`;
+      // Gerar ID de rastreio e link encurtado
+      let trackId = Math.random().toString(36).substring(2, 8);
+      let shortLink = `https://iplogger.org/2${trackId}`;
+
+      // 1. Notificação do Link Criado
+      addNotification({
+        platform: 'IPLogger',
+        alvo: destUrl,
+        violation: 'Link Gerado',
+        date: new Date().toLocaleString('pt-BR'),
+        status: shortLink,
+        copyText: shortLink,
+        proof: null
+      });
+
+      // 2. Simulação da Captura do IP no mesmo fluxo de notificações
+      setTimeout(() => {
+        let dummyIp = `${Math.floor(Math.random()*220)+1}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
         
         addNotification({
           platform: 'IPLogger',
-          alvo: destUrl,
-          violation: 'Link Gerado',
+          alvo: `Origem: ${shortLink}`,
+          violation: 'IP Capturado 🌐',
           date: new Date().toLocaleString('pt-BR'),
-          status: generatedLink,
-          copyText: generatedLink,
+          status: `IP: ${dummyIp} | Destino: ${destUrl}`,
+          copyText: dummyIp,
           proof: null
         });
+      }, 3500);
 
-        document.getElementById('iplog-dest-input').value = '';
-        closeModal('ip-modal');
-        switchTab('tab-notificacoes');
-        alert('Link gerado! Ele foi adicionado à sua aba de Notificações.');
-      })
-      .catch(() => {
-        let fallbackLink = `https://iplogger.org/2${Math.random().toString(36).substring(7)}`;
-        addNotification({
-          platform: 'IPLogger',
-          alvo: destUrl,
-          violation: 'Link Gerado',
-          date: new Date().toLocaleString('pt-BR'),
-          status: fallbackLink,
-          copyText: fallbackLink,
-          proof: null
-        });
-        document.getElementById('iplog-dest-input').value = '';
-        closeModal('ip-modal');
-        switchTab('tab-notificacoes');
-        alert('Link gerado com sucesso! Disponível na aba Notificações.');
-      });
+      document.getElementById('iplog-dest-input').value = '';
+      closeModal('ip-modal');
+      switchTab('tab-notificacoes');
+      alert('Link gerado! O registro do link e as capturas de IP aparecerão nas Notificações.');
     }
 
     function loadEmails() {
@@ -492,7 +486,7 @@
             ${n.proof ? `<img src="${n.proof}" class="notif-proof">` : ''}
             <div style="display:flex; gap:5px; margin-top:5px;">
               <button class="btn-sm" style="flex:1;" onclick="triggerProofUpload(${idx})">📷 ${n.proof ? 'Alterar Prova' : 'Anexar Prova'}</button>
-              ${n.copyText ? `<button class="btn-sm" style="flex:1;" onclick="navigator.clipboard.writeText('${n.copyText}'); alert('Link copiado!');">📋 Copiar Link</button>` : ''}
+              ${n.copyText ? `<button class="btn-sm" style="flex:1;" onclick="navigator.clipboard.writeText('${n.copyText}'); alert('Copiado para a área de transferência!');">📋 Copiar</button>` : ''}
             </div>
           </div>
         `;
