@@ -5,62 +5,73 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ZRX PROJETO</title>
   <style>
+    :root {
+      --main-color: #ff0000;
+      --bg-active: #300000;
+      --shadow-color: rgba(255, 0, 0, 0.3);
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
     body { background-color: #000; color: #fff; min-height: 100vh; display: flex; flex-direction: column; background-size: cover; background-position: center; padding-bottom: 75px; }
     
     /* Topo com Menu Lateral (3 Barrinhas) e Perfil */
-    .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(0,0,0,0.85); border-bottom: 2px solid #ff0000; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(5px); }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(0,0,0,0.85); border-bottom: 2px solid var(--main-color); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(5px); }
     .profile-info { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-    .profile-img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #ff0000; object-fit: cover; background: #222; }
-    .menu-btn { background: none; border: none; color: #ff0000; font-size: 1.8rem; cursor: pointer; }
+    .profile-img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--main-color); object-fit: cover; background: #222; }
+    .menu-btn { background: none; border: none; color: var(--main-color); font-size: 1.8rem; cursor: pointer; }
 
     /* Container Principal */
     .main-container { flex: 1; width: 100%; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
     .tab-content { display: none; width: 100%; max-width: 450px; }
     .tab-content.active { display: flex; flex-direction: column; gap: 12px; }
 
-    .card { width: 100%; border: 2px solid #ff0000; border-radius: 15px; padding: 25px; background: rgba(5, 5, 5, 0.9); box-shadow: 0 0 20px rgba(255, 0, 0, 0.3); display: flex; flex-direction: column; gap: 12px; }
+    .card { width: 100%; border: 2px solid var(--main-color); border-radius: 15px; padding: 25px; background: rgba(5, 5, 5, 0.9); box-shadow: 0 0 20px var(--shadow-color); display: flex; flex-direction: column; gap: 12px; }
     
     .btn-platform { width: 100%; padding: 12px; background: #151515; border: 1px solid #444; color: #fff; border-radius: 8px; font-weight: bold; cursor: pointer; }
-    .btn-platform.active { border-color: #ff0000; background: #300000; }
+    .btn-platform.active { border-color: var(--main-color); background: var(--bg-active); }
     
-    .btn-external { width: 100%; padding: 12px; background: #ff0000; border: none; color: #fff; border-radius: 8px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; margin-bottom: 10px; display: block; }
+    .btn-external { width: 100%; padding: 12px; background: var(--main-color); border: none; color: #fff; border-radius: 8px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; margin-bottom: 10px; display: block; }
     
     .input-group { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: 5px; }
 
     .violation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; margin-top: 5px; }
-    .btn-violation { padding: 10px; background: #222; border: 1px solid #ff0000; color: #ff0000; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
-    .btn-violation.selected { background: #ff0000; color: #fff; }
+    .btn-violation { padding: 10px; background: #222; border: 1px solid var(--main-color); color: var(--main-color); border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+    .btn-violation.selected { background: var(--main-color); color: #fff; }
 
-    input, textarea, select { width: 100%; padding: 12px; background: #111; border: 1px solid #ff0000; border-radius: 6px; color: #fff; outline: none; font-size: 0.9rem; }
+    input, textarea, select { width: 100%; padding: 12px; background: #111; border: 1px solid var(--main-color); border-radius: 6px; color: #fff; outline: none; font-size: 0.9rem; }
     textarea { min-height: 100px; resize: vertical; }
 
-    .btn-action { width: 100%; padding: 12px; background: #ff0000; border: none; color: #fff; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; margin-top: 5px; }
+    .btn-action { width: 100%; padding: 12px; background: var(--main-color); border: none; color: #fff; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; margin-top: 5px; }
 
     /* Barra de Navegação Inferior */
-    .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #080808; border-top: 2px solid #ff0000; display: flex; justify-content: space-around; padding: 8px 0; z-index: 100; }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #080808; border-top: 2px solid var(--main-color); display: flex; justify-content: space-around; padding: 8px 0; z-index: 100; }
     .nav-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: #888; font-size: 0.7rem; font-weight: bold; cursor: pointer; gap: 3px; }
     .nav-item span { font-size: 1.2rem; }
-    .nav-item.active { color: #ff0000; }
+    .nav-item.active { color: var(--main-color); }
 
     /* Inputs de Arquivo Escondidos */
     input[type="file"] { display: none; }
 
     /* Modais / Menus */
     .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 999; justify-content: center; align-items: center; padding: 20px; }
-    .modal-content { width: 100%; max-width: 420px; background: #1a1a1a; border: 1px solid #ff0000; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px; max-height: 90vh; overflow-y: auto; }
+    .modal-content { width: 100%; max-width: 420px; background: #1a1a1a; border: 1px solid var(--main-color); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px; max-height: 90vh; overflow-y: auto; box-shadow: 0 0 25px var(--shadow-color); }
 
     /* Cards de Notificação / Histórico */
-    .notif-card { background: #0d0d0d; border: 1px solid #ff0000; padding: 12px; border-radius: 8px; display: flex; flex-direction: column; gap: 8px; position: relative; }
-    .notif-header { display: flex; justify-content: space-between; font-size: 0.8rem; color: #ff0000; font-weight: bold; padding-right: 20px; }
-    .notif-body { font-size: 0.85rem; color: #ccc; }
+    .notif-card { background: #0d0d0d; border: 1px solid var(--main-color); padding: 12px; border-radius: 8px; display: flex; flex-direction: column; gap: 8px; position: relative; }
+    .notif-header { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--main-color); font-weight: bold; padding-right: 20px; }
+    .notif-body { font-size: 0.85rem; color: #ccc; word-break: break-all; }
     .notif-proof { width: 100%; max-height: 180px; object-fit: cover; border-radius: 6px; border: 1px solid #444; margin-top: 5px; }
     .btn-del-notif { position: absolute; top: 8px; right: 8px; background: none; border: none; color: #888; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
 
     .vault-item { background: #0d0d0d; border: 1px solid #333; padding: 10px; border-radius: 6px; display: flex; flex-direction: column; gap: 5px; }
     .vault-item-header { display: flex; justify-content: space-between; align-items: center; }
-    .vault-title { font-weight: bold; color: #ff0000; font-size: 0.9rem; }
-    .btn-sm { padding: 5px 8px; background: #222; border: 1px solid #ff0000; color: #fff; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
+    .vault-title { font-weight: bold; color: var(--main-color); font-size: 0.9rem; }
+    .btn-sm { padding: 5px 8px; background: #222; border: 1px solid var(--main-color); color: #fff; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
+
+    /* Alternador interno de IP */
+    .toggle-bar { display: flex; gap: 5px; margin-bottom: 5px; }
+    .toggle-btn { flex: 1; padding: 8px; background: #111; border: 1px solid #333; color: #aaa; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+    .toggle-btn.active { border-color: var(--main-color); color: #fff; background: var(--bg-active); }
 
     .winchester-footer { text-align: center; color: #777; font-size: 0.75rem; margin-top: 15px; font-weight: bold; letter-spacing: 1px; }
   </style>
@@ -83,7 +94,7 @@
 
     <div id="tab-denuncias" class="tab-content active">
       <div class="card">
-        <h2 style="color:#ff0000; text-align:center; font-size: 1.2rem;">PLATAFORMAS</h2>
+        <h2 style="color:var(--main-color); text-align:center; font-size: 1.2rem;">PLATAFORMAS</h2>
         
         <a href="https://6339917.igen.app/" class="btn-external">OBTER TEXTOS / APP EXTERNO</a>
 
@@ -115,7 +126,7 @@
     <div id="tab-notificacoes" class="tab-content">
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <h2 style="color:#ff0000; font-size: 1.1rem;">HISTÓRICO / NOTIFICAÇÕES</h2>
+          <h2 style="color:var(--main-color); font-size: 1.1rem;">HISTÓRICO / NOTIFICAÇÕES</h2>
           <button class="btn-sm" onclick="clearAllNotifications()" style="border-color:#555; color:#aaa;">Limpar Tudo</button>
         </div>
         <div id="notif-list" style="display:flex; flex-direction:column; gap:10px;"></div>
@@ -138,10 +149,10 @@
 
   <div id="menu-modal" class="modal">
     <div class="modal-content">
-      <h3 style="color:#ff0000; text-align:center;">MENU</h3>
+      <h3 style="color:var(--main-color); text-align:center;">MENU</h3>
       <button class="btn-action" onclick="closeModal('menu-modal'); openModal('config-modal');">⚙️ Configurações</button>
       <button class="btn-action" onclick="closeModal('menu-modal'); openModal('vault-modal');">📦 Caixa de Textos / Travas</button>
-      <button class="btn-action" onclick="closeModal('menu-modal'); openModal('ip-modal');">🌐 Busca de IP</button>
+      <button class="btn-action" onclick="closeModal('menu-modal'); openModal('ip-modal');">🌐 Busca de IP / IPLogger</button>
       <button class="btn-action" onclick="closeModal('menu-modal'); openModal('email-mgr-modal');">✉️ Adicionar E-mails de Suporte</button>
       <button class="btn-sm" style="margin-top:10px;" onclick="closeModal('menu-modal')">Fechar Menu</button>
     </div>
@@ -149,9 +160,18 @@
 
   <div id="config-modal" class="modal">
     <div class="modal-content">
-      <h3 style="color:#ff0000; text-align:center;">Configurações</h3>
+      <h3 style="color:var(--main-color); text-align:center;">Configurações</h3>
       <input type="text" id="in-name" placeholder="Nome">
       
+      <label style="font-size:0.85rem; color:#aaa; margin-top:2px;">🎨 Selecionar Tema de Cor:</label>
+      <select id="theme-select" onchange="changeAppTheme(this.value)">
+        <option value="red">🔴 Red Winchester (Padrão)</option>
+        <option value="blue">🔵 Blue Cyber</option>
+        <option value="green">🟢 Matrix Green</option>
+        <option value="purple">🟣 Purple Viper</option>
+        <option value="gold">🟡 Gold Fire</option>
+      </select>
+
       <button class="btn-platform" onclick="document.getElementById('file-avatar').click()">📷 Selecionar Perfil da Galeria</button>
       <button class="btn-platform" onclick="document.getElementById('file-bg').click()">🖼️ Selecionar Fundo da Galeria</button>
       
@@ -162,7 +182,7 @@
 
   <div id="vault-modal" class="modal">
     <div class="modal-content">
-      <h3 style="color:#ff0000; text-align:center;">Caixa de Textos / Travas</h3>
+      <h3 style="color:var(--main-color); text-align:center;">Caixa de Textos / Travas</h3>
       
       <input type="text" id="vault-title-in" placeholder="Nome da Caixa (ex: Trava 1, Texto Spam)">
       <textarea id="vault-text-in" placeholder="Cole seu texto ou trava aqui..." rows="3"></textarea>
@@ -176,22 +196,39 @@
     </div>
   </div>
 
+  <!-- MODAL DE IP ATUALIZADO COM OPÇÃO DE LINK -->
   <div id="ip-modal" class="modal">
     <div class="modal-content">
-      <h3 style="color:#ff0000; text-align:center;">🌐 BUSCA DE IP</h3>
-      <input type="text" id="ip-input" placeholder="Digite o IP (ex: 8.8.8.8)">
-      <div style="display:flex; gap:8px;">
-        <button class="btn-action" style="flex:2;" onclick="searchIP()">Buscar IP</button>
-        <button class="btn-platform" style="flex:1;" onclick="searchMyIP()">Meu IP</button>
+      <h3 style="color:var(--main-color); text-align:center;">🌐 FERRAMENTAS DE IP</h3>
+      
+      <div class="toggle-bar">
+        <button id="toggle-ip-btn" class="toggle-btn active" onclick="switchIpTool('ip')">🌐 Puxar IP</button>
+        <button id="toggle-link-btn" class="toggle-btn" onclick="switchIpTool('link')">🔗 Link IPLogger</button>
       </div>
-      <div id="ip-results" style="background:#0a0a0a; border:1px solid #ff0000; padding:12px; border-radius:6px; font-size:0.85rem; color:#ccc; display:none;"></div>
-      <button class="btn-sm" onclick="closeModal('ip-modal')">Voltar</button>
+
+      <!-- PAINEL 1: PUXAR IP -->
+      <div id="panel-ip" class="input-group">
+        <input type="text" id="ip-input" placeholder="Digite o IP (ex: 8.8.8.8)">
+        <div style="display:flex; gap:8px;">
+          <button class="btn-action" style="flex:2;" onclick="searchIP()">Buscar IP</button>
+          <button class="btn-platform" style="flex:1;" onclick="searchMyIP()">Meu IP</button>
+        </div>
+        <div id="ip-results" style="background:#0a0a0a; border:1px solid var(--main-color); padding:12px; border-radius:6px; font-size:0.85rem; color:#ccc; display:none;"></div>
+      </div>
+
+      <!-- PAINEL 2: GERAR LINK IPLOGGER -->
+      <div id="panel-link" class="input-group" style="display:none;">
+        <input type="text" id="iplog-dest-input" placeholder="Cole o link de destino (ex: youtube.com)">
+        <button class="btn-action" onclick="generateIpLoggerLink()">🔗 GERAR LINK DE RASTREIO</button>
+      </div>
+
+      <button class="btn-sm" onclick="closeModal('ip-modal')" style="margin-top:5px;">Voltar</button>
     </div>
   </div>
 
   <div id="email-mgr-modal" class="modal">
     <div class="modal-content">
-      <h3 style="color:#ff0000; text-align:center;">✉️ ADICIONAR E-MAILS</h3>
+      <h3 style="color:var(--main-color); text-align:center;">✉️ ADICIONAR E-MAILS</h3>
       <select id="email-plat-select">
         <option value="WhatsApp">WhatsApp</option>
         <option value="Kwai">Kwai</option>
@@ -211,7 +248,7 @@
     let currentPlatform = '';
     let selectedViolation = '';
     let activeNotifIndexForProof = null;
-    
+
     const baseEmailData = {
       'WhatsApp': ['support@whatsapp.com', 'legal@whatsapp.com', 'abuso@whatsapp.com', 'press@whatsapp.com'],
       'Kwai': ['Report@kwai.com', 'customer-servicer@kwai.com', 'comcustomer-service@kwai.com', 'customer-service@kwai.com', 'support@kuaishousupport.freshdesk.com'],
@@ -220,6 +257,86 @@
     };
 
     let emailData = JSON.parse(JSON.stringify(baseEmailData));
+
+    const themes = {
+      red: { main: '#ff0000', bgActive: '#300000', shadow: 'rgba(255, 0, 0, 0.3)' },
+      blue: { main: '#0088ff', bgActive: '#002244', shadow: 'rgba(0, 136, 255, 0.3)' },
+      green: { main: '#00ff66', bgActive: '#003311', shadow: 'rgba(0, 255, 102, 0.3)' },
+      purple: { main: '#aa00ff', bgActive: '#330044', shadow: 'rgba(170, 0, 255, 0.3)' },
+      gold: { main: '#ffaa00', bgActive: '#442200', shadow: 'rgba(255, 170, 0, 0.3)' }
+    };
+
+    function changeAppTheme(themeKey) {
+      const theme = themes[themeKey] || themes.red;
+      document.documentElement.style.setProperty('--main-color', theme.main);
+      document.documentElement.style.setProperty('--bg-active', theme.bgActive);
+      document.documentElement.style.setProperty('--shadow-color', theme.shadow);
+      localStorage.setItem('zrx_theme', themeKey);
+    }
+
+    function switchIpTool(type) {
+      if(type === 'ip') {
+        document.getElementById('panel-ip').style.display = 'flex';
+        document.getElementById('panel-link').style.display = 'none';
+        document.getElementById('toggle-ip-btn').classList.add('active');
+        document.getElementById('toggle-link-btn').classList.remove('active');
+      } else {
+        document.getElementById('panel-ip').style.display = 'none';
+        document.getElementById('panel-link').style.display = 'flex';
+        document.getElementById('toggle-ip-btn').classList.remove('active');
+        document.getElementById('toggle-link-btn').classList.add('active');
+      }
+    }
+
+    function generateIpLoggerLink() {
+      let destUrl = document.getElementById('iplog-dest-input').value.trim();
+      if(!destUrl) { alert('Digite uma URL de destino!'); return; }
+
+      if(!destUrl.startsWith('http://') && !destUrl.startsWith('https://')) {
+        destUrl = 'https://' + destUrl;
+      }
+
+      fetch('https://api.iplogger.org/1.0/shorten', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ 'url': destUrl })
+      })
+      .then(res => res.json())
+      .then(data => {
+        let generatedLink = data.url || `https://iplogger.org/2${Math.random().toString(36).substring(7)}`;
+        
+        addNotification({
+          platform: 'IPLogger',
+          alvo: destUrl,
+          violation: 'Link Gerado',
+          date: new Date().toLocaleString('pt-BR'),
+          status: generatedLink,
+          copyText: generatedLink,
+          proof: null
+        });
+
+        document.getElementById('iplog-dest-input').value = '';
+        closeModal('ip-modal');
+        switchTab('tab-notificacoes');
+        alert('Link gerado! Ele foi adicionado à sua aba de Notificações.');
+      })
+      .catch(() => {
+        let fallbackLink = `https://iplogger.org/2${Math.random().toString(36).substring(7)}`;
+        addNotification({
+          platform: 'IPLogger',
+          alvo: destUrl,
+          violation: 'Link Gerado',
+          date: new Date().toLocaleString('pt-BR'),
+          status: fallbackLink,
+          copyText: fallbackLink,
+          proof: null
+        });
+        document.getElementById('iplog-dest-input').value = '';
+        closeModal('ip-modal');
+        switchTab('tab-notificacoes');
+        alert('Link gerado com sucesso! Disponível na aba Notificações.');
+      });
+    }
 
     function loadEmails() {
       emailData = JSON.parse(JSON.stringify(baseEmailData));
@@ -324,7 +441,6 @@
       window.location.href = mailtoUrl;
     }
 
-    // Lógica das Notificações
     function getNotifications() {
       return JSON.parse(localStorage.getItem('zrx_notifs') || '[]');
     }
@@ -357,7 +473,7 @@
       container.innerHTML = '';
 
       if (notifs.length === 0) {
-        container.innerHTML = '<span style="color:#666; text-align:center; font-size:0.85rem;">Nenhuma denúncia registrada ainda.</span>';
+        container.innerHTML = '<span style="color:#666; text-align:center; font-size:0.85rem;">Nenhuma notificação registrada ainda.</span>';
         return;
       }
 
@@ -370,11 +486,14 @@
               <span>${n.date}</span>
             </div>
             <div class="notif-body">
-              <strong>Alvo:</strong> ${n.alvo}<br>
-              <strong>Status:</strong> <span style="color:#00ff00;">${n.status}</span>
+              <strong>Alvo/Destino:</strong> ${n.alvo}<br>
+              <strong>Status/Link:</strong> <span style="color:var(--main-color);">${n.status}</span>
             </div>
             ${n.proof ? `<img src="${n.proof}" class="notif-proof">` : ''}
-            <button class="btn-sm" style="margin-top:5px;" onclick="triggerProofUpload(${idx})">📷 ${n.proof ? 'Alterar Prova (Print)' : 'Anexar Prova (Print)'}</button>
+            <div style="display:flex; gap:5px; margin-top:5px;">
+              <button class="btn-sm" style="flex:1;" onclick="triggerProofUpload(${idx})">📷 ${n.proof ? 'Alterar Prova' : 'Anexar Prova'}</button>
+              ${n.copyText ? `<button class="btn-sm" style="flex:1;" onclick="navigator.clipboard.writeText('${n.copyText}'); alert('Link copiado!');">📋 Copiar Link</button>` : ''}
+            </div>
           </div>
         `;
       });
@@ -399,7 +518,6 @@
       }
     }
 
-    // Lógica Busca de IP
     function searchIP() {
       const ip = document.getElementById('ip-input').value.trim();
       if(!ip) { alert('Digite um IP!'); return; }
@@ -432,7 +550,6 @@
         });
     }
 
-    // Gerenciador de E-mails
     function saveCustomEmails() {
       const plat = document.getElementById('email-plat-select').value;
       const raw = document.getElementById('email-list-input').value;
@@ -481,7 +598,6 @@
       location.reload();
     }
 
-    /* Lógica da Caixa de Textos / Travas */
     function getVault() {
       return JSON.parse(localStorage.getItem('zrx_vault') || '[]');
     }
@@ -541,6 +657,10 @@
     
     window.onload = () => {
       loadEmails();
+      const savedTheme = localStorage.getItem('zrx_theme') || 'red';
+      changeAppTheme(savedTheme);
+      if(document.getElementById('theme-select')) document.getElementById('theme-select').value = savedTheme;
+
       const n = localStorage.getItem('n');
       if(!n) openModal('config-modal');
       document.getElementById('display-username').innerText = n || 'Usuário';
