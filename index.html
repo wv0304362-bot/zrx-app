@@ -12,13 +12,27 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-    body { background-color: #000; color: #fff; min-height: 100vh; display: flex; flex-direction: column; background-size: cover; background-position: center; padding-bottom: 75px; }
+    body { background-color: #000; color: #fff; min-height: 100vh; display: flex; flex-direction: column; background-size: cover; background-position: center; padding-bottom: 75px; overflow-x: hidden; }
     
-    /* Topo com Menu Lateral (3 Barrinhas) e Perfil */
-    .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(0,0,0,0.85); border-bottom: 2px solid var(--main-color); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(5px); }
-    .profile-info { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-    .profile-img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--main-color); object-fit: cover; background: #222; }
+    /* Topo Apenas com as Três Barrinhas */
+    .top-bar { display: flex; align-items: center; padding: 15px; background: rgba(0,0,0,0.85); border-bottom: 2px solid var(--main-color); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(5px); }
     .menu-btn { background: none; border: none; color: var(--main-color); font-size: 1.8rem; cursor: pointer; }
+
+    /* MENU LATERAL DESLIZANTE (SIDEBAR) */
+    .sidebar-overlay {
+      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7);
+      opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 200;
+    }
+    .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
+
+    .sidebar {
+      position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
+      background: #0d0d0d; border-right: 2px solid var(--main-color);
+      box-shadow: 5px 0 25px var(--shadow-color); z-index: 201;
+      transition: transform 0.3s ease; display: flex; flex-direction: column; padding: 20px 15px; gap: 12px;
+    }
+    .sidebar.active { transform: translateX(280px); }
+    .sidebar-title { color: var(--main-color); font-size: 1.1rem; text-align: center; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 10px; }
 
     /* Container Principal */
     .main-container { flex: 1; width: 100%; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
@@ -52,7 +66,7 @@
     /* Inputs de Arquivo Escondidos */
     input[type="file"] { display: none; }
 
-    /* Modais / Menus */
+    /* Modais */
     .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 999; justify-content: center; align-items: center; padding: 20px; }
     .modal-content { width: 100%; max-width: 420px; background: #1a1a1a; border: 1px solid var(--main-color); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px; max-height: 90vh; overflow-y: auto; box-shadow: 0 0 25px var(--shadow-color); }
 
@@ -70,38 +84,18 @@
 
     .winchester-footer { text-align: center; color: #777; font-size: 0.75rem; margin-top: 15px; font-weight: bold; letter-spacing: 1px; }
 
-    /* NOVOS ESTILOS: CARD DO PERFIL / DASHBOARD / LOGIN PIN */
+    /* CARD DO PERFIL / DASHBOARD */
     .user-profile-card {
-      width: 100%;
-      background: rgba(15, 15, 15, 0.95);
-      border: 1px solid var(--main-color);
-      border-radius: 12px;
-      padding: 15px;
-      display: flex;
-      align-items: center;
-      gap: 15px;
+      width: 100%; background: rgba(15, 15, 15, 0.95); border: 1px solid var(--main-color);
+      border-radius: 12px; padding: 15px; display: flex; align-items: center; gap: 15px;
       box-shadow: 0 0 15px var(--shadow-color);
     }
     .dash-avatar-img {
-      width: 55px;
-      height: 55px;
-      border-radius: 50%;
-      border: 2px solid var(--main-color);
-      object-fit: cover;
+      width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--main-color);
+      object-fit: cover; cursor: pointer;
     }
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      width: 100%;
-    }
-    .metric-card {
-      background: #111;
-      border: 1px solid #333;
-      padding: 10px;
-      border-radius: 8px;
-      text-align: center;
-    }
+    .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; }
+    .metric-card { background: #111; border: 1px solid #333; padding: 10px; border-radius: 8px; text-align: center; }
     .metric-card span { font-size: 0.65rem; color: #aaa; text-transform: uppercase; }
     .metric-card h2 { font-size: 1.2rem; color: var(--main-color); margin-top: 3px; }
 
@@ -117,7 +111,7 @@
   <input type="file" id="file-bg" accept="image/*" onchange="handleFileSelect(event, 'b')">
   <input type="file" id="file-proof" accept="image/*" onchange="handleProofUpload(event)">
 
-  <!-- TELA DE ONBOARDING (PRIMEIRO ACESSO AO INSTALAR) -->
+  <!-- ONBOARDING MODAL -->
   <div id="onboarding-modal" class="modal" style="display:none;">
     <div class="modal-content" style="text-align:center;">
       <h3 style="color:var(--main-color);">CONFIGURAÇÃO INICIAL</h3>
@@ -131,7 +125,7 @@
     </div>
   </div>
 
-  <!-- TELA DE LOGIN POR PIN (TODA VEZ QUE ABRE O APP) -->
+  <!-- PIN LOGIN MODAL -->
   <div id="pin-login-modal" class="modal" style="display:none;">
     <div class="modal-content" style="text-align:center;">
       <img id="login-avatar-display" src="https://via.placeholder.com/70" style="width:70px; height:70px; border-radius:50%; border:2px solid var(--main-color); object-fit:cover; margin:0 auto 10px auto;">
@@ -143,21 +137,28 @@
     </div>
   </div>
 
+  <!-- MENU LATERAL (SIDEBAR SLIDE & SWIPE) -->
+  <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar(false)"></div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-title">OPÇÕES DO SISTEMA</div>
+    <button class="btn-action" onclick="toggleSidebar(false); openModal('vault-modal');">📦 Caixa de Textos / Travas</button>
+    <button class="btn-action" onclick="toggleSidebar(false); openModal('ip-modal');">🌐 Buscar IP</button>
+    <button class="btn-action" onclick="toggleSidebar(false); openModal('email-mgr-modal');">✉️ Gerenciador de E-mails</button>
+    <button class="btn-action" onclick="toggleSidebar(false); openModal('config-modal');">⚙️ Configurações</button>
+    <button class="btn-sm" style="margin-top:auto;" onclick="toggleSidebar(false)">Fechar Menu</button>
+  </aside>
+
+  <!-- TOPO: APENAS 3 BARRINHAS -->
   <div class="top-bar">
-    <button class="menu-btn" onclick="openModal('menu-modal')">☰</button>
-    <div class="profile-info" onclick="document.getElementById('file-avatar').click()" title="Toque para mudar a foto de perfil">
-      <img id="display-avatar" class="profile-img" src="https://via.placeholder.com/50">
-      <span id="display-username" style="font-weight:bold;">Carregando...</span>
-    </div>
+    <button class="menu-btn" onclick="toggleSidebar(true)">☰</button>
   </div>
 
   <div class="main-container">
 
-    <!-- ABA 1: DASHBOARD / PAINEL PRINCIPAL -->
+    <!-- ABA 1: PAINEL / DASHBOARD -->
     <div id="tab-dashboard" class="tab-content active">
-      <!-- CARD DO PERFIL OPERADOR (ACIMA DO GRÁFICO) -->
       <div class="user-profile-card">
-        <img id="dash-avatar" src="https://via.placeholder.com/55" class="dash-avatar-img">
+        <img id="dash-avatar" src="https://via.placeholder.com/55" class="dash-avatar-img" onclick="document.getElementById('file-avatar').click()" title="Toque para mudar a foto">
         <div>
           <span style="font-size:0.65rem; color:#888; text-transform:uppercase;">OPERADOR ATIVO</span>
           <h3 id="dash-username" style="color:#fff; font-size:1.1rem; margin:2px 0;">Usuário</h3>
@@ -165,14 +166,13 @@
         </div>
       </div>
 
-      <!-- CARDS DE DESEMPENHO -->
       <div class="metrics-grid">
         <div class="metric-card">
           <span>DENÚNCIAS</span>
           <h2 id="metric-total">0</h2>
         </div>
         <div class="metric-card">
-          <span>IPs BUSCADOS</span>
+          <span>IPS BUSCADOS</span>
           <h2 id="metric-ips">0</h2>
         </div>
         <div class="metric-card">
@@ -181,7 +181,6 @@
         </div>
       </div>
 
-      <!-- ÁREA DE DESEMPENHO E ATIVIDADE -->
       <div class="card">
         <h3 style="color:var(--main-color); font-size:1rem;">Desempenho da Semana</h3>
         <div style="height:120px; display:flex; align-items:flex-end; gap:8px; justify-content:space-between; padding-top:10px; border-bottom:1px solid #333;">
@@ -195,7 +194,6 @@
         </div>
       </div>
 
-      <!-- DISTRIBUIÇÃO POR PLATAFORMA -->
       <div class="card">
         <h3 style="color:var(--main-color); font-size:1rem;">Uso de Plataformas</h3>
         <div class="progress-item">
@@ -214,7 +212,7 @@
       <div class="winchester-footer">App desenvolvido by WINCHESTER</div>
     </div>
 
-    <!-- ABA 2: PLATAFORMAS DE DENÚNCIA -->
+    <!-- ABA 2: DENÚNCIAS -->
     <div id="tab-denuncias" class="tab-content">
       <div class="card">
         <h2 style="color:var(--main-color); text-align:center; font-size: 1.2rem;">PLATAFORMAS</h2>
@@ -260,7 +258,7 @@
 
   </div>
 
-  <!-- BARRA INFERIOR DE NAVEGAÇÃO -->
+  <!-- NAVEGAÇÃO INFERIOR -->
   <div class="bottom-nav">
     <button class="nav-item active" onclick="switchTab('tab-dashboard', this)">
       <span>📊</span>
@@ -276,19 +274,7 @@
     </button>
   </div>
 
-  <!-- MENU LATERAL (DESLIZANTE/MODAL) -->
-  <div id="menu-modal" class="modal">
-    <div class="modal-content">
-      <h3 style="color:var(--main-color); text-align:center;">MENU PRINCIPAL</h3>
-      <button class="btn-action" onclick="closeModal('menu-modal'); switchTab('tab-denuncias');">📱 Plataformas</button>
-      <button class="btn-action" onclick="closeModal('menu-modal'); openModal('ip-modal');">🌐 Buscar IP</button>
-      <button class="btn-action" onclick="closeModal('menu-modal'); openModal('email-mgr-modal');">✉️ Adicionar E-mail</button>
-      <button class="btn-action" onclick="closeModal('menu-modal'); openModal('vault-modal');">📦 Caixa de Textos / Travas</button>
-      <button class="btn-action" onclick="closeModal('menu-modal'); openModal('config-modal');">⚙️ Configurações</button>
-      <button class="btn-sm" style="margin-top:10px;" onclick="closeModal('menu-modal')">Fechar Menu</button>
-    </div>
-  </div>
-
+  <!-- MODAIS DO SISTEMA -->
   <div id="config-modal" class="modal">
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">Configurações</h3>
@@ -389,6 +375,40 @@
       localStorage.setItem('zrx_theme', themeKey);
     }
 
+    function toggleSidebar(open) {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      if (open) {
+        sidebar.classList.add('active');
+        overlay.classList.add('active');
+      } else {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+      }
+    }
+
+    // SUPORTE A GESTO DE ARRASTAR (SWIPE TO OPEN/CLOSE SIDEBAR)
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, false);
+
+    document.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, false);
+
+    function handleSwipe() {
+      const distance = touchEndX - touchStartX;
+      if (touchStartX < 50 && distance > 70) {
+        toggleSidebar(true); // Arrasto para a direita na borda esquerda: abre
+      } else if (distance < -70) {
+        toggleSidebar(false); // Arrasto para a esquerda: fecha
+      }
+    }
+
     function loadEmails() {
       emailData = JSON.parse(JSON.stringify(baseEmailData));
       const saved = localStorage.getItem('zrx_custom_emails');
@@ -419,7 +439,6 @@
         reader.onload = function(e) {
           localStorage.setItem(key, e.target.result);
           if (key === 'a') {
-            document.getElementById('display-avatar').src = e.target.result;
             document.getElementById('dash-avatar').src = e.target.result;
             if(document.getElementById('login-avatar-display')) {
               document.getElementById('login-avatar-display').src = e.target.result;
@@ -674,7 +693,7 @@
       list.innerHTML = '';
       
       if(vault.length === 0) {
-        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">Nenum item salvo ainda.</span>';
+        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">Nenhum item salvo ainda.</span>';
         return;
       }
 
@@ -721,7 +740,6 @@
       renderVault();
     }
 
-    // --- NOVAS FUNÇÕES: ONBOARDING, PIN LOCK E MÉTRICAS ---
     function finishOnboarding() {
       const name = document.getElementById('setup-username').value.trim();
       const pin = document.getElementById('setup-pin').value.trim();
@@ -764,11 +782,9 @@
 
     function loadUserData() {
       const name = localStorage.getItem('n') || 'Usuário';
-      const avatar = localStorage.getItem('a') || 'https://via.placeholder.com/50';
+      const avatar = localStorage.getItem('a') || 'https://via.placeholder.com/55';
 
-      document.getElementById('display-username').innerText = name;
       document.getElementById('dash-username').innerText = name;
-      document.getElementById('display-avatar').src = avatar;
       document.getElementById('dash-avatar').src = avatar;
       document.getElementById('in-name').value = name;
 
@@ -784,7 +800,6 @@
       document.getElementById('metric-ips').innerText = ipCount;
       document.getElementById('metric-vault').innerText = vault.length;
 
-      // Cálculo de Porcentagens de Plataforma
       if(notifs.length > 0) {
         const wa = notifs.filter(n => n.platform === 'WhatsApp').length;
         const tg = notifs.filter(n => n.platform === 'Telegram').length;
@@ -813,7 +828,6 @@
 
       if(localStorage.getItem('b')) document.body.style.backgroundImage = `url('${localStorage.getItem('b')}')`;
 
-      // Controle de Primeiro Acesso e PIN de Segurança
       const isConfigured = localStorage.getItem('zrx_configured');
       if(!isConfigured) {
         document.getElementById('onboarding-modal').style.display = 'flex';
