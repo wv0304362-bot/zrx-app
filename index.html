@@ -141,7 +141,6 @@
   <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar(false)"></div>
   <aside id="sidebar" class="sidebar">
     <div class="sidebar-title">OPÇÕES DO SISTEMA</div>
-    <button class="btn-action" onclick="toggleSidebar(false); openModal('trava-zaps-modal');">⚡ Divulgação WhatsApp</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('vault-modal');">📦 Caixa de Textos / Travas</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('folder-vault-modal'); renderFolders();">📁 Minhas Pastas de Travas</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('ip-modal');">🌐 Buscar IP</button>
@@ -277,45 +276,6 @@
   </div>
 
   <!-- MODAIS DO SISTEMA -->
-  <!-- MODAL: PAINEL DE DIVULGAÇÃO / WHATSAPP -->
-  <div id="trava-zaps-modal" class="modal">
-    <div class="modal-content">
-      <h3 style="color:var(--main-color); text-align:center;">⚡ DIVULGAÇÃO WHATSAPP</h3>
-      
-      <!-- ETAPA 1: CONEXÃO COM SEU NÚMERO -->
-      <div id="wa-connect-step" class="input-group">
-        <p style="font-size:0.8rem; color:#aaa; text-align:center;">Digite seu número para conectar seu WhatsApp:</p>
-        
-        <input type="text" id="user-wa-number" placeholder="Seu número (Ex: 5591985707111)">
-        <button class="btn-action" onclick="requestWaPairingCode()">📲 Conectar / Pedir Código</button>
-        
-        <div id="pairing-code-box" style="display:none; background:#0d0d0d; border:1px solid var(--main-color); padding:10px; border-radius:6px; text-align:center; margin-top:5px;">
-          <span style="font-size:0.75rem; color:#888;">CÓDIGO DE PAREAMENTO:</span>
-          <h2 id="display-pairing-code" style="color:var(--main-color); letter-spacing:3px; margin:5px 0;">--------</h2>
-          <button class="btn-sm" onclick="copyPairingCode()">Copiar Código</button>
-        </div>
-      </div>
-
-      <hr style="border-color:#333; margin: 10px 0;">
-
-      <!-- ETAPA 2: FORMULÁRIO DE DISPARO -->
-      <div class="input-group">
-        <label style="font-size:0.8rem; color:#aaa;">Coloque o número da pessoa ou grupo:</label>
-        <input type="text" id="target-number" placeholder="Ex: 5591985707111 ou ID do Grupo">
-
-        <label style="font-size:0.8rem; color:#aaa;">Coloque o texto ou o arquivo do envio:</label>
-        <textarea id="target-text" placeholder="Digite seu texto de divulgação aqui..." rows="3"></textarea>
-
-        <label style="font-size:0.8rem; color:#aaa;">Quantidade que você quer mandar:</label>
-        <input type="number" id="target-amount" placeholder="Ex: 10" min="1">
-
-        <button class="btn-action" onclick="sendBroadcastMessages()">🚀 Iniciar Envios</button>
-      </div>
-
-      <button class="btn-sm" onclick="closeModal('trava-zaps-modal')" style="margin-top:5px;">Voltar</button>
-    </div>
-  </div>
-
   <div id="config-modal" class="modal">
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">Configurações</h3>
@@ -355,10 +315,12 @@
     </div>
   </div>
 
+  <!-- MODAL: PASTA DE TRAVAS (NOVO) -->
   <div id="folder-vault-modal" class="modal">
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">📁 PASTA DE TRAVAS</h3>
       
+      <!-- Criar ou Selecionar Pasta -->
       <div class="input-group">
         <input type="text" id="folder-name-in" placeholder="Nome da Pasta (ex: Contatos, Fotos, Textos)">
         <select id="folder-type-select">
@@ -369,6 +331,7 @@
 
       <hr style="border-color:#333; margin: 8px 0;">
 
+      <!-- Adicionar Conteúdo na Pasta -->
       <input type="text" id="item-title-in" placeholder="Nome/Descrição do Item">
       
       <div id="input-texto-area">
@@ -383,6 +346,7 @@
 
       <hr style="border-color:#333; margin: 10px 0;">
 
+      <!-- Lista das Pastas e Conteúdos -->
       <div id="folders-display" style="display:flex; flex-direction:column; gap:10px; max-height:220px; overflow-y:auto;"></div>
 
       <button class="btn-sm" onclick="closeModal('folder-vault-modal')" style="margin-top:5px;">Voltar</button>
@@ -462,6 +426,7 @@
       }
     }
 
+    // SUPORTE A GESTO DE ARRASTAR (SWIPE TO OPEN/CLOSE SIDEBAR)
     let touchStartX = 0;
     let touchEndX = 0;
 
@@ -477,9 +442,9 @@
     function handleSwipe() {
       const distance = touchEndX - touchStartX;
       if (touchStartX < 50 && distance > 70) {
-        toggleSidebar(true);
+        toggleSidebar(true); // Arrasto para a direita na borda esquerda: abre
       } else if (distance < -70) {
-        toggleSidebar(false);
+        toggleSidebar(false); // Arrasto para a esquerda: fecha
       }
     }
 
@@ -767,7 +732,7 @@
       list.innerHTML = '';
       
       if(vault.length === 0) {
-        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">Nenum item salvo ainda.</span>';
+        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">Nenhum item salvo ainda.</span>';
         return;
       }
 
@@ -935,86 +900,6 @@
         delete vault[folderName];
         localStorage.setItem('zrx_custom_folders', JSON.stringify(vault));
         renderFolders();
-      }
-    }
-
-    /* FUNÇÕES DO DIVULGAÇÃO WHATSAPP */
-    async function requestWaPairingCode() {
-      const userNum = document.getElementById('user-wa-number').value.trim();
-      const displayBox = document.getElementById('display-pairing-code');
-      const pairingContainer = document.getElementById('pairing-code-box');
-      
-      if (!userNum) {
-        alert('Por favor, digite o seu número com DDD antes de solicitar o código!');
-        return;
-      }
-
-      displayBox.innerText = "GERANDO...";
-      pairingContainer.style.display = 'block';
-
-      try {
-        const response = await fetch('https://0b8be62160d77f.lhr.life/api/reqpair', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ number: userNum })
-        });
-
-        const data = await response.json();
-
-        if (data.code) {
-          if (data.code === "ALREADY_REGISTERED") {
-            displayBox.innerText = "CONECTADO";
-            alert("Este WhatsApp já está registrado e conectado!");
-          } else {
-            displayBox.innerText = data.code;
-          }
-        } else {
-          alert('Erro: ' + (data.error || 'Não foi possível obter o código.'));
-          pairingContainer.style.display = 'none';
-        }
-      } catch (err) {
-        console.error(err);
-        alert('Erro ao conectar com o servidor backend.');
-        pairingContainer.style.display = 'none';
-      }
-    }
-
-    function copyPairingCode() {
-      const code = document.getElementById('display-pairing-code').innerText;
-      if (code && code !== '--------') {
-        navigator.clipboard.writeText(code);
-        alert('Código de pareamento copiado!');
-      }
-    }
-
-    async function sendBroadcastMessages() {
-      const target = document.getElementById('target-number').value.trim();
-      const text = document.getElementById('target-text').value.trim();
-      const amount = document.getElementById('target-amount').value.trim();
-
-      if (!target || !text || !amount) {
-        alert('Preencha todos os campos do formulário de disparo!');
-        return;
-      }
-
-      alert(`Iniciando o envio de ${amount} mensagem(ns) para ${target}...`);
-
-      try {
-        const response = await fetch('https://0b8be62160d77f.lhr.life/api/send', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ target, text, amount })
-        });
-
-        const data = await response.json();
-        if (data.success) {
-          alert(`✅ Envios concluídos com sucesso! Total: ${data.count}`);
-        } else {
-          alert(`❌ Erro: ${data.error}`);
-        }
-      } catch (err) {
-        console.error(err);
-        alert('Erro ao se comunicar com o servidor.');
       }
     }
 
