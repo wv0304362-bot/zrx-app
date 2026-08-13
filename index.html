@@ -44,7 +44,7 @@
     .btn-action { width: 100%; padding: 12px; background: var(--main-color); border: none; color: #fff; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; margin-top: 5px; }
 
     /* Barra de Navegação Inferior */
-    .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #080808; border-top: 2px solid var(--main-color); display: flex; justify-around; padding: 8px 0; z-index: 100; }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #080808; border-top: 2px solid var(--main-color); display: flex; justify-content: space-around; padding: 8px 0; z-index: 100; }
     .nav-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: #888; font-size: 0.7rem; font-weight: bold; cursor: pointer; gap: 3px; }
     .nav-item span { font-size: 1.2rem; }
     .nav-item.active { color: var(--main-color); }
@@ -69,6 +69,46 @@
     .btn-sm { padding: 5px 8px; background: #222; border: 1px solid var(--main-color); color: #fff; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
 
     .winchester-footer { text-align: center; color: #777; font-size: 0.75rem; margin-top: 15px; font-weight: bold; letter-spacing: 1px; }
+
+    /* NOVOS ESTILOS: CARD DO PERFIL / DASHBOARD / LOGIN PIN */
+    .user-profile-card {
+      width: 100%;
+      background: rgba(15, 15, 15, 0.95);
+      border: 1px solid var(--main-color);
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 0 15px var(--shadow-color);
+    }
+    .dash-avatar-img {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      border: 2px solid var(--main-color);
+      object-fit: cover;
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      width: 100%;
+    }
+    .metric-card {
+      background: #111;
+      border: 1px solid #333;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .metric-card span { font-size: 0.65rem; color: #aaa; text-transform: uppercase; }
+    .metric-card h2 { font-size: 1.2rem; color: var(--main-color); margin-top: 3px; }
+
+    .progress-item { margin-top: 8px; }
+    .progress-item span { font-size: 0.8rem; color: #ccc; }
+    .progress-bar { background: #222; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 3px; }
+    .progress-bar div { background: var(--main-color); height: 100%; transition: width 0.3s; }
   </style>
 </head>
 <body>
@@ -76,6 +116,32 @@
   <input type="file" id="file-avatar" accept="image/*" onchange="handleFileSelect(event, 'a')">
   <input type="file" id="file-bg" accept="image/*" onchange="handleFileSelect(event, 'b')">
   <input type="file" id="file-proof" accept="image/*" onchange="handleProofUpload(event)">
+
+  <!-- TELA DE ONBOARDING (PRIMEIRO ACESSO AO INSTALAR) -->
+  <div id="onboarding-modal" class="modal" style="display:none;">
+    <div class="modal-content" style="text-align:center;">
+      <h3 style="color:var(--main-color);">CONFIGURAÇÃO INICIAL</h3>
+      <p style="font-size:0.85rem; color:#aaa;">Crie seu perfil para usar o aplicativo</p>
+      
+      <input type="text" id="setup-username" placeholder="Escolha um Nome de Usuário">
+      <input type="password" id="setup-pin" maxlength="4" placeholder="Crie um PIN (4 dígitos)" style="text-align:center;">
+      
+      <button class="btn-platform" onclick="document.getElementById('file-avatar').click()">📷 Selecionar Foto de Perfil</button>
+      <button class="btn-action" onclick="finishOnboarding()">SALVAR E ENTRAR</button>
+    </div>
+  </div>
+
+  <!-- TELA DE LOGIN POR PIN (TODA VEZ QUE ABRE O APP) -->
+  <div id="pin-login-modal" class="modal" style="display:none;">
+    <div class="modal-content" style="text-align:center;">
+      <img id="login-avatar-display" src="https://via.placeholder.com/70" style="width:70px; height:70px; border-radius:50%; border:2px solid var(--main-color); object-fit:cover; margin:0 auto 10px auto;">
+      <h3 id="login-username-display" style="color:#fff; margin-bottom:5px;">Operador</h3>
+      <p style="font-size:0.85rem; color:#aaa; margin-bottom:15px;">Digite seu PIN de Segurança</p>
+      
+      <input type="password" id="login-pin-input" maxlength="4" placeholder="****" style="text-align:center; font-size:1.2rem; letter-spacing:5px;">
+      <button class="btn-action" onclick="validateLoginPin()">DESBLOQUEAR</button>
+    </div>
+  </div>
 
   <div class="top-bar">
     <button class="menu-btn" onclick="openModal('menu-modal')">☰</button>
@@ -87,7 +153,69 @@
 
   <div class="main-container">
 
-    <div id="tab-denuncias" class="tab-content active">
+    <!-- ABA 1: DASHBOARD / PAINEL PRINCIPAL -->
+    <div id="tab-dashboard" class="tab-content active">
+      <!-- CARD DO PERFIL OPERADOR (ACIMA DO GRÁFICO) -->
+      <div class="user-profile-card">
+        <img id="dash-avatar" src="https://via.placeholder.com/55" class="dash-avatar-img">
+        <div>
+          <span style="font-size:0.65rem; color:#888; text-transform:uppercase;">OPERADOR ATIVO</span>
+          <h3 id="dash-username" style="color:#fff; font-size:1.1rem; margin:2px 0;">Usuário</h3>
+          <small style="color:var(--main-color); font-size:0.75rem;">● Sistema Conectado</small>
+        </div>
+      </div>
+
+      <!-- CARDS DE DESEMPENHO -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <span>DENÚNCIAS</span>
+          <h2 id="metric-total">0</h2>
+        </div>
+        <div class="metric-card">
+          <span>IPs BUSCADOS</span>
+          <h2 id="metric-ips">0</h2>
+        </div>
+        <div class="metric-card">
+          <span>TEXTOS SALVOS</span>
+          <h2 id="metric-vault">0</h2>
+        </div>
+      </div>
+
+      <!-- ÁREA DE DESEMPENHO E ATIVIDADE -->
+      <div class="card">
+        <h3 style="color:var(--main-color); font-size:1rem;">Desempenho da Semana</h3>
+        <div style="height:120px; display:flex; align-items:flex-end; gap:8px; justify-content:space-between; padding-top:10px; border-bottom:1px solid #333;">
+          <div style="flex:1; background:var(--bg-active); height:30%; border-radius:4px 4px 0 0; position:relative;" title="Dom"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#777;">DOM</span></div>
+          <div style="flex:1; background:var(--bg-active); height:45%; border-radius:4px 4px 0 0; position:relative;" title="Seg"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#777;">SEG</span></div>
+          <div style="flex:1; background:var(--bg-active); height:20%; border-radius:4px 4px 0 0; position:relative;" title="Ter"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#777;">TER</span></div>
+          <div style="flex:1; background:var(--bg-active); height:60%; border-radius:4px 4px 0 0; position:relative;" title="Qua"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#777;">QUA</span></div>
+          <div style="flex:1; background:var(--main-color); height:85%; border-radius:4px 4px 0 0; position:relative;" title="Qui"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#fff;">QUI</span></div>
+          <div style="flex:1; background:var(--bg-active); height:40%; border-radius:4px 4px 0 0; position:relative;" title="Sex"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#777;">SEX</span></div>
+          <div style="flex:1; background:var(--bg-active); height:50%; border-radius:4px 4px 0 0; position:relative;" title="Sáb"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#777;">SÁB</span></div>
+        </div>
+      </div>
+
+      <!-- DISTRIBUIÇÃO POR PLATAFORMA -->
+      <div class="card">
+        <h3 style="color:var(--main-color); font-size:1rem;">Uso de Plataformas</h3>
+        <div class="progress-item">
+          <div style="display:flex; justify-content:space-between;"><span>WhatsApp</span><span id="pct-wa">0%</span></div>
+          <div class="progress-bar"><div id="bar-wa" style="width:0%;"></div></div>
+        </div>
+        <div class="progress-item">
+          <div style="display:flex; justify-content:space-between;"><span>Telegram</span><span id="pct-tg">0%</span></div>
+          <div class="progress-bar"><div id="bar-tg" style="width:0%;"></div></div>
+        </div>
+        <div class="progress-item">
+          <div style="display:flex; justify-content:space-between;"><span>Instagram / Kwai</span><span id="pct-outros">0%</span></div>
+          <div class="progress-bar"><div id="bar-outros" style="width:0%;"></div></div>
+        </div>
+      </div>
+      <div class="winchester-footer">App desenvolvido by WINCHESTER</div>
+    </div>
+
+    <!-- ABA 2: PLATAFORMAS DE DENÚNCIA -->
+    <div id="tab-denuncias" class="tab-content">
       <div class="card">
         <h2 style="color:var(--main-color); text-align:center; font-size: 1.2rem;">PLATAFORMAS</h2>
         
@@ -118,6 +246,7 @@
       <div class="winchester-footer">App desenvolvido by WINCHESTER</div>
     </div>
 
+    <!-- ABA 3: NOTIFICAÇÕES -->
     <div id="tab-notificacoes" class="tab-content">
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -131,8 +260,13 @@
 
   </div>
 
+  <!-- BARRA INFERIOR DE NAVEGAÇÃO -->
   <div class="bottom-nav">
-    <button class="nav-item active" onclick="switchTab('tab-denuncias', this)">
+    <button class="nav-item active" onclick="switchTab('tab-dashboard', this)">
+      <span>📊</span>
+      PAINEL
+    </button>
+    <button class="nav-item" onclick="switchTab('tab-denuncias', this)">
       <span>🚨</span>
       DENÚNCIAS
     </button>
@@ -142,13 +276,15 @@
     </button>
   </div>
 
+  <!-- MENU LATERAL (DESLIZANTE/MODAL) -->
   <div id="menu-modal" class="modal">
     <div class="modal-content">
-      <h3 style="color:var(--main-color); text-align:center;">MENU</h3>
-      <button class="btn-action" onclick="closeModal('menu-modal'); openModal('config-modal');">⚙️ Configurações</button>
+      <h3 style="color:var(--main-color); text-align:center;">MENU PRINCIPAL</h3>
+      <button class="btn-action" onclick="closeModal('menu-modal'); switchTab('tab-denuncias');">📱 Plataformas</button>
+      <button class="btn-action" onclick="closeModal('menu-modal'); openModal('ip-modal');">🌐 Buscar IP</button>
+      <button class="btn-action" onclick="closeModal('menu-modal'); openModal('email-mgr-modal');">✉️ Adicionar E-mail</button>
       <button class="btn-action" onclick="closeModal('menu-modal'); openModal('vault-modal');">📦 Caixa de Textos / Travas</button>
-      <button class="btn-action" onclick="closeModal('menu-modal'); openModal('ip-modal');">🌐 Busca de IP</button>
-      <button class="btn-action" onclick="closeModal('menu-modal'); openModal('email-mgr-modal');">✉️ Adicionar E-mails de Suporte</button>
+      <button class="btn-action" onclick="closeModal('menu-modal'); openModal('config-modal');">⚙️ Configurações</button>
       <button class="btn-sm" style="margin-top:10px;" onclick="closeModal('menu-modal')">Fechar Menu</button>
     </div>
   </div>
@@ -156,7 +292,8 @@
   <div id="config-modal" class="modal">
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">Configurações</h3>
-      <input type="text" id="in-name" placeholder="Nome">
+      <input type="text" id="in-name" placeholder="Nome do Operador">
+      <input type="password" id="in-pin" maxlength="4" placeholder="Alterar PIN (4 dígitos)">
       
       <label style="font-size:0.85rem; color:#aaa; margin-top:2px;">🎨 Selecionar Tema de Cor:</label>
       <select id="theme-select" onchange="changeAppTheme(this.value)">
@@ -167,7 +304,7 @@
         <option value="gold">🟡 Gold Fire</option>
       </select>
 
-      <button class="btn-platform" onclick="document.getElementById('file-avatar').click()">📷 Selecionar Perfil da Galeria</button>
+      <button class="btn-platform" onclick="document.getElementById('file-avatar').click()">📷 Alterar Foto de Perfil</button>
       <button class="btn-platform" onclick="document.getElementById('file-bg').click()">🖼️ Selecionar Fundo da Galeria</button>
       
       <button class="btn-action" onclick="saveSettings()">Salvar & Reiniciar</button>
@@ -272,6 +409,7 @@
       document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
       if (btn) btn.classList.add('active');
+      updateDashboardMetrics();
     }
 
     function handleFileSelect(event, key) {
@@ -280,7 +418,13 @@
         const reader = new FileReader();
         reader.onload = function(e) {
           localStorage.setItem(key, e.target.result);
-          if (key === 'a') document.getElementById('display-avatar').src = e.target.result;
+          if (key === 'a') {
+            document.getElementById('display-avatar').src = e.target.result;
+            document.getElementById('dash-avatar').src = e.target.result;
+            if(document.getElementById('login-avatar-display')) {
+              document.getElementById('login-avatar-display').src = e.target.result;
+            }
+          }
           if (key === 'b') document.body.style.backgroundImage = `url('${e.target.result}')`;
         };
         reader.readAsDataURL(file);
@@ -364,6 +508,7 @@
       notifs.unshift(item);
       localStorage.setItem('zrx_notifs', JSON.stringify(notifs));
       renderNotifications();
+      updateDashboardMetrics();
     }
 
     function deleteNotification(index) {
@@ -371,12 +516,14 @@
       notifs.splice(index, 1);
       localStorage.setItem('zrx_notifs', JSON.stringify(notifs));
       renderNotifications();
+      updateDashboardMetrics();
     }
 
     function clearAllNotifications() {
       if(confirm('Deseja limpar todo o histórico de notificações?')) {
         localStorage.removeItem('zrx_notifs');
         renderNotifications();
+        updateDashboardMetrics();
       }
     }
 
@@ -455,6 +602,10 @@
             <strong>🗺️ Coordenadas:</strong> ${data.loc || 'N/A'}<br>
             <strong>🕒 Fuso Horário:</strong> ${data.timezone || 'N/A'}
           `;
+          
+          let count = parseInt(localStorage.getItem('zrx_ip_count') || '0');
+          localStorage.setItem('zrx_ip_count', count + 1);
+          updateDashboardMetrics();
         })
         .catch(() => {
           resContainer.innerHTML = '<span style="color:var(--main-color);">Erro ao buscar dados do IP.</span>';
@@ -505,7 +656,10 @@
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     
     function saveSettings() {
-      localStorage.setItem('n', document.getElementById('in-name').value);
+      const newName = document.getElementById('in-name').value;
+      const newPin = document.getElementById('in-pin').value;
+      if(newName) localStorage.setItem('n', newName);
+      if(newPin && newPin.length === 4) localStorage.setItem('zrx_pin', newPin);
       location.reload();
     }
 
@@ -520,7 +674,7 @@
       list.innerHTML = '';
       
       if(vault.length === 0) {
-        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">Nenhum item salvo ainda.</span>';
+        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">Nenum item salvo ainda.</span>';
         return;
       }
 
@@ -537,6 +691,7 @@
           </div>
         `;
       });
+      updateDashboardMetrics();
     }
 
     function addVaultItem() {
@@ -565,6 +720,90 @@
       localStorage.setItem('zrx_vault', JSON.stringify(vault));
       renderVault();
     }
+
+    // --- NOVAS FUNÇÕES: ONBOARDING, PIN LOCK E MÉTRICAS ---
+    function finishOnboarding() {
+      const name = document.getElementById('setup-username').value.trim();
+      const pin = document.getElementById('setup-pin').value.trim();
+
+      if(!name || pin.length !== 4) {
+        alert('Informe seu nome e um PIN com 4 dígitos!');
+        return;
+      }
+
+      localStorage.setItem('n', name);
+      localStorage.setItem('zrx_pin', pin);
+      localStorage.setItem('zrx_configured', 'true');
+
+      document.getElementById('onboarding-modal').style.display = 'none';
+      loadUserData();
+    }
+
+    function showPinLock() {
+      const savedName = localStorage.getItem('n') || 'Operador';
+      const savedAvatar = localStorage.getItem('a') || 'https://via.placeholder.com/70';
+
+      document.getElementById('login-username-display').innerText = savedName;
+      document.getElementById('login-avatar-display').src = savedAvatar;
+      document.getElementById('pin-login-modal').style.display = 'flex';
+    }
+
+    function validateLoginPin() {
+      const enteredPin = document.getElementById('login-pin-input').value.trim();
+      const savedPin = localStorage.getItem('zrx_pin');
+
+      if(enteredPin === savedPin) {
+        document.getElementById('pin-login-modal').style.display = 'none';
+        document.getElementById('login-pin-input').value = '';
+        loadUserData();
+      } else {
+        alert('❌ PIN incorreto. Tente novamente.');
+        document.getElementById('login-pin-input').value = '';
+      }
+    }
+
+    function loadUserData() {
+      const name = localStorage.getItem('n') || 'Usuário';
+      const avatar = localStorage.getItem('a') || 'https://via.placeholder.com/50';
+
+      document.getElementById('display-username').innerText = name;
+      document.getElementById('dash-username').innerText = name;
+      document.getElementById('display-avatar').src = avatar;
+      document.getElementById('dash-avatar').src = avatar;
+      document.getElementById('in-name').value = name;
+
+      updateDashboardMetrics();
+    }
+
+    function updateDashboardMetrics() {
+      const notifs = getNotifications();
+      const vault = getVault();
+      const ipCount = localStorage.getItem('zrx_ip_count') || '0';
+
+      document.getElementById('metric-total').innerText = notifs.length;
+      document.getElementById('metric-ips').innerText = ipCount;
+      document.getElementById('metric-vault').innerText = vault.length;
+
+      // Cálculo de Porcentagens de Plataforma
+      if(notifs.length > 0) {
+        const wa = notifs.filter(n => n.platform === 'WhatsApp').length;
+        const tg = notifs.filter(n => n.platform === 'Telegram').length;
+        const outros = notifs.length - (wa + tg);
+
+        const waPct = Math.round((wa / notifs.length) * 100);
+        const tgPct = Math.round((tg / notifs.length) * 100);
+        const outrosPct = Math.round((outros / notifs.length) * 100);
+
+        document.getElementById('pct-wa').innerText = waPct + '%';
+        document.getElementById('bar-wa').style.width = waPct + '%';
+
+        document.getElementById('pct-tg').innerText = tgPct + '%';
+        document.getElementById('bar-tg').style.width = tgPct + '%';
+
+        document.getElementById('pct-outros').innerText = outrosPct + '%';
+        document.getElementById('bar-outros').style.width = outrosPct + '%';
+      }
+    }
     
     window.onload = () => {
       loadEmails();
@@ -572,12 +811,16 @@
       changeAppTheme(savedTheme);
       if(document.getElementById('theme-select')) document.getElementById('theme-select').value = savedTheme;
 
-      const n = localStorage.getItem('n');
-      if(!n) openModal('config-modal');
-      document.getElementById('display-username').innerText = n || 'Usuário';
-      document.getElementById('in-name').value = n || '';
-      document.getElementById('display-avatar').src = localStorage.getItem('a') || 'https://via.placeholder.com/50';
       if(localStorage.getItem('b')) document.body.style.backgroundImage = `url('${localStorage.getItem('b')}')`;
+
+      // Controle de Primeiro Acesso e PIN de Segurança
+      const isConfigured = localStorage.getItem('zrx_configured');
+      if(!isConfigured) {
+        document.getElementById('onboarding-modal').style.display = 'flex';
+      } else {
+        showPinLock();
+      }
+
       renderVault();
       renderNotifications();
     };
