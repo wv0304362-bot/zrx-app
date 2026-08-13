@@ -142,6 +142,7 @@
   <aside id="sidebar" class="sidebar">
     <div class="sidebar-title">OPÇÕES DO SISTEMA</div>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('vault-modal');">📦 Caixa de Textos / Travas</button>
+    <button class="btn-action" onclick="toggleSidebar(false); openModal('folder-vault-modal'); renderFolders();">📁 Minhas Pastas de Travas</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('ip-modal');">🌐 Buscar IP</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('email-mgr-modal');">✉️ Gerenciador de E-mails</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('config-modal');">⚙️ Configurações</button>
@@ -311,6 +312,44 @@
       <div id="vault-list" style="display:flex; flex-direction:column; gap:8px;"></div>
 
       <button class="btn-sm" onclick="closeModal('vault-modal')" style="margin-top:5px;">Voltar</button>
+    </div>
+  </div>
+
+  <!-- MODAL: PASTA DE TRAVAS (NOVO) -->
+  <div id="folder-vault-modal" class="modal">
+    <div class="modal-content">
+      <h3 style="color:var(--main-color); text-align:center;">📁 PASTA DE TRAVAS</h3>
+      
+      <!-- Criar ou Selecionar Pasta -->
+      <div class="input-group">
+        <input type="text" id="folder-name-in" placeholder="Nome da Pasta (ex: Contatos, Fotos, Textos)">
+        <select id="folder-type-select">
+          <option value="texto">📝 Tipo: Texto (Botão de Copiar)</option>
+          <option value="arquivo">📁 Tipo: Arquivo (Botão de Baixar/Abrir)</option>
+        </select>
+      </div>
+
+      <hr style="border-color:#333; margin: 8px 0;">
+
+      <!-- Adicionar Conteúdo na Pasta -->
+      <input type="text" id="item-title-in" placeholder="Nome/Descrição do Item">
+      
+      <div id="input-texto-area">
+        <textarea id="item-text-in" placeholder="Cole a trava de texto aqui..." rows="2"></textarea>
+      </div>
+
+      <div id="input-arquivo-area" style="display:none;">
+        <input type="file" id="item-file-in" style="display:block; width:100%; margin-top:5px;">
+      </div>
+
+      <button class="btn-action" onclick="saveItemToFolder()">Adicionar à Pasta</button>
+
+      <hr style="border-color:#333; margin: 10px 0;">
+
+      <!-- Lista das Pastas e Conteúdos -->
+      <div id="folders-display" style="display:flex; flex-direction:column; gap:10px; max-height:220px; overflow-y:auto;"></div>
+
+      <button class="btn-sm" onclick="closeModal('folder-vault-modal')" style="margin-top:5px;">Voltar</button>
     </div>
   </div>
 
@@ -738,6 +777,130 @@
       vault.splice(index, 1);
       localStorage.setItem('zrx_vault', JSON.stringify(vault));
       renderVault();
+    }
+
+    /* SISTEMA DE PASTAS E ARQUIVOS DE TRAVAS */
+    if (document.getElementById('folder-type-select')) {
+      document.getElementById('folder-type-select').addEventListener('change', function() {
+        if (this.value === 'texto') {
+          document.getElementById('input-texto-area').style.display = 'block';
+          document.getElementById('input-arquivo-area').style.display = 'none';
+        } else {
+          document.getElementById('input-texto-area').style.display = 'none';
+          document.getElementById('input-arquivo-area').style.display = 'block';
+        }
+      });
+    }
+
+    function saveItemToFolder() {
+      const folderName = document.getElementById('folder-name-in').value.trim();
+      const folderType = document.getElementById('folder-type-select').value;
+      const itemTitle = document.getElementById('item-title-in').value.trim();
+
+      if (!folderName || !itemTitle) {
+        alert('Preencha o nome da pasta e o nome do item!');
+        return;
+      }
+
+      if (folderType === 'texto') {
+        const textContent = document.getElementById('item-text-in').value;
+        if (!textContent) { alert('Cole o texto da trava!'); return; }
+
+        saveToStorage(folderName, 'texto', { title: itemTitle, text: textContent });
+        document.getElementById('item-text-in').value = '';
+        renderFolders();
+      } else {
+        const fileInput = document.getElementById('item-file-in');
+        const file = fileInput.files[0];
+        if (!file) { alert('Selecione um arquivo!'); return; }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          saveToStorage(folderName, 'arquivo', { 
+            title: itemTitle, 
+            fileName: file.name, 
+            fileData: e.target.result 
+          });
+          fileInput.value = '';
+          renderFolders();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function saveToStorage(folderName, type, dataObj) {
+      const vault = JSON.parse(localStorage.getItem('zrx_custom_folders') || '{}');
+      
+      if (!vault[folderName]) {
+        vault[folderName] = { type: type, items: [] };
+      }
+
+      vault[folderName].items.push(dataObj);
+      localStorage.setItem('zrx_custom_folders', JSON.stringify(vault));
+      alert('Item salvo com sucesso na pasta "' + folderName + '"!');
+    }
+
+    function renderFolders() {
+      const container = document.getElementById('folders-display');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const vault = JSON.parse(localStorage.getItem('zrx_custom_folders') || '{}');
+      const folderKeys = Object.keys(vault);
+
+      if (folderKeys.length === 0) {
+        container.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">Nenhuma pasta criada ainda.</span>';
+        return;
+      }
+
+      folderKeys.forEach(folderName => {
+        const folder = vault[folderName];
+        let itemsHTML = '';
+
+        folder.items.forEach((item, index) => {
+          if (folder.type === 'texto') {
+            itemsHTML += `
+              <div style="display:flex; justify-content:space-between; align-items:center; background:#181818; padding:6px; border-radius:4px; margin-top:4px;">
+                <span style="font-size:0.8rem; color:#ccc;">${item.title}</span>
+                <button class="btn-sm" onclick="copyFolderText('${folderName}', ${index})">📋 Copiar</button>
+              </div>
+            `;
+          } else {
+            itemsHTML += `
+              <div style="display:flex; justify-content:space-between; align-items:center; background:#181818; padding:6px; border-radius:4px; margin-top:4px;">
+                <span style="font-size:0.8rem; color:#ccc;">${item.title} (${item.fileName})</span>
+                <a href="${item.fileData}" download="${item.fileName}" class="btn-sm" style="text-decoration:none; display:inline-block; text-align:center;">💾 Baixar</a>
+              </div>
+            `;
+          }
+        });
+
+        container.innerHTML += `
+          <div style="background:#0a0a0a; border:1px solid var(--main-color); border-radius:8px; padding:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <strong style="color:var(--main-color); font-size:0.9rem;">📂 ${folderName} [${folder.type.toUpperCase()}]</strong>
+              <button class="btn-sm" onclick="deleteFolder('${folderName}')" style="border-color:#555; color:#aaa;">Excluir Pasta</button>
+            </div>
+            <div style="margin-top:5px;">${itemsHTML}</div>
+          </div>
+        `;
+      });
+    }
+
+    function copyFolderText(folderName, index) {
+      const vault = JSON.parse(localStorage.getItem('zrx_custom_folders') || '{}');
+      const text = vault[folderName].items[index].text;
+      navigator.clipboard.writeText(text);
+      alert('Trava copiada para a área de transferência!');
+    }
+
+    function deleteFolder(folderName) {
+      if (confirm(`Deseja apagar a pasta "${folderName}" e todo o seu conteúdo?`)) {
+        const vault = JSON.parse(localStorage.getItem('zrx_custom_folders') || '{}');
+        delete vault[folderName];
+        localStorage.setItem('zrx_custom_folders', JSON.stringify(vault));
+        renderFolders();
+      }
     }
 
     function finishOnboarding() {
