@@ -58,7 +58,7 @@
     .btn-action { width: 100%; padding: 12px; background: var(--main-color); border: none; color: #fff; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; margin-top: 5px; }
 
     /* Barra de Navegação Inferior */
-    .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #080808; border-top: 2px solid var(--main-color); display: flex; justify-content: space-around; padding: 8px 0; z-index: 100; }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #080808; border-top: 2px solid var(--main-color); display: flex; justify-around: space-around; padding: 8px 0; z-index: 100; }
     .nav-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: #888; font-size: 0.7rem; font-weight: bold; cursor: pointer; gap: 3px; }
     .nav-item span { font-size: 1.2rem; }
     .nav-item.active { color: var(--main-color); }
@@ -767,7 +767,7 @@
       list.innerHTML = '';
       
       if(vault.length === 0) {
-        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">Nenhum item salvo ainda.</span>';
+        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">Nenum item salvo ainda.</span>';
         return;
       }
 
@@ -953,7 +953,7 @@
       pairingContainer.style.display = 'block';
 
       try {
-        const response = await fetch('http://localhost:3000/api/reqpair', {
+        const response = await fetch('/api/reqpair', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ number: userNum })
@@ -987,7 +987,7 @@
       }
     }
 
-    function sendBroadcastMessages() {
+    async function sendBroadcastMessages() {
       const target = document.getElementById('target-number').value.trim();
       const text = document.getElementById('target-text').value.trim();
       const amount = document.getElementById('target-amount').value.trim();
@@ -998,6 +998,24 @@
       }
 
       alert(`Iniciando o envio de ${amount} mensagem(ns) para ${target}...`);
+
+      try {
+        const response = await fetch('/api/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target, text, amount })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          alert(`✅ Envios concluídos com sucesso! Total: ${data.count}`);
+        } else {
+          alert(`❌ Erro: ${data.error}`);
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao se comunicar com o servidor.');
+      }
     }
 
     function finishOnboarding() {
