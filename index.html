@@ -291,24 +291,8 @@
   <div id="trava-zaps-modal" class="modal">
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">⚡ DIVULGAÇÃO WHATSAPP</h3>
-      
-      <!-- ETAPA 1: CONEXÃO COM SEU NÚMERO -->
-      <div id="wa-connect-step" class="input-group">
-        <p style="font-size:0.8rem; color:#aaa; text-align:center;">Digite seu número para conectar seu WhatsApp:</p>
-        
-        <input type="text" id="user-wa-number" placeholder="Seu número (Ex: 5591985707111)">
-        <button class="btn-action" onclick="requestWaPairingCode()">📲 Conectar / Pedir Código</button>
-        
-        <div id="pairing-code-box" style="display:none; background:#0d0d0d; border:1px solid var(--main-color); padding:10px; border-radius:6px; text-align:center; margin-top:5px;">
-          <span style="font-size:0.75rem; color:#888;">CÓDIGO DE PAREAMENTO:</span>
-          <h2 id="display-pairing-code" style="color:var(--main-color); letter-spacing:3px; margin:5px 0;">--------</h2>
-          <button class="btn-sm" onclick="copyPairingCode()">Copiar Código</button>
-        </div>
-      </div>
 
-      <hr style="border-color:#333; margin: 10px 0;">
-
-      <!-- ETAPA 2: FORMULÁRIO DE DISPARO -->
+      <!-- FORMULÁRIO DE DISPARO DIRECTO COM A API -->
       <div class="input-group">
         <label style="font-size:0.8rem; color:#aaa;">Coloque o número da pessoa ou grupo:</label>
         <input type="text" id="target-number" placeholder="Ex: 5591985707111 ou ID do Grupo">
@@ -431,7 +415,8 @@
   </div>
 
   <script>
-    // ... O seu script continua exatamente igual a partir daqui ...
+    const API_KEY = "";
+
     let currentPlatform = '';
     let selectedViolation = '';
     let activeNotifIndexForProof = null;
@@ -778,7 +763,7 @@
       list.innerHTML = '';
       
       if(vault.length === 0) {
-        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">Nenhum item salvo ainda.</span>';
+        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">Nenum item salvo ainda.</span>';
         return;
       }
 
@@ -948,57 +933,42 @@
       }
     }
 
-    async function requestWaPairingCode() {
-      const userNum = document.getElementById('user-wa-number').value.trim();
-      const displayBox = document.getElementById('display-pairing-code');
-      const pairingContainer = document.getElementById('pairing-code-box');
-      
-      if (!userNum) {
-        alert('Por favor, digite o seu número com DDD antes de solicitar o código!');
-        return;
-      }
-
-      displayBox.innerText = "GERANDO...";
-      pairingContainer.style.display = 'block';
-
-      try {
-        const response = await fetch('http://localhost:3000/api/reqpair', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ number: userNum })
-        });
-
-        const data = await response.json();
-
-        if (data.code) {
-          if (data.code === "ALREADY_REGISTERED") {
-            displayBox.innerText = "CONECTADO";
-            alert("Este WhatsApp já está registrado e conectado!");
-          } else {
-            displayBox.innerText = data.code;
-          }
-        } else {
-          alert('Erro: ' + (data.error || 'Não foi possível obter o código.'));
-          pairingContainer.style.display = 'none';
-        }
-      } catch (err) {
-        console.error(err);
-        alert('Erro ao conectar com o servidor backend.');
-        pairingContainer.style.display = 'none';
-      }
-    }
-
-    function sendBroadcastMessages() {
+    async function sendBroadcastMessages() {
       const target = document.getElementById('target-number').value.trim();
       const text = document.getElementById('target-text').value.trim();
-      const amount = document.getElementById('target-amount').value.trim();
+      const amount = parseInt(document.getElementById('target-amount').value.trim());
 
       if (!target || !text || !amount) {
         alert('Preencha todos os campos do formulário de disparo!');
         return;
       }
 
-      alert(`Iniciando o envio de ${amount} mensagem(ns) para ${target}...`);
+      alert(`Iniciando o envio de ${amount} mensagem(ns) via API...`);
+
+      try {
+        const response = await fetch('http://localhost:3000/api/send', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${API_KEY}`
+          },
+          body: JSON.stringify({
+            target: target,
+            message: text,
+            amount: amount
+          })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          alert('Envios realizados com sucesso!');
+        } else {
+          alert('Erro no envio: ' + (data.error || 'Falha na resposta da API'));
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao se comunicar com a API backend.');
+      }
     }
 
     function finishOnboarding() {
