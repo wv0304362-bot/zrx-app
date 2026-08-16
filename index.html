@@ -107,7 +107,7 @@
     /* ESTILOS DO CHAT IA */
     .chat-box {
       display: flex; flex-direction: column; gap: 10px;
-      height: 300px; overflow-y: auto; padding: 10px;
+      height: 250px; overflow-y: auto; padding: 10px;
       background: #080808; border: 1px solid #222; border-radius: 8px;
     }
     .chat-msg { max-width: 85%; padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; line-height: 1.3; word-break: break-word; }
@@ -151,7 +151,7 @@
   <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar(false)"></div>
   <aside id="sidebar" class="sidebar">
     <div class="sidebar-title">OPÇÕES DO SISTEMA</div>
-    <button class="btn-action" onclick="toggleSidebar(false); openModal('ai-chat-modal');">🤖 Chat com IA</button>
+    <button class="btn-action" onclick="toggleSidebar(false); openModal('ai-chat-modal');">🤖 Chat com IA Universal</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('vault-modal');">📦 Caixa de Textos / Travas</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('folder-vault-modal'); renderFolders();">📁 Minhas Pastas de Travas</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('ip-modal');">🌐 Buscar IP</button>
@@ -298,16 +298,16 @@
 
   <!-- MODAIS DO SISTEMA -->
 
-  <!-- MODAL: CHAT IA INTELIGENTE (OPENAI/GPT INTERACT) -->
+  <!-- MODAL: CHAT IA UNIVERSAL (OPENAI, GROQ, OPENROUTER, OLLAMA, ETC) -->
   <div id="ai-chat-modal" class="modal">
     <div class="modal-content">
       <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid #333; padding-bottom: 8px;">
-        <h3 style="color:var(--main-color); margin:0;">🤖 CHAT COM IA</h3>
+        <h3 style="color:var(--main-color); margin:0;">🤖 CHAT IA UNIVERSAL</h3>
         <button class="btn-sm" onclick="clearAiChat()" style="border-color:#555; color:#aaa;">Limpar Chat</button>
       </div>
 
       <div class="chat-box" id="ai-chat-box">
-        <div class="chat-msg ai">Olá! Sou sua Inteligência Artificial. Como posso te ajudar hoje?</div>
+        <div class="chat-msg ai">Olá! Conecte qualquer serviço de IA (OpenAI, Groq, OpenRouter, Ollama) e converse livremente!</div>
       </div>
 
       <!-- ENVIAR PERGUNTA -->
@@ -316,17 +316,29 @@
         <button class="btn-action" onclick="sendAiMessage()">ENVIAR PERGUNTA</button>
       </div>
 
-      <!-- CAMPO E BOTÃO PARA SALVAR CHAVE DA OPENAI -->
-      <div style="margin-top:8px; display:flex; flex-direction:column; gap:4px;">
-        <label style="font-size:0.75rem; color:#888;">Insira sua API Key da OpenAI (começa com sk-...):</label>
+      <!-- PAINEL DE CONFIGURAÇÃO DE IA DIVERSAS -->
+      <div style="margin-top:5px; border-top:1px solid #333; padding-top:8px; display:flex; flex-direction:column; gap:6px;">
+        <label style="font-size:0.75rem; color:var(--main-color); font-weight:bold;">⚙️ Provedor / Servidor da IA:</label>
+        
+        <select id="ai-provider-select" onchange="handleProviderChange(this.value)" style="padding:6px; font-size:0.8rem;">
+          <option value="openai">OpenAI (Oficial)</option>
+          <option value="groq">Groq (Ultra Rápida / Grátis)</option>
+          <option value="openrouter">OpenRouter (Múltiplas IAs)</option>
+          <option value="ollama">Local / Ollama (Sem Key)</option>
+          <option value="custom">Outra API Personalizada (OpenAI Compatible)</option>
+        </select>
+
+        <input type="text" id="ai-url-input" placeholder="URL Endpoint API" style="padding:6px; font-size:0.8rem;">
+        <input type="text" id="ai-model-input" placeholder="Nome do Modelo (ex: gpt-3.5-turbo, llama3-8b-8192)" style="padding:6px; font-size:0.8rem;">
+        
         <div style="display:flex; gap:5px;">
-          <input type="password" id="openai-key-input" placeholder="sk-..." style="padding:8px; font-size:0.8rem; flex:1;">
-          <button class="btn-sm" style="background:var(--main-color); color:#fff; font-weight:bold; padding:0 12px;" onclick="saveApiKey()">SALVAR CHAVE</button>
+          <input type="password" id="openai-key-input" placeholder="API Key (Token de Acesso)" style="padding:6px; font-size:0.8rem; flex:1;">
+          <button class="btn-sm" style="background:var(--main-color); color:#fff; font-weight:bold; padding:0 10px;" onclick="saveApiKey()">SALVAR IA</button>
         </div>
-        <span id="key-status-msg" style="font-size:0.7rem; color:#00ff66; display:none; margin-top:2px;">✓ Chave salva com sucesso!</span>
+        <span id="key-status-msg" style="font-size:0.7rem; color:#00ff66; display:none; margin-top:2px;">✓ Configuração de IA salva!</span>
       </div>
 
-      <button class="btn-sm" onclick="closeModal('ai-chat-modal')" style="margin-top:8px;">Voltar</button>
+      <button class="btn-sm" onclick="closeModal('ai-chat-modal')" style="margin-top:5px;">Voltar</button>
     </div>
   </div>
 
@@ -438,7 +450,6 @@
     let currentPlatform = '';
     let selectedViolation = '';
     let activeNotifIndexForProof = null;
-    let aiChatHistory = [];
 
     const baseEmailData = {
       'WhatsApp': ['support@whatsapp.com', 'legal@whatsapp.com', 'abuso@whatsapp.com', 'press@whatsapp.com'],
@@ -761,8 +772,7 @@
       document.getElementById(id).style.display = 'flex'; 
       if(id === 'email-mgr-modal') displayCurrentEmails();
       if(id === 'ai-chat-modal') {
-        const apiKey = localStorage.getItem('zrx_openai_key') || '';
-        document.getElementById('openai-key-input').value = apiKey;
+        loadAiSettings();
         renderAiChatHistory();
       }
     }
@@ -957,16 +967,50 @@
       }
     }
 
-    /* SISTEMA COMPLETO DE IA COM CHAVE DEDICADA */
+    /* SISTEMA UNIVERSAL DE IA (ACEITA QUALQUER IA E MODELO) */
+    const defaultProviders = {
+      openai: { url: 'https://api.openai.com/v1/chat/completions', model: 'gpt-3.5-turbo' },
+      groq: { url: 'https://api.groq.com/openai/v1/chat/completions', model: 'llama3-8b-8192' },
+      openrouter: { url: 'https://openrouter.ai/api/v1/chat/completions', model: 'meta-llama/llama-3-8b-instruct:free' },
+      ollama: { url: 'http://localhost:11434/v1/chat/completions', model: 'llama3' },
+      custom: { url: '', model: '' }
+    };
+
+    function handleProviderChange(val) {
+      const preset = defaultProviders[val] || defaultProviders.custom;
+      if(val !== 'custom') {
+        document.getElementById('ai-url-input').value = preset.url;
+        document.getElementById('ai-model-input').value = preset.model;
+      }
+    }
+
+    function loadAiSettings() {
+      const provider = localStorage.getItem('zrx_ai_provider') || 'openai';
+      const url = localStorage.getItem('zrx_ai_url') || defaultProviders.openai.url;
+      const model = localStorage.getItem('zrx_ai_model') || defaultProviders.openai.model;
+      const apiKey = localStorage.getItem('zrx_openai_key') || '';
+
+      document.getElementById('ai-provider-select').value = provider;
+      document.getElementById('ai-url-input').value = url;
+      document.getElementById('ai-model-input').value = model;
+      document.getElementById('openai-key-input').value = apiKey;
+    }
+
     function saveApiKey() {
+      const provider = document.getElementById('ai-provider-select').value;
+      const url = document.getElementById('ai-url-input').value.trim();
+      const model = document.getElementById('ai-model-input').value.trim();
       const keyInput = document.getElementById('openai-key-input').value.trim();
       const statusMsg = document.getElementById('key-status-msg');
 
-      if (!keyInput.startsWith('sk-')) {
-        alert('A chave da OpenAI precisa começar com "sk-". Verifique a chave digitada!');
+      if (!url || !model) {
+        alert('URL da API e Nome do Modelo são obrigatórios!');
         return;
       }
 
+      localStorage.setItem('zrx_ai_provider', provider);
+      localStorage.setItem('zrx_ai_url', url);
+      localStorage.setItem('zrx_ai_model', model);
       localStorage.setItem('zrx_openai_key', keyInput);
       
       if (statusMsg) {
@@ -974,7 +1018,7 @@
         setTimeout(() => { statusMsg.style.display = 'none'; }, 3000);
       }
 
-      alert('Chave API salva com sucesso no seu dispositivo!');
+      alert('Configurações de IA salvas com sucesso!');
     }
 
     function renderAiChatHistory() {
@@ -983,7 +1027,7 @@
       
       const history = JSON.parse(localStorage.getItem('zrx_ai_history') || '[]');
       if(history.length === 0) {
-        box.innerHTML = '<div class="chat-msg ai">Olá! Sou sua Inteligência Artificial. Insira sua chave acima, salve-a e comece a conversar!</div>';
+        box.innerHTML = '<div class="chat-msg ai">Olá! Conecte qualquer API/Modelo de IA acima, salve e comece a conversar!</div>';
         return;
       }
 
@@ -1001,11 +1045,15 @@
       const text = input.value.trim();
       if(!text) return;
 
+      const url = localStorage.getItem('zrx_ai_url') || defaultProviders.openai.url;
+      const model = localStorage.getItem('zrx_ai_model') || defaultProviders.openai.model;
       const apiKey = localStorage.getItem('zrx_openai_key') || '';
+      const provider = localStorage.getItem('zrx_ai_provider') || 'openai';
+
       const history = JSON.parse(localStorage.getItem('zrx_ai_history') || '[]');
 
-      if(!apiKey) {
-        alert('Por favor, digite sua API Key no campo indicado abaixo e clique em "SALVAR CHAVE" antes de enviar uma mensagem!');
+      if(!apiKey && provider !== 'ollama') {
+        alert('Por favor, digite sua API Key e clique em "SALVAR IA" antes de enviar!');
         return;
       }
 
@@ -1023,28 +1071,30 @@
       box.scrollTop = box.scrollHeight;
 
       try {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        const headers = { 'Content-Type': 'application/json' };
+        if (apiKey) {
+          headers['Authorization'] = `Bearer ${apiKey}`;
+        }
+
+        const response = await fetch(url, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`
-          },
+          headers: headers,
           body: JSON.stringify({
-            model: 'gpt-3.5-turbo',
+            model: model,
             messages: history.map(h => ({ role: h.role, content: h.content }))
           })
         });
 
         const data = await response.json();
 
-        if (data.choices && data.choices[0]) {
+        if (data.choices && data.choices[0] && data.choices[0].message) {
           const aiReply = data.choices[0].message.content;
           history.push({ role: 'assistant', content: aiReply });
         } else {
-          history.push({ role: 'assistant', content: '⚠️ Erro da API: ' + (data.error ? data.error.message : 'Falha na resposta.') });
+          history.push({ role: 'assistant', content: '⚠️ Erro da IA: ' + (data.error ? (data.error.message || JSON.stringify(data.error)) : 'Resposta inválida do servidor.') });
         }
       } catch (err) {
-        history.push({ role: 'assistant', content: '⚠️ Erro de conexão com a OpenAI.' });
+        history.push({ role: 'assistant', content: '⚠️ Erro de conexão com o endpoint da IA.' });
       }
 
       localStorage.setItem('zrx_ai_history', JSON.stringify(history));
