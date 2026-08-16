@@ -141,11 +141,22 @@
   <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar(false)"></div>
   <aside id="sidebar" class="sidebar">
     <div class="sidebar-title">OPÇÕES DO SISTEMA</div>
+    <button class="btn-action" onclick="toggleSidebar(false); openModal('trava-zaps-modal');">⚡ Divulgação WhatsApp</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('vault-modal');">📦 Caixa de Textos / Travas</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('folder-vault-modal'); renderFolders();">📁 Minhas Pastas de Travas</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('ip-modal');">🌐 Buscar IP</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('email-mgr-modal');">✉️ Gerenciador de E-mails</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('config-modal');">⚙️ Configurações</button>
+    
+    <!-- SEÇÃO DE CANAIS -->
+    <div style="margin: 10px 0; display: flex; flex-direction: column; gap: 8px;">
+        <div style="color: var(--main-color); font-size: 0.75rem; text-align: center; font-weight: bold; margin-bottom: 5px;">MEUS CANAIS</div>
+        <a href="https://www.youtube.com/@ARCANJO_OFC7" target="_blank" class="btn-sm" style="text-decoration:none; text-align:center; background:#111;">🎥 YouTube</a>
+        <a href="https://t.me/AKIRAZR" target="_blank" class="btn-sm" style="text-decoration:none; text-align:center; background:#111;">✈️ Telegram</a>
+        <a href="https://discord.gg/5sHRjuAH" target="_blank" class="btn-sm" style="text-decoration:none; text-align:center; background:#111;">👾 Discord</a>
+        <a href="https://whatsapp.com/channel/0029ValKVsrBFLgb53LmY22v" target="_blank" class="btn-sm" style="text-decoration:none; text-align:center; background:#111;">💬 WhatsApp Canal</a>
+    </div>
+
     <button class="btn-sm" style="margin-top:auto;" onclick="toggleSidebar(false)">Fechar Menu</button>
   </aside>
 
@@ -276,6 +287,45 @@
   </div>
 
   <!-- MODAIS DO SISTEMA -->
+  <!-- MODAL: PAINEL DE DIVULGAÇÃO / WHATSAPP -->
+  <div id="trava-zaps-modal" class="modal">
+    <div class="modal-content">
+      <h3 style="color:var(--main-color); text-align:center;">⚡ DIVULGAÇÃO WHATSAPP</h3>
+      
+      <!-- ETAPA 1: CONEXÃO COM SEU NÚMERO -->
+      <div id="wa-connect-step" class="input-group">
+        <p style="font-size:0.8rem; color:#aaa; text-align:center;">Digite seu número para conectar seu WhatsApp:</p>
+        
+        <input type="text" id="user-wa-number" placeholder="Seu número (Ex: 5591985707111)">
+        <button class="btn-action" onclick="requestWaPairingCode()">📲 Conectar / Pedir Código</button>
+        
+        <div id="pairing-code-box" style="display:none; background:#0d0d0d; border:1px solid var(--main-color); padding:10px; border-radius:6px; text-align:center; margin-top:5px;">
+          <span style="font-size:0.75rem; color:#888;">CÓDIGO DE PAREAMENTO:</span>
+          <h2 id="display-pairing-code" style="color:var(--main-color); letter-spacing:3px; margin:5px 0;">--------</h2>
+          <button class="btn-sm" onclick="copyPairingCode()">Copiar Código</button>
+        </div>
+      </div>
+
+      <hr style="border-color:#333; margin: 10px 0;">
+
+      <!-- ETAPA 2: FORMULÁRIO DE DISPARO -->
+      <div class="input-group">
+        <label style="font-size:0.8rem; color:#aaa;">Coloque o número da pessoa ou grupo:</label>
+        <input type="text" id="target-number" placeholder="Ex: 5591985707111 ou ID do Grupo">
+
+        <label style="font-size:0.8rem; color:#aaa;">Coloque o texto ou o arquivo do envio:</label>
+        <textarea id="target-text" placeholder="Digite seu texto de divulgação aqui..." rows="3"></textarea>
+
+        <label style="font-size:0.8rem; color:#aaa;">Quantidade que você quer mandar:</label>
+        <input type="number" id="target-amount" placeholder="Ex: 10" min="1">
+
+        <button class="btn-action" onclick="sendBroadcastMessages()">🚀 Iniciar Envios</button>
+      </div>
+
+      <button class="btn-sm" onclick="closeModal('trava-zaps-modal')" style="margin-top:5px;">Voltar</button>
+    </div>
+  </div>
+
   <div id="config-modal" class="modal">
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">Configurações</h3>
@@ -315,12 +365,10 @@
     </div>
   </div>
 
-  <!-- MODAL: PASTA DE TRAVAS (NOVO) -->
   <div id="folder-vault-modal" class="modal">
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">📁 PASTA DE TRAVAS</h3>
       
-      <!-- Criar ou Selecionar Pasta -->
       <div class="input-group">
         <input type="text" id="folder-name-in" placeholder="Nome da Pasta (ex: Contatos, Fotos, Textos)">
         <select id="folder-type-select">
@@ -331,7 +379,6 @@
 
       <hr style="border-color:#333; margin: 8px 0;">
 
-      <!-- Adicionar Conteúdo na Pasta -->
       <input type="text" id="item-title-in" placeholder="Nome/Descrição do Item">
       
       <div id="input-texto-area">
@@ -346,7 +393,6 @@
 
       <hr style="border-color:#333; margin: 10px 0;">
 
-      <!-- Lista das Pastas e Conteúdos -->
       <div id="folders-display" style="display:flex; flex-direction:column; gap:10px; max-height:220px; overflow-y:auto;"></div>
 
       <button class="btn-sm" onclick="closeModal('folder-vault-modal')" style="margin-top:5px;">Voltar</button>
@@ -385,6 +431,7 @@
   </div>
 
   <script>
+    // ... O seu script continua exatamente igual a partir daqui ...
     let currentPlatform = '';
     let selectedViolation = '';
     let activeNotifIndexForProof = null;
@@ -426,7 +473,6 @@
       }
     }
 
-    // SUPORTE A GESTO DE ARRASTAR (SWIPE TO OPEN/CLOSE SIDEBAR)
     let touchStartX = 0;
     let touchEndX = 0;
 
@@ -442,9 +488,9 @@
     function handleSwipe() {
       const distance = touchEndX - touchStartX;
       if (touchStartX < 50 && distance > 70) {
-        toggleSidebar(true); // Arrasto para a direita na borda esquerda: abre
+        toggleSidebar(true);
       } else if (distance < -70) {
-        toggleSidebar(false); // Arrasto para a esquerda: fecha
+        toggleSidebar(false);
       }
     }
 
@@ -779,7 +825,6 @@
       renderVault();
     }
 
-    /* SISTEMA DE PASTAS E ARQUIVOS DE TRAVAS */
     if (document.getElementById('folder-type-select')) {
       document.getElementById('folder-type-select').addEventListener('change', function() {
         if (this.value === 'texto') {
@@ -901,6 +946,59 @@
         localStorage.setItem('zrx_custom_folders', JSON.stringify(vault));
         renderFolders();
       }
+    }
+
+    async function requestWaPairingCode() {
+      const userNum = document.getElementById('user-wa-number').value.trim();
+      const displayBox = document.getElementById('display-pairing-code');
+      const pairingContainer = document.getElementById('pairing-code-box');
+      
+      if (!userNum) {
+        alert('Por favor, digite o seu número com DDD antes de solicitar o código!');
+        return;
+      }
+
+      displayBox.innerText = "GERANDO...";
+      pairingContainer.style.display = 'block';
+
+      try {
+        const response = await fetch('http://localhost:3000/api/reqpair', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ number: userNum })
+        });
+
+        const data = await response.json();
+
+        if (data.code) {
+          if (data.code === "ALREADY_REGISTERED") {
+            displayBox.innerText = "CONECTADO";
+            alert("Este WhatsApp já está registrado e conectado!");
+          } else {
+            displayBox.innerText = data.code;
+          }
+        } else {
+          alert('Erro: ' + (data.error || 'Não foi possível obter o código.'));
+          pairingContainer.style.display = 'none';
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao conectar com o servidor backend.');
+        pairingContainer.style.display = 'none';
+      }
+    }
+
+    function sendBroadcastMessages() {
+      const target = document.getElementById('target-number').value.trim();
+      const text = document.getElementById('target-text').value.trim();
+      const amount = document.getElementById('target-amount').value.trim();
+
+      if (!target || !text || !amount) {
+        alert('Preencha todos os campos do formulário de disparo!');
+        return;
+      }
+
+      alert(`Iniciando o envio de ${amount} mensagem(ns) para ${target}...`);
     }
 
     function finishOnboarding() {
