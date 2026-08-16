@@ -580,10 +580,16 @@
       document.getElementById('step2-area').style.display = 'flex'; 
     }
     
+    /* FUNÇÃO DE ENVIO DE E-MAILS ATUALIZADA PARA FUNCIONAR EM TODOS OS CELULARES */
     function sendEmail() {
       const alvo = document.getElementById('field-alvo').value;
       const kwai = document.getElementById('field-kwai-id') ? document.getElementById('field-kwai-id').value : '';
       const texto = document.getElementById('texto-denuncia').value;
+
+      if (!currentPlatform) {
+        alert('Selecione uma plataforma!');
+        return;
+      }
 
       if(!selectedViolation) { 
         alert('Selecione uma violação!'); 
@@ -592,15 +598,33 @@
 
       loadEmails();
       const emails = emailData[currentPlatform] || [];
-      if(emails.length === 0) { alert('Nenhum e-mail cadastrado!'); return; }
-
-      const emailPrincipal = emails[0];
-      const emailsCopia = emails.slice(1).join(',');
+      if(emails.length === 0) { 
+        alert('Nenhum e-mail cadastrado!'); 
+        return; 
+      }
 
       const assunto = `Denúncia ${currentPlatform} - ${selectedViolation}`;
       const corpo = `Plataforma: ${currentPlatform}\nViolação: ${selectedViolation}\nAlvo: ${alvo}\n${kwai ? 'Meu ID: '+kwai+'\n' : ''}\nDetalhes:\n${texto}`;
 
-      const mailtoUrl = `mailto:${emailPrincipal}?cc=${encodeURIComponent(emailsCopia)}&subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
+      // Formatação universal suportada por sistemas mobile (Android/iOS)
+      const listaEmailsStr = emails.join(',');
+      const emailPrincipal = emails[0];
+      const emailsCopia = emails.slice(1).join(',');
+
+      // Copia a lista inteira de e-mails para a área de transferência caso o app mobile não preencha o CC
+      navigator.clipboard.writeText(listaEmailsStr).catch(() => {});
+
+      // Constroi a URL Mailto compatível com Android, iOS e Web
+      let mailtoUrl = `mailto:${encodeURIComponent(emailPrincipal)}`;
+      const queryParams = [];
+
+      if (emailsCopia) {
+        queryParams.push(`cc=${encodeURIComponent(emailsCopia)}`);
+      }
+      queryParams.push(`subject=${encodeURIComponent(assunto)}`);
+      queryParams.push(`body=${encodeURIComponent(corpo)}`);
+
+      mailtoUrl += '?' + queryParams.join('&');
 
       addNotification({
         platform: currentPlatform,
@@ -615,7 +639,22 @@
       if(document.getElementById('field-kwai-id')) document.getElementById('field-kwai-id').value = '';
       document.getElementById('texto-denuncia').value = '';
 
-      window.location.href = mailtoUrl;
+      // Tenta abrir o aplicativo padrão usando window.open ou alterando a localização
+      let windowOpened = false;
+      try {
+        const link = document.createElement('a');
+        link.href = mailtoUrl;
+        link.target = '_blank';
+        link.click();
+        windowOpened = true;
+      } catch (e) {
+        window.location.href = mailtoUrl;
+      }
+
+      // Notificação orientando o operador
+      setTimeout(() => {
+        alert('E-mails copiados para a área de transferência!\nCaso o aplicativo de e-mail não abra automaticamente, cole a lista de destinatários no seu app de e-mail.');
+      }, 500);
     }
 
     function getNotifications() {
