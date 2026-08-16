@@ -298,7 +298,7 @@
 
   <!-- MODAIS DO SISTEMA -->
 
-  <!-- MODAL: CHAT IA UNIVERSAL -->
+  <!-- MODAL: CHAT IA UNIVERSAL (OPENAI, GROQ, OPENROUTER, OLLAMA, ETC) -->
   <div id="ai-chat-modal" class="modal">
     <div class="modal-content">
       <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid #333; padding-bottom: 8px;">
@@ -310,11 +310,13 @@
         <div class="chat-msg ai">Olá! Conecte qualquer serviço de IA (OpenAI, Groq, OpenRouter, Ollama) e converse livremente!</div>
       </div>
 
+      <!-- ENVIAR PERGUNTA -->
       <div class="input-group" style="gap:5px;">
         <input type="text" id="ai-prompt-input" placeholder="Digite sua mensagem..." onkeydown="if(event.key === 'Enter') sendAiMessage()">
         <button class="btn-action" onclick="sendAiMessage()">ENVIAR PERGUNTA</button>
       </div>
 
+      <!-- PAINEL DE CONFIGURAÇÃO DE IA DIVERSAS -->
       <div style="margin-top:5px; border-top:1px solid #333; padding-top:8px; display:flex; flex-direction:column; gap:6px;">
         <label style="font-size:0.75rem; color:var(--main-color); font-weight:bold;">⚙️ Provedor / Servidor da IA:</label>
         
@@ -570,7 +572,7 @@
     }
 
     function showStep2() { 
-      const alvo = document.getElementById('field-alvo') ? document.getElementById('field-alvo').value.trim() : '';
+      const alvo = document.getElementById('field-alvo').value;
       if (!alvo) {
         alert('Por favor, informe o ID/Link do alvo!');
         return;
@@ -578,24 +580,10 @@
       document.getElementById('step2-area').style.display = 'flex'; 
     }
     
-    /* FUNÇÃO DE ENVIO CORRIGIDA - SEM ERROS DE SCHEME */
     function sendEmail() {
-      const alvoEl = document.getElementById('field-alvo');
-      const kwaiEl = document.getElementById('field-kwai-id');
-
-      const alvo = alvoEl ? alvoEl.value.trim() : '';
-      const kwai = kwaiEl ? kwaiEl.value.trim() : '';
-      const texto = document.getElementById('texto-denuncia').value.trim();
-
-      if (!currentPlatform) {
-        alert('Selecione uma plataforma!');
-        return;
-      }
-
-      if (!alvo) {
-        alert('Informe o ID/Link do alvo!');
-        return;
-      }
+      const alvo = document.getElementById('field-alvo').value;
+      const kwai = document.getElementById('field-kwai-id') ? document.getElementById('field-kwai-id').value : '';
+      const texto = document.getElementById('texto-denuncia').value;
 
       if(!selectedViolation) { 
         alert('Selecione uma violação!'); 
@@ -604,25 +592,15 @@
 
       loadEmails();
       const emails = emailData[currentPlatform] || [];
-      if(emails.length === 0) { 
-        alert('Nenhum e-mail cadastrado!'); 
-        return; 
-      }
-
-      const assunto = `Denuncia ${currentPlatform} - ${selectedViolation}`;
-      const corpo = `Plataforma: ${currentPlatform}\nViolacao: ${selectedViolation}\nAlvo: ${alvo}\n${kwai ? 'Meu ID: ' + kwai + '\n' : ''}\nDetalhes:\n${texto}`;
+      if(emails.length === 0) { alert('Nenhum e-mail cadastrado!'); return; }
 
       const emailPrincipal = emails[0];
       const emailsCopia = emails.slice(1).join(',');
 
-      // Copia a lista para facilidade do operador
-      navigator.clipboard.writeText(emails.join(', ')).catch(() => {});
+      const assunto = `Denúncia ${currentPlatform} - ${selectedViolation}`;
+      const corpo = `Plataforma: ${currentPlatform}\nViolação: ${selectedViolation}\nAlvo: ${alvo}\n${kwai ? 'Meu ID: '+kwai+'\n' : ''}\nDetalhes:\n${texto}`;
 
-      // Montagem do Mailto compatível com Webview / Android
-      let mailtoUrl = `mailto:${emailPrincipal}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
-      if (emailsCopia) {
-        mailtoUrl += `&cc=${encodeURIComponent(emailsCopia)}`;
-      }
+      const mailtoUrl = `mailto:${emailPrincipal}?cc=${encodeURIComponent(emailsCopia)}&subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
 
       addNotification({
         platform: currentPlatform,
@@ -633,16 +611,11 @@
         proof: null
       });
 
-      if(alvoEl) alvoEl.value = '';
-      if(kwaiEl) kwaiEl.value = '';
+      document.getElementById('field-alvo').value = '';
+      if(document.getElementById('field-kwai-id')) document.getElementById('field-kwai-id').value = '';
       document.getElementById('texto-denuncia').value = '';
 
-      // Redirecionamento direto para chamar o cliente nativo de e-mail sem dar ERR_UNKNOWN_URL_SCHEME
       window.location.href = mailtoUrl;
-
-      setTimeout(() => {
-        alert('Lista de e-mails copiada para a área de transferência!');
-      }, 300);
     }
 
     function getNotifications() {
@@ -824,7 +797,7 @@
       list.innerHTML = '';
       
       if(vault.length === 0) {
-        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">Nenhum item salvo ainda.</span>';
+        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">Nenum item salvo ainda.</span>';
         return;
       }
 
@@ -994,7 +967,7 @@
       }
     }
 
-    /* SISTEMA UNIVERSAL DE IA */
+    /* SISTEMA UNIVERSAL DE IA (ACEITA QUALQUER IA E MODELO) */
     const defaultProviders = {
       openai: { url: 'https://api.openai.com/v1/chat/completions', model: 'gpt-3.5-turbo' },
       groq: { url: 'https://api.groq.com/openai/v1/chat/completions', model: 'llama3-8b-8192' },
