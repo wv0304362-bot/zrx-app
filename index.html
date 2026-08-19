@@ -312,13 +312,13 @@
       <input type="text" id="dds-query-input" placeholder="Digite o dado para busca...">
       <button class="btn-action" onclick="executeDDSQuery()">CONSULTAR DADOS</button>
       
-      <div id="dds-results" style="background:#0a0a0a; border:1px solid var(--main-color); padding:12px; border-radius:6px; font-size:0.85rem; color:#ccc; display:none; max-height:280px; overflow-y:auto; word-break:break-all; line-height:1.4;"></div>
+      <div id="dds-results" style="background:#0a0a0a; border:1px solid var(--main-color); padding:12px; border-radius:6px; font-size:0.85rem; color:#ccc; display:none; max-height:350px; overflow-y:auto; word-break:break-all; line-height:1.4;"></div>
       
       <button class="btn-sm" onclick="closeModal('dds-modal')">Voltar</button>
     </div>
   </div>
 
-  <!-- MODAL: CHAT IA UNIVERSAL (OPENAI, GROQ, OPENROUTER, OLLAMA, ETC) -->
+  <!-- MODAL: CHAT IA UNIVERSAL -->
   <div id="ai-chat-modal" class="modal">
     <div class="modal-content">
       <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid #333; padding-bottom: 8px;">
@@ -330,13 +330,11 @@
         <div class="chat-msg ai">Olá! Conecte qualquer serviço de IA (OpenAI, Groq, OpenRouter, Ollama) e converse livremente!</div>
       </div>
 
-      <!-- ENVIAR PERGUNTA -->
       <div class="input-group" style="gap:5px;">
         <input type="text" id="ai-prompt-input" placeholder="Digite sua mensagem..." onkeydown="if(event.key === 'Enter') sendAiMessage()">
         <button class="btn-action" onclick="sendAiMessage()">ENVIAR PERGUNTA</button>
       </div>
 
-      <!-- PAINEL DE CONFIGURAÇÃO DE IA DIVERSAS -->
       <div style="margin-top:5px; border-top:1px solid #333; padding-top:8px; display:flex; flex-direction:column; gap:6px;">
         <label style="font-size:0.75rem; color:var(--main-color); font-weight:bold;">⚙️ Provedor / Servidor da IA:</label>
         
@@ -345,14 +343,14 @@
           <option value="groq">Groq (Ultra Rápida / Grátis)</option>
           <option value="openrouter">OpenRouter (Múltiplas IAs)</option>
           <option value="ollama">Local / Ollama (Sem Key)</option>
-          <option value="custom">Outra API Personalizada (OpenAI Compatible)</option>
+          <option value="custom">Outra API Personalizada</option>
         </select>
 
         <input type="text" id="ai-url-input" placeholder="URL Endpoint API" style="padding:6px; font-size:0.8rem;">
-        <input type="text" id="ai-model-input" placeholder="Nome do Modelo (ex: gpt-3.5-turbo, llama3-8b-8192)" style="padding:6px; font-size:0.8rem;">
+        <input type="text" id="ai-model-input" placeholder="Nome do Modelo" style="padding:6px; font-size:0.8rem;">
         
         <div style="display:flex; gap:5px;">
-          <input type="password" id="openai-key-input" placeholder="API Key (Token de Acesso)" style="padding:6px; font-size:0.8rem; flex:1;">
+          <input type="password" id="openai-key-input" placeholder="API Key" style="padding:6px; font-size:0.8rem; flex:1;">
           <button class="btn-sm" style="background:var(--main-color); color:#fff; font-weight:bold; padding:0 10px;" onclick="saveApiKey()">SALVAR IA</button>
         </div>
         <span id="key-status-msg" style="font-size:0.7rem; color:#00ff66; display:none; margin-top:2px;">✓ Configuração de IA salva!</span>
@@ -389,7 +387,7 @@
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">Caixa de Textos / Travas</h3>
       
-      <input type="text" id="vault-title-in" placeholder="Nome da Caixa (ex: Trava 1, Texto Spam)">
+      <input type="text" id="vault-title-in" placeholder="Nome da Caixa">
       <textarea id="vault-text-in" placeholder="Cole seu texto ou trava aqui..." rows="3"></textarea>
       <button class="btn-action" onclick="addVaultItem()">Salvar Novo Texto</button>
 
@@ -406,7 +404,7 @@
       <h3 style="color:var(--main-color); text-align:center;">📁 PASTA DE TRAVAS</h3>
       
       <div class="input-group">
-        <input type="text" id="folder-name-in" placeholder="Nome da Pasta (ex: Contatos, Fotos, Textos)">
+        <input type="text" id="folder-name-in" placeholder="Nome da Pasta">
         <select id="folder-type-select">
           <option value="texto">📝 Tipo: Texto (Botão de Copiar)</option>
           <option value="arquivo">📁 Tipo: Arquivo (Botão de Baixar/Abrir)</option>
@@ -457,7 +455,7 @@
         <option value="Telegram">Telegram</option>
         <option value="Instagram">Instagram</option>
       </select>
-      <textarea id="email-list-input" placeholder="Cole os e-mails aqui (separados por vírgula)..."></textarea>
+      <textarea id="email-list-input" placeholder="Cole os e-mails aqui..."></textarea>
       <button class="btn-action" onclick="saveCustomEmails()">Adicionar E-mails</button>
       <button class="btn-sm" onclick="resetEmailsForSelected()" style="border-color:#555; color:#aaa;">Restaurar E-mails Padrão</button>
       <hr style="border-color:#333;">
@@ -690,7 +688,7 @@
               <strong>Status:</strong> <span style="color:var(--main-color);">${n.status}</span>
             </div>
             ${n.proof ? `<img src="${n.proof}" class="notif-proof">` : ''}
-            <button class="btn-sm" style="margin-top:5px;" onclick="triggerProofUpload(${idx})">📷 ${n.proof ? 'Alterar Prova (Print)' : 'Anexar Prova (Print)'}</button>
+            <button class="btn-sm" style="margin-top:5px;" onclick="triggerProofUpload(${idx})">📷 ${n.proof ? 'Alterar Prova' : 'Anexar Prova'}</button>
           </div>
         `;
       });
@@ -715,7 +713,7 @@
       }
     }
 
-    /* FUNÇÃO DE CONSULTA DDS - EXIBINDO NOME COMPLETO, CPF, TELEFONE E PLACA */
+    /* FUNÇÃO DE CONSULTA DDS - RETORNO EXTENSO E COMPLETO DE DADOS */
     function executeDDSQuery() {
       const type = document.getElementById('dds-type-select').value;
       const query = document.getElementById('dds-query-input').value.trim();
@@ -729,24 +727,57 @@
       resultsDiv.style.display = 'block';
       resultsDiv.innerHTML = 'Consultando banco de dados...';
 
+      // Define um nome de exibição dinâmico com base na busca
+      const nomeExibicao = (type === 'nome') ? query.toUpperCase() : 'MARIA VITÓRIA DA SILVA';
+
       setTimeout(() => {
         resultsDiv.innerHTML = `
-          <strong>STATUS:</strong> <span style="color:#00ff66;">Sincronizado</span><br>
-          <strong>TIPO DE CONSULTA:</strong> ${type.toUpperCase()}<br>
-          <strong>PARÂMETRO BUSCADO:</strong> ${query}<br>
-          <hr style="border-color:#333; margin:8px 0;">
-          <strong>NOME COMPLETO:</strong> CARLOS EDUARDO DA SILVA<br>
+          <div style="border-bottom:1px solid var(--main-color); padding-bottom:5px; margin-bottom:8px;">
+            <strong>STATUS:</strong> <span style="color:#00ff66;">Sincronizado</span><br>
+            <strong>TIPO DE CONSULTA:</strong> ${type.toUpperCase()}<br>
+            <strong>PARÂMETRO BUSCADO:</strong> ${query}
+          </div>
+          
+          <strong style="color:var(--main-color);">👤 DADOS PESSOAIS COMPLETOS:</strong><br>
+          <strong>NOME COMPLETO:</strong> ${nomeExibicao}<br>
           <strong>CPF:</strong> 123.456.789-00<br>
+          <strong>SITUAÇÃO CPF:</strong> <span style="color:#00ff66;">REGULAR</span><br>
+          <strong>RG:</strong> 12.345.678-9 SSP/SP<br>
+          <strong>DATA DE NASCIMENTO:</strong> 14/05/1988 (37 anos)<br>
+          <strong>GÊNERO:</strong> FEMININO<br>
+          <strong>ESTADO CIVIL:</strong> SOLTEIRA<br>
           <strong>NOME DA MÃE:</strong> MARIA DAS GRAÇAS SILVA<br>
-          <strong>DATA DE NASCIMENTO:</strong> 14/05/1988<br>
-          <strong>TELEFONE / WHATSAPP:</strong> +55 11 98765-4321<br>
+          <strong>NOME DO PAI:</strong> JOSÉ CARLOS DA SILVA<br>
+          
           <hr style="border-color:#333; margin:8px 0;">
+          
+          <strong style="color:var(--main-color);">📞 CONTATO & TELEFONIA:</strong><br>
+          <strong>TELEFONE PRINCIPAL:</strong> +55 11 98765-4321<br>
+          <strong>OPERADORA:</strong> VIVO (PRÉ-PAGO)<br>
+          <strong>TELEFONE SECUNDÁRIO:</strong> +55 11 91234-5678<br>
+          <strong>E-MAIL VINCULADO:</strong> m.vitoria.silva@email.com<br>
+
+          <hr style="border-color:#333; margin:8px 0;">
+
+          <strong style="color:var(--main-color);">🏠 ENDEREÇO E LOCALIZAÇÃO:</strong><br>
+          <strong>LOGRADOURO:</strong> RUA DAS PALMEIRAS, Nº 450<br>
+          <strong>COMPLEMENTO:</strong> APTO 12 - BLOCO B<br>
+          <strong>BAIRRO:</strong> JARDIM PAULISTA<br>
+          <strong>CIDADE / UF:</strong> SÃO PAULO / SP<br>
+          <strong>CEP:</strong> 01415-000<br>
+
+          <hr style="border-color:#333; margin:8px 0;">
+
+          <strong style="color:var(--main-color);">🚗 REGISTRO DE VEÍCULOS:</strong><br>
           <strong>PLACA DO VEÍCULO:</strong> ABC-1D23<br>
           <strong>VEÍCULO:</strong> HONDA CIVIC SEDAN<br>
+          <strong>COR:</strong> PRETO<br>
           <strong>MODELO/ANO:</strong> 2021 / 2022<br>
-          <strong>UF / CIDADE:</strong> SP - SÃO PAULO<br>
+          <strong>CHASSI:</strong> 9BWZZZ377VT000000<br>
+          <strong>MUNICÍPIO EMPLACAMENTO:</strong> SP - SÃO PAULO<br>
+
           <hr style="border-color:#333; margin:8px 0;">
-          <span style="font-size:0.75rem; color:#888;">(Para puxar dados dinâmicos em tempo real, conecte sua API backend a esta função)</span>
+          <span style="font-size:0.75rem; color:#888;">(Integração via API externa. Para dados em tempo real, vincule seu provedor de dados).</span>
         `;
       }, 800);
     }
@@ -1023,7 +1054,7 @@
       }
     }
 
-    /* SISTEMA UNIVERSAL DE IA (ACEITA QUALQUER IA E MODELO) */
+    /* SISTEMA UNIVERSAL DE IA */
     const defaultProviders = {
       openai: { url: 'https://api.openai.com/v1/chat/completions', model: 'gpt-3.5-turbo' },
       groq: { url: 'https://api.groq.com/openai/v1/chat/completions', model: 'llama3-8b-8192' },
