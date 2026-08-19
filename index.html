@@ -713,8 +713,8 @@
       }
     }
 
-    /* FUNÇÃO DE CONSULTA DDS - RETORNO EXTENSO E COMPLETO DE DADOS */
-    function executeDDSQuery() {
+    /* FUNÇÃO DE CONSULTA DDS - TOTALMENTE DINÂMICA COM VALIDAÇÃO */
+    async function executeDDSQuery() {
       const type = document.getElementById('dds-type-select').value;
       const query = document.getElementById('dds-query-input').value.trim();
       const resultsDiv = document.getElementById('dds-results');
@@ -725,12 +725,68 @@
       }
 
       resultsDiv.style.display = 'block';
-      resultsDiv.innerHTML = 'Consultando banco de dados...';
+      resultsDiv.innerHTML = '⚡ Consultando banco de dados...';
 
-      // Define um nome de exibição dinâmico com base na busca
-      const nomeExibicao = (type === 'nome') ? query.toUpperCase() : 'MARIA VITÓRIA DA SILVA';
+      try {
+        /*
+           INTEGRAÇÃO COM API EXTERNA (OPCIONAL):
+           Descomente as linhas abaixo para conectar com seu provedor HTTP/API real.
+        
+           const token = 'SEU_TOKEN_AQUI';
+           const url = `https://apis.gonzalesdev.shop/?token=${token}&tipo=${type}&busca=${encodeURIComponent(query)}`;
+           const response = await fetch(url);
+           const data = await response.json();
+        */
 
-      setTimeout(() => {
+        // SIMULAÇÃO DE RESPOSTA DA API PARA VALIDAÇÃO LOCAL
+        let data = null;
+
+        // Regra de exemplo: Se buscar por "000" ou termos específicos, simula que não encontrou
+        if (!query.includes('000') && query.length > 2) {
+          const randCpf = `${Math.floor(100+Math.random()*899)}.${Math.floor(100+Math.random()*899)}.${Math.floor(100+Math.random()*899)}-${Math.floor(10+Math.random()*89)}`;
+          const randRg = `${Math.floor(10+Math.random()*89)}.${Math.floor(100+Math.random()*899)}.${Math.floor(100+Math.random()*899)}-${Math.floor(0+Math.random()*9)} SSP/SP`;
+          const randTel = `+55 11 9${Math.floor(1000+Math.random()*8999)}-${Math.floor(1000+Math.random()*8999)}`;
+          
+          data = {
+            nome: type === 'nome' ? query.toUpperCase() : 'CARLOS EDUARDO SILVA',
+            cpf: type === 'cpf' ? query : randCpf,
+            situacao_cpf: 'REGULAR',
+            rg: randRg,
+            nascimento: '14/05/1988 (37 anos)',
+            genero: 'MASCULINO',
+            estado_civil: 'SOLTEIRO',
+            mae: 'MARIA DAS GRAÇAS SILVA',
+            pai: 'JOSÉ CARLOS DA SILVA',
+            telefone: type === 'telefone' ? query : randTel,
+            operadora: 'VIVO (PRÉ-PAGO)',
+            email: `${query.toLowerCase().replace(/\s+/g, '.')}@email.com`,
+            logradouro: 'RUA DAS PALMEIRAS, Nº 450',
+            bairro: 'JARDIM PAULISTA',
+            cidade: 'SÃO PAULO / SP',
+            cep: '01415-000',
+            placa: type === 'placa' ? query.toUpperCase() : 'ABC-1D23',
+            veiculo: 'HONDA CIVIC SEDAN',
+            cor: 'PRETO',
+            ano: '2021 / 2022'
+          };
+        }
+
+        // 🔴 TRAVA: Se não encontrar nenhum registro
+        if (!data || data.erro || data.status === '404' || Object.keys(data).length === 0) {
+          resultsDiv.innerHTML = `
+            <div style="border-bottom:1px solid var(--main-color); padding-bottom:5px; margin-bottom:8px;">
+              <strong>STATUS:</strong> <span style="color:#ff4444;">NÃO ENCONTRADO</span><br>
+              <strong>PARÂMETRO BUSCADO:</strong> ${query}
+            </div>
+            <div style="text-align:center; padding:15px; color:#aaa;">
+              ❌ <strong>Nenhum registro localizado na base de dados.</strong><br>
+              <small>Verifique se o ${type.toUpperCase()} foi digitado corretamente.</small>
+            </div>
+          `;
+          return;
+        }
+
+        // 🟢 EXIBIÇÃO COMPLETA E DINÂMICA DOS DADOS ENCONTRADOS
         resultsDiv.innerHTML = `
           <div style="border-bottom:1px solid var(--main-color); padding-bottom:5px; margin-bottom:8px;">
             <strong>STATUS:</strong> <span style="color:#00ff66;">Sincronizado</span><br>
@@ -739,47 +795,47 @@
           </div>
           
           <strong style="color:var(--main-color);">👤 DADOS PESSOAIS COMPLETOS:</strong><br>
-          <strong>NOME COMPLETO:</strong> ${nomeExibicao}<br>
-          <strong>CPF:</strong> 123.456.789-00<br>
-          <strong>SITUAÇÃO CPF:</strong> <span style="color:#00ff66;">REGULAR</span><br>
-          <strong>RG:</strong> 12.345.678-9 SSP/SP<br>
-          <strong>DATA DE NASCIMENTO:</strong> 14/05/1988 (37 anos)<br>
-          <strong>GÊNERO:</strong> FEMININO<br>
-          <strong>ESTADO CIVIL:</strong> SOLTEIRA<br>
-          <strong>NOME DA MÃE:</strong> MARIA DAS GRAÇAS SILVA<br>
-          <strong>NOME DO PAI:</strong> JOSÉ CARLOS DA SILVA<br>
+          <strong>NOME COMPLETO:</strong> ${data.nome || 'N/A'}<br>
+          <strong>CPF:</strong> ${data.cpf || 'N/A'}<br>
+          <strong>SITUAÇÃO CPF:</strong> <span style="color:#00ff66;">${data.situacao_cpf || 'REGULAR'}</span><br>
+          <strong>RG:</strong> ${data.rg || 'N/A'}<br>
+          <strong>DATA DE NASCIMENTO:</strong> ${data.nascimento || 'N/A'}<br>
+          <strong>GÊNERO:</strong> ${data.genero || 'N/A'}<br>
+          <strong>ESTADO CIVIL:</strong> ${data.estado_civil || 'N/A'}<br>
+          <strong>NOME DA MÃE:</strong> ${data.mae || 'N/A'}<br>
+          <strong>NOME DO PAI:</strong> ${data.pai || 'N/A'}<br>
           
           <hr style="border-color:#333; margin:8px 0;">
           
           <strong style="color:var(--main-color);">📞 CONTATO & TELEFONIA:</strong><br>
-          <strong>TELEFONE PRINCIPAL:</strong> +55 11 98765-4321<br>
-          <strong>OPERADORA:</strong> VIVO (PRÉ-PAGO)<br>
-          <strong>TELEFONE SECUNDÁRIO:</strong> +55 11 91234-5678<br>
-          <strong>E-MAIL VINCULADO:</strong> m.vitoria.silva@email.com<br>
+          <strong>TELEFONE PRINCIPAL:</strong> ${data.telefone || 'N/A'}<br>
+          <strong>OPERADORA:</strong> ${data.operadora || 'N/A'}<br>
+          <strong>E-MAIL VINCULADO:</strong> ${data.email || 'N/A'}<br>
 
           <hr style="border-color:#333; margin:8px 0;">
 
           <strong style="color:var(--main-color);">🏠 ENDEREÇO E LOCALIZAÇÃO:</strong><br>
-          <strong>LOGRADOURO:</strong> RUA DAS PALMEIRAS, Nº 450<br>
-          <strong>COMPLEMENTO:</strong> APTO 12 - BLOCO B<br>
-          <strong>BAIRRO:</strong> JARDIM PAULISTA<br>
-          <strong>CIDADE / UF:</strong> SÃO PAULO / SP<br>
-          <strong>CEP:</strong> 01415-000<br>
+          <strong>LOGRADOURO:</strong> ${data.logradouro || 'N/A'}<br>
+          <strong>BAIRRO:</strong> ${data.bairro || 'N/A'}<br>
+          <strong>CIDADE / UF:</strong> ${data.cidade || 'N/A'}<br>
+          <strong>CEP:</strong> ${data.cep || 'N/A'}<br>
 
           <hr style="border-color:#333; margin:8px 0;">
 
           <strong style="color:var(--main-color);">🚗 REGISTRO DE VEÍCULOS:</strong><br>
-          <strong>PLACA DO VEÍCULO:</strong> ABC-1D23<br>
-          <strong>VEÍCULO:</strong> HONDA CIVIC SEDAN<br>
-          <strong>COR:</strong> PRETO<br>
-          <strong>MODELO/ANO:</strong> 2021 / 2022<br>
-          <strong>CHASSI:</strong> 9BWZZZ377VT000000<br>
-          <strong>MUNICÍPIO EMPLACAMENTO:</strong> SP - SÃO PAULO<br>
-
-          <hr style="border-color:#333; margin:8px 0;">
-          <span style="font-size:0.75rem; color:#888;">(Integração via API externa. Para dados em tempo real, vincule seu provedor de dados).</span>
+          <strong>PLACA DO VEÍCULO:</strong> ${data.placa || 'N/A'}<br>
+          <strong>VEÍCULO:</strong> ${data.veiculo || 'N/A'}<br>
+          <strong>COR:</strong> ${data.cor || 'N/A'}<br>
+          <strong>MODELO/ANO:</strong> ${data.ano || 'N/A'}<br>
         `;
-      }, 800);
+
+      } catch (err) {
+        resultsDiv.innerHTML = `
+          <div style="color:#ff4444; text-align:center; padding:10px;">
+            ⚠️ Erro ao comunicar com o banco de dados.
+          </div>
+        `;
+      }
     }
 
     function searchIP() {
@@ -884,7 +940,7 @@
       list.innerHTML = '';
       
       if(vault.length === 0) {
-        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">Nenum item salvo ainda.</span>';
+        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">Nenhum item salvo ainda.</span>';
         return;
       }
 
