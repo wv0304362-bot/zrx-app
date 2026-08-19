@@ -155,7 +155,7 @@
     <button class="btn-action" onclick="toggleSidebar(false); openModal('vault-modal');">📦 Caixa de Textos / Travas</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('folder-vault-modal'); renderFolders();">📁 Minhas Pastas de Travas</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('ip-modal');">🌐 Buscar IP</button>
-    <button class="btn-action" onclick="toggleSidebar(false);">CONSULTA DDS</button>
+    <button class="btn-action" onclick="toggleSidebar(false); openModal('dds-modal');">🔍 CONSULTA DDS</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('email-mgr-modal');">✉️ Gerenciador de E-mails</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('config-modal');">⚙️ Configurações</button>
     
@@ -298,6 +298,24 @@
   </div>
 
   <!-- MODAIS DO SISTEMA -->
+
+  <!-- MODAL: CONSULTA DDS -->
+  <div id="dds-modal" class="modal">
+    <div class="modal-content">
+      <h3 style="color:var(--main-color); text-align:center;">🔍 CONSULTA DDS</h3>
+      <select id="dds-type-select">
+        <option value="cpf">Consulta por CPF</option>
+        <option value="telefone">Consulta por Telefone / WhatsApp</option>
+        <option value="nome">Consulta por Nome</option>
+      </select>
+      <input type="text" id="dds-query-input" placeholder="Digite o dado para busca...">
+      <button class="btn-action" onclick="executeDDSQuery()">CONSULTAR DADOS</button>
+      
+      <div id="dds-results" style="background:#0a0a0a; border:1px solid var(--main-color); padding:12px; border-radius:6px; font-size:0.85rem; color:#ccc; display:none; max-height:200px; overflow-y:auto; word-break:break-all;"></div>
+      
+      <button class="btn-sm" onclick="closeModal('dds-modal')">Voltar</button>
+    </div>
+  </div>
 
   <!-- MODAL: CHAT IA UNIVERSAL (OPENAI, GROQ, OPENROUTER, OLLAMA, ETC) -->
   <div id="ai-chat-modal" class="modal">
@@ -694,6 +712,33 @@
         };
         reader.readAsDataURL(file);
       }
+    }
+
+    /* FUNÇÃO DE CONSULTA DDS */
+    function executeDDSQuery() {
+      const type = document.getElementById('dds-type-select').value;
+      const query = document.getElementById('dds-query-input').value.trim();
+      const resultsDiv = document.getElementById('dds-results');
+
+      if (!query) {
+        alert('Por favor, informe o dado para consulta!');
+        return;
+      }
+
+      resultsDiv.style.display = 'block';
+      resultsDiv.innerHTML = 'Consultando banco de dados...';
+
+      // Simulação de retorno da consulta (Altere/integre com seu endpoint/API se possuir)
+      setTimeout(() => {
+        resultsDiv.innerHTML = `
+          <strong>STATUS:</strong> <span style="color:#00ff66;">Sincronizado</span><br>
+          <strong>TIPO:</strong> ${type.toUpperCase()}<br>
+          <strong>PARAMETRO:</strong> ${query}<br>
+          <hr style="border-color:#333; margin:8px 0;">
+          <strong>RESULTADO:</strong> Consulta finalizada com sucesso.<br>
+          <span style="font-size:0.75rem; color:#888;">(Conecte seu endpoint API no script para puxar dados em tempo real)</span>
+        `;
+      }, 800);
     }
 
     function searchIP() {
