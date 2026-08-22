@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZRX PROJETO</title>
+  <title>ZRX PROJETO - EDICÃO AVANÇADA</title>
   <style>
     :root {
       --main-color: #ff0000;
@@ -15,7 +15,7 @@
     body { background-color: #000; color: #fff; min-height: 100vh; display: flex; flex-direction: column; background-size: cover; background-position: center; padding-bottom: 75px; overflow-x: hidden; }
     
     /* Topo Apenas com as Três Barrinhas */
-    .top-bar { display: flex; align-items: center; padding: 15px; background: rgba(0,0,0,0.85); border-bottom: 2px solid var(--main-color); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(5px); }
+    .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: rgba(0,0,0,0.85); border-bottom: 2px solid var(--main-color); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(5px); }
     .menu-btn { background: none; border: none; color: var(--main-color); font-size: 1.8rem; cursor: pointer; }
 
     /* MENU LATERAL DESLIZANTE (SIDEBAR) */
@@ -40,7 +40,7 @@
     .tab-content { display: none; width: 100%; max-width: 450px; }
     .tab-content.active { display: flex; flex-direction: column; gap: 12px; }
 
-    .card { width: 100%; border: 2px solid var(--main-color); border-radius: 15px; padding: 25px; background: rgba(5, 5, 5, 0.9); box-shadow: 0 0 20px var(--shadow-color); display: flex; flex-direction: column; gap: 12px; }
+    .card { width: 100%; border: 2px solid var(--main-color); border-radius: 15px; padding: 20px; background: rgba(5, 5, 5, 0.9); box-shadow: 0 0 20px var(--shadow-color); display: flex; flex-direction: column; gap: 12px; }
     
     .btn-platform { width: 100%; padding: 12px; background: #151515; border: 1px solid #444; color: #fff; border-radius: 8px; font-weight: bold; cursor: pointer; }
     .btn-platform.active { border-color: var(--main-color); background: var(--bg-active); }
@@ -56,11 +56,11 @@
     input, textarea, select { width: 100%; padding: 12px; background: #111; border: 1px solid var(--main-color); border-radius: 6px; color: #fff; outline: none; font-size: 0.9rem; }
     textarea { min-height: 100px; resize: vertical; }
 
-    .btn-action { width: 100%; padding: 12px; background: var(--main-color); border: none; color: #fff; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; margin-top: 5px; }
+    .btn-action { width: 100%; padding: 12px; background: var(--main-color); border: none; color: #fff; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; margin-top: 5px; text-align: center; }
 
     /* Barra de Navegação Inferior */
-    .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #080808; border-top: 2px solid var(--main-color); display: flex; justify-content: space-around; padding: 8px 0; z-index: 100; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: #888; font-size: 0.7rem; font-weight: bold; cursor: pointer; gap: 3px; }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #080808; border-top: 2px solid var(--main-color); display: flex; justify-content: space-around; padding: 8px 0; z-index: 100; overflow-x: auto; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: #888; font-size: 0.65rem; font-weight: bold; cursor: pointer; gap: 3px; min-width: 60px; }
     .nav-item span { font-size: 1.2rem; }
     .nav-item.active { color: var(--main-color); }
 
@@ -69,7 +69,7 @@
 
     /* Modais */
     .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 999; justify-content: center; align-items: center; padding: 20px; }
-    .modal-content { width: 100%; max-width: 420px; background: #1a1a1a; border: 1px solid var(--main-color); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px; max-height: 90vh; overflow-y: auto; box-shadow: 0 0 25px var(--shadow-color); }
+    .modal-content { width: 100%; max-width: 420px; background: #1a1a1a; border: 1px solid var(--main-color); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px; max-height: 90vh; overflow-y: auto; box-shadow: 0 0 25px var(--shadow-color); position: relative; }
 
     /* Cards de Notificação / Histórico */
     .notif-card { background: #0d0d0d; border: 1px solid var(--main-color); padding: 12px; border-radius: 8px; display: flex; flex-direction: column; gap: 8px; position: relative; }
@@ -81,20 +81,31 @@
     .vault-item { background: #0d0d0d; border: 1px solid #333; padding: 10px; border-radius: 6px; display: flex; flex-direction: column; gap: 5px; }
     .vault-item-header { display: flex; justify-content: space-between; align-items: center; }
     .vault-title { font-weight: bold; color: var(--main-color); font-size: 0.9rem; }
-    .btn-sm { padding: 5px 8px; background: #222; border: 1px solid var(--main-color); color: #fff; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
+    .btn-sm { padding: 6px 10px; background: #222; border: 1px solid var(--main-color); color: #fff; border-radius: 4px; cursor: pointer; font-size: 0.75rem; text-align: center; }
 
     .winchester-footer { text-align: center; color: #777; font-size: 0.75rem; margin-top: 15px; font-weight: bold; letter-spacing: 1px; }
 
-    /* CARD DO PERFIL / DASHBOARD */
-    .user-profile-card {
+    /* CARD DE PERFIL REESTRUTURADO (FOTO NO TOPO, NOME EMBAIXO, STORY) */
+    .user-profile-card-centered {
       width: 100%; background: rgba(15, 15, 15, 0.95); border: 1px solid var(--main-color);
-      border-radius: 12px; padding: 15px; display: flex; align-items: center; gap: 15px;
-      box-shadow: 0 0 15px var(--shadow-color);
+      border-radius: 12px; padding: 20px 15px; display: flex; flex-direction: column; align-items: center; text-align: center;
+      gap: 10px; box-shadow: 0 0 15px var(--shadow-color); position: relative;
     }
-    .dash-avatar-img {
-      width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--main-color);
-      object-fit: cover; cursor: pointer;
+    .story-ring {
+      padding: 3px; border-radius: 50%; border: 2px dashed var(--main-color); cursor: pointer; transition: transform 0.2s;
     }
+    .story-ring.has-story {
+      border: 3px solid var(--main-color); animation: pulseStory 2s infinite;
+    }
+    @keyframes pulseStory {
+      0% { box-shadow: 0 0 0 0 var(--shadow-color); }
+      70% { box-shadow: 0 0 0 10px rgba(0,0,0,0); }
+      100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
+    }
+    .dash-avatar-img-centered {
+      width: 80px; height: 80px; border-radius: 50%; object-fit: cover; display: block;
+    }
+
     .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; }
     .metric-card { background: #111; border: 1px solid #333; padding: 10px; border-radius: 8px; text-align: center; }
     .metric-card span { font-size: 0.65rem; color: #aaa; text-transform: uppercase; }
@@ -105,23 +116,26 @@
     .progress-bar { background: #222; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 3px; }
     .progress-bar div { background: var(--main-color); height: 100%; transition: width 0.3s; }
 
-    /* ESTILOS DO CHAT IA */
-    .chat-box {
-      display: flex; flex-direction: column; gap: 10px;
-      height: 250px; overflow-y: auto; padding: 10px;
-      background: #080808; border: 1px solid #222; border-radius: 8px;
-    }
+    /* CHAT IA */
+    .chat-box { display: flex; flex-direction: column; gap: 10px; height: 250px; overflow-y: auto; padding: 10px; background: #080808; border: 1px solid #222; border-radius: 8px; }
     .chat-msg { max-width: 85%; padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; line-height: 1.3; word-break: break-word; }
     .chat-msg.user { align-self: flex-end; background: var(--main-color); color: #fff; border-bottom-right-radius: 0; }
     .chat-msg.ai { align-self: flex-start; background: #1c1c1c; color: #eee; border: 1px solid #333; border-bottom-left-radius: 0; }
+
+    /* MINI APPS */
+    .mini-app-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 5px; }
+    .mini-app-card { background: #111; border: 1px solid var(--main-color); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; cursor: pointer; }
+    .mini-app-card img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid var(--main-color); }
   </style>
 </head>
 <body>
 
-  <!-- INPUTS DE ARQUIVOS OCULTOS -->
+  <!-- INPUTS ESCONDIDOS DE ARQUIVO -->
   <input type="file" id="file-avatar" accept="image/*" onchange="handleFileSelect(event, 'a')">
   <input type="file" id="file-bg" accept="image/*" onchange="handleFileSelect(event, 'b')">
   <input type="file" id="file-proof" accept="image/*" onchange="handleProofUpload(event)">
+  <input type="file" id="file-story" accept="image/*" onchange="handleStoryUpload(event)">
+  <input type="file" id="file-miniapp-icon" accept="image/*" onchange="handleMiniAppIconUpload(event)">
 
   <!-- ONBOARDING MODAL -->
   <div id="onboarding-modal" class="modal" style="display:none;">
@@ -149,18 +163,22 @@
     </div>
   </div>
 
-  <!-- MENU LATERAL (SIDEBAR SLIDE & SWIPE) -->
+  <!-- MENU LATERAL (SIDEBAR) -->
   <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar(false)"></div>
   <aside id="sidebar" class="sidebar">
     <div class="sidebar-title">OPÇÕES DO SISTEMA</div>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('ai-chat-modal');">🤖 Chat com IA Universal</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('vault-modal');">📦 Caixa de Textos / Travas</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('folder-vault-modal'); renderFolders();">📁 Minhas Pastas de Travas</button>
+    <button class="btn-action" onclick="toggleSidebar(false); openModal('miniapp-mgr-modal');">🧩 Criar/Gerenciar Mini Apps</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('ip-modal');">🌐 Buscar IP</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('dds-modal');">🔍 CONSULTA DDS</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('email-mgr-modal');">✉️ Gerenciador de E-mails</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('config-modal');">⚙️ Configurações</button>
     
+    <!-- ÁREA DINÂMICA DE MINI APPS NO MENU LATERAL -->
+    <div id="sidebar-miniapps-container" style="display:flex; flex-direction:column; gap:8px;"></div>
+
     <!-- SEÇÃO DE CANAIS -->
     <div style="margin: 10px 0; display: flex; flex-direction: column; gap: 8px;">
         <div style="color: var(--main-color); font-size: 0.75rem; text-align: center; font-weight: bold; margin-bottom: 5px;">MEUS CANAIS</div>
@@ -176,19 +194,24 @@
   <!-- TOPO: APENAS 3 BARRINHAS -->
   <div class="top-bar">
     <button class="menu-btn" onclick="toggleSidebar(true)">☰</button>
+    <span style="color:var(--main-color); font-size:0.9rem; font-weight:bold;">ZRX SYSTEM</span>
   </div>
 
   <div class="main-container">
 
     <!-- ABA 1: PAINEL / DASHBOARD -->
     <div id="tab-dashboard" class="tab-content active">
-      <div class="user-profile-card">
-        <img id="dash-avatar" src="https://via.placeholder.com/55" class="dash-avatar-img" onclick="document.getElementById('file-avatar').click()" title="Toque para mudar a foto">
-        <div>
-          <span style="font-size:0.65rem; color:#888; text-transform:uppercase;">OPERADOR ATIVO</span>
-          <h3 id="dash-username" style="color:#fff; font-size:1.1rem; margin:2px 0;">Usuário</h3>
-          <small style="color:var(--main-color); font-size:0.75rem;">● Sistema Conectado</small>
+      
+      <!-- PERFIL COM FOTO NO TOPO, NOME EMBIAXO E STORY AO CLICAR NA FOTO -->
+      <div class="user-profile-card-centered">
+        <div id="story-ring-container" class="story-ring" onclick="handleProfileClick()">
+          <img id="dash-avatar" src="https://via.placeholder.com/80" class="dash-avatar-img-centered" title="Clique para ver Story ou publicar">
         </div>
+        <div>
+          <h3 id="dash-username" style="color:#fff; font-size:1.2rem; font-weight:bold;">Usuário</h3>
+          <small style="color:var(--main-color); font-size:0.75rem; font-weight:bold;">● OPERADOR ATIVO</small>
+        </div>
+        <small id="story-time-status" style="font-size:0.65rem; color:#888;">Nenhum Story de 24h ativo</small>
       </div>
 
       <div class="metrics-grid">
@@ -283,8 +306,8 @@
 
   </div>
 
-  <!-- NAVEGAÇÃO INFERIOR -->
-  <div class="bottom-nav">
+  <!-- BARRA DE NAVEGAÇÃO INFERIOR -->
+  <div class="bottom-nav" id="bottom-nav-bar">
     <button class="nav-item active" onclick="switchTab('tab-dashboard', this)">
       <span>📊</span>
       PAINEL
@@ -297,9 +320,102 @@
       <span>🔔</span>
       NOTIFICAÇÕES
     </button>
+    <!-- MINI APPS DO MENU INFERIOR SERÃO INJETADOS AQUI -->
   </div>
 
   <!-- MODAIS DO SISTEMA -->
+
+  <!-- MODAL STORY DE 24 HORAS -->
+  <div id="story-modal" class="modal">
+    <div class="modal-content" style="text-align:center;">
+      <h3 style="color:var(--main-color);">📸 STORY (24 HORAS)</h3>
+      <div id="story-view-area" style="margin:10px 0; min-height:150px; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#080808; border:1px solid #333; border-radius:8px; padding:10px;">
+        <p style="color:#777; font-size:0.85rem;">Nenhum Story ativo no momento.</p>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <textarea id="story-text-input" placeholder="Escreva algo para o Story..." rows="2"></textarea>
+        <button class="btn-platform" onclick="document.getElementById('file-story').click()">📷 Selecionar Imagem do Story</button>
+        <button class="btn-action" onclick="publishStory()">POSTAR STORY</button>
+        <button class="btn-sm" onclick="deleteStory()" style="background:#330000; border-color:#ff0000;">🗑️ Excluir Story Ativo</button>
+        <button class="btn-sm" onclick="closeModal('story-modal')">Voltar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL GERENCIADOR DE MINI APPS -->
+  <div id="miniapp-mgr-modal" class="modal">
+    <div class="modal-content">
+      <h3 style="color:var(--main-color); text-align:center;">🧩 GERENCIADOR DE MINI APPS</h3>
+      <p style="font-size:0.75rem; color:#aaa; text-align:center;">Crie pequenos aplicativos com 4 botões customizados!</p>
+
+      <input type="text" id="miniapp-name-in" placeholder="Nome do Mini App">
+      
+      <button class="btn-platform" onclick="document.getElementById('file-miniapp-icon').click()">🖼️ Escolher Ícone/Foto do App</button>
+      <small id="miniapp-icon-status" style="color:#00ff66; font-size:0.7rem; text-align:center; display:none;">✓ Foto carregada!</small>
+
+      <label style="font-size:0.8rem; color:#ccc; margin-top:5px;">Exibir App em qual Menu?</label>
+      <select id="miniapp-menu-type">
+        <option value="lateral">Menu Lateral (Sidebar)</option>
+        <option value="inferior">Menu Inferior (Navegação)</option>
+      </select>
+
+      <hr style="border-color:#333; margin:5px 0;">
+      <h4 style="font-size:0.85rem; color:var(--main-color);">Configurar os 4 Botões Principais:</h4>
+      
+      <input type="text" id="btn-name-1" placeholder="Nome do Botão 1" value="Texto A">
+      <input type="text" id="btn-name-2" placeholder="Nome do Botão 2" value="Texto B">
+      <input type="text" id="btn-name-3" placeholder="Nome do Botão 3" value="Texto C">
+      <input type="text" id="btn-name-4" placeholder="Nome do Botão 4" value="Texto D">
+
+      <button class="btn-action" onclick="saveNewMiniApp()">SALVAR MINI APP</button>
+      
+      <hr style="border-color:#333; margin:8px 0;">
+      <div id="miniapps-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+
+      <button class="btn-sm" onclick="closeModal('miniapp-mgr-modal')">Voltar</button>
+    </div>
+  </div>
+
+  <!-- MODAL EXECUÇÃO DO MINI APP -->
+  <div id="miniapp-runner-modal" class="modal">
+    <div class="modal-content">
+      <div style="display:flex; align-items:center; gap:10px; border-bottom:1px solid #333; padding-bottom:8px;">
+        <img id="runner-app-icon" src="https://via.placeholder.com/40" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:1px solid var(--main-color);">
+        <h3 id="runner-app-title" style="color:var(--main-color); margin:0;">Mini App</h3>
+      </div>
+
+      <div class="violation-grid" style="grid-template-columns:1fr 1fr; margin-top:10px;">
+        <button class="btn-violation" id="run-btn-1" onclick="selectMiniAppBtn(1)">Botão 1</button>
+        <button class="btn-violation" id="run-btn-2" onclick="selectMiniAppBtn(2)">Botão 2</button>
+        <button class="btn-violation" id="run-btn-3" onclick="selectMiniAppBtn(3)">Botão 3</button>
+        <button class="btn-violation" id="run-btn-4" onclick="selectMiniAppBtn(4)">Botão 4</button>
+      </div>
+
+      <textarea id="runner-text-input" placeholder="Digite seu texto aqui..." rows="4" style="margin-top:10px;"></textarea>
+
+      <button class="btn-action" onclick="saveMiniAppText()">💾 SALVAR TEXTO</button>
+      <button class="btn-platform" onclick="openAddTextModal()" style="background:#222; border-color:var(--main-color); margin-top:5px;">➕ ADICIONAR NOVO TEXTO (NOVA ABA)</button>
+
+      <div id="runner-saved-texts" style="margin-top:10px; display:flex; flex-direction:column; gap:6px; max-height:150px; overflow-y:auto;"></div>
+
+      <button class="btn-sm" onclick="closeModal('miniapp-runner-modal')" style="margin-top:10px;">Voltar</button>
+    </div>
+  </div>
+
+  <!-- MODAL NOVA ABA: ADICIONAR NOVO TEXTO -->
+  <div id="add-text-modal" class="modal">
+    <div class="modal-content">
+      <h3 style="color:var(--main-color); text-align:center;">📝 NOVO TEXTO</h3>
+      <p style="font-size:0.8rem; color:#aaa; text-align:center;">Adicione um novo texto personalizado a este Mini App</p>
+
+      <input type="text" id="new-text-title-in" placeholder="Título do Texto">
+      <textarea id="new-text-body-in" placeholder="Cole ou digite o texto completo aqui..." rows="5"></textarea>
+
+      <button class="btn-action" onclick="saveNewTextFromModal()">SALVAR NOVO TEXTO</button>
+      <button class="btn-sm" onclick="closeModal('add-text-modal')">Voltar</button>
+    </div>
+  </div>
 
   <!-- MODAL: CONSULTA DDS -->
   <div id="dds-modal" class="modal">
@@ -362,7 +478,6 @@
     </div>
   </div>
 
-  <!-- MODAL: CONFIGURAÇÕES -->
   <div id="config-modal" class="modal">
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">Configurações</h3>
@@ -386,7 +501,6 @@
     </div>
   </div>
 
-  <!-- MODAL: VAULT (CAIXA DE TEXTOS / TRAVAS) -->
   <div id="vault-modal" class="modal">
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">Caixa de Textos / Travas</h3>
@@ -403,7 +517,6 @@
     </div>
   </div>
 
-  <!-- MODAL: PASTA DE TRAVAS -->
   <div id="folder-vault-modal" class="modal">
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">📁 PASTA DE TRAVAS</h3>
@@ -438,7 +551,6 @@
     </div>
   </div>
 
-  <!-- MODAL: BUSCA DE IP -->
   <div id="ip-modal" class="modal">
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">🌐 BUSCA DE IP</h3>
@@ -452,7 +564,6 @@
     </div>
   </div>
 
-  <!-- MODAL: GERENCIADOR DE E-MAILS -->
   <div id="email-mgr-modal" class="modal">
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">✉️ ADICIONAR E-MAILS</h3>
@@ -462,7 +573,7 @@
         <option value="Telegram">Telegram</option>
         <option value="Instagram">Instagram</option>
       </select>
-      <textarea id="email-list-input" placeholder="Cole os e-mails aqui... (separados por vírgula)"></textarea>
+      <textarea id="email-list-input" placeholder="Cole os e-mails aqui..."></textarea>
       <button class="btn-action" onclick="saveCustomEmails()">Adicionar E-mails</button>
       <button class="btn-sm" onclick="resetEmailsForSelected()" style="border-color:#555; color:#aaa;">Restaurar E-mails Padrão</button>
       <hr style="border-color:#333;">
@@ -471,11 +582,13 @@
     </div>
   </div>
 
-  <!-- SCRIPT LOGIC -->
   <script>
     let currentPlatform = '';
     let selectedViolation = '';
     let activeNotifIndexForProof = null;
+    let tempMiniAppIcon = null;
+    let currentRunningAppId = null;
+    let selectedMiniAppBtnIndex = 1;
 
     const baseEmailData = {
       'WhatsApp': ['support@whatsapp.com', 'legal@whatsapp.com', 'abuso@whatsapp.com', 'press@whatsapp.com'],
@@ -511,27 +624,6 @@
       } else {
         sidebar.classList.remove('active');
         overlay.classList.remove('active');
-      }
-    }
-
-    let touchStartX = 0;
-    let touchEndX = 0;
-
-    document.addEventListener('touchstart', e => {
-      touchStartX = e.changedTouches[0].screenX;
-    }, false);
-
-    document.addEventListener('touchend', e => {
-      touchEndX = e.changedTouches[0].screenX;
-      handleSwipe();
-    }, false);
-
-    function handleSwipe() {
-      const distance = touchEndX - touchStartX;
-      if (touchStartX < 50 && distance > 70) {
-        toggleSidebar(true);
-      } else if (distance < -70) {
-        toggleSidebar(false);
       }
     }
 
@@ -576,6 +668,319 @@
       }
     }
 
+    /* SISTEMA DE STORIES DE 24 HORAS */
+    function handleProfileClick() {
+      checkStoryExpiration();
+      const storyData = JSON.parse(localStorage.getItem('zrx_story') || 'null');
+      renderStoryView(storyData);
+      openModal('story-modal');
+    }
+
+    function handleStoryUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          window.tempStoryImg = e.target.result;
+          alert('Imagem selecionada para o Story!');
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function publishStory() {
+      const text = document.getElementById('story-text-input').value.trim();
+      const img = window.tempStoryImg || null;
+
+      if (!text && !img) {
+        alert('Digite um texto ou selecione uma imagem para o Story!');
+        return;
+      }
+
+      const storyObj = {
+        text: text,
+        img: img,
+        timestamp: Date.now()
+      };
+
+      localStorage.setItem('zrx_story', JSON.stringify(storyObj));
+      window.tempStoryImg = null;
+      document.getElementById('story-text-input').value = '';
+      
+      checkStoryExpiration();
+      renderStoryView(storyObj);
+      alert('Story de 24 horas publicado!');
+    }
+
+    function deleteStory() {
+      localStorage.removeItem('zrx_story');
+      checkStoryExpiration();
+      renderStoryView(null);
+      alert('Story removido!');
+    }
+
+    function renderStoryView(storyData) {
+      const area = document.getElementById('story-view-area');
+      if (!storyData) {
+        area.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum Story ativo no momento.</p>';
+        return;
+      }
+
+      const hoursLeft = Math.max(0, Math.round((24*60*60*1000 - (Date.now() - storyData.timestamp)) / (1000*60*60)));
+
+      area.innerHTML = `
+        <span style="font-size:0.7rem; color:var(--main-color); margin-bottom:5px;">🕒 Expira em aproximadamente ${hoursLeft}h</span>
+        ${storyData.img ? `<img src="${storyData.img}" style="max-width:100%; max-height:200px; border-radius:6px; border:1px solid #444; margin-bottom:8px;">` : ''}
+        ${storyData.text ? `<p style="color:#fff; font-size:0.9rem; font-weight:bold; word-break:break-word;">${storyData.text}</p>` : ''}
+      `;
+    }
+
+    function checkStoryExpiration() {
+      const storyData = JSON.parse(localStorage.getItem('zrx_story') || 'null');
+      const ring = document.getElementById('story-ring-container');
+      const statusText = document.getElementById('story-time-status');
+
+      if (!storyData) {
+        if(ring) ring.classList.remove('has-story');
+        if(statusText) statusText.innerText = 'Nenhum Story de 24h ativo';
+        return;
+      }
+
+      const now = Date.now();
+      const elapsed = now - storyData.timestamp;
+      const twentyFourHours = 24 * 60 * 60 * 1000;
+
+      if (elapsed >= twentyFourHours) {
+        localStorage.removeItem('zrx_story');
+        if(ring) ring.classList.remove('has-story');
+        if(statusText) statusText.innerText = 'Nenhum Story de 24h ativo';
+      } else {
+        if(ring) ring.classList.add('has-story');
+        const remainingHours = Math.ceil((twentyFourHours - elapsed) / (1000 * 60 * 60));
+        if(statusText) statusText.innerText = `● Story Ativo (Restam ~${remainingHours}h)`;
+      }
+    }
+
+    /* SISTEMA DE CRIAR E GERENCIAR MINI APPS */
+    function handleMiniAppIconUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          tempMiniAppIcon = e.target.result;
+          document.getElementById('miniapp-icon-status').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function getMiniApps() {
+      return JSON.parse(localStorage.getItem('zrx_miniapps') || '[]');
+    }
+
+    function saveNewMiniApp() {
+      const name = document.getElementById('miniapp-name-in').value.trim();
+      const menuType = document.getElementById('miniapp-menu-type').value;
+      const b1 = document.getElementById('btn-name-1').value.trim() || 'Botão 1';
+      const b2 = document.getElementById('btn-name-2').value.trim() || 'Botão 2';
+      const b3 = document.getElementById('btn-name-3').value.trim() || 'Botão 3';
+      const b4 = document.getElementById('btn-name-4').value.trim() || 'Botão 4';
+
+      if (!name) {
+        alert('Informe o nome do Mini App!');
+        return;
+      }
+
+      const apps = getMiniApps();
+      const newApp = {
+        id: 'app_' + Date.now(),
+        name: name,
+        icon: tempMiniAppIcon || 'https://via.placeholder.com/40',
+        menuType: menuType,
+        buttons: [b1, b2, b3, b4],
+        savedTexts: {}
+      };
+
+      apps.push(newApp);
+      localStorage.setItem('zrx_miniapps', JSON.stringify(apps));
+
+      tempMiniAppIcon = null;
+      document.getElementById('miniapp-name-in').value = '';
+      document.getElementById('miniapp-icon-status').style.display = 'none';
+
+      renderMiniAppLists();
+      alert('Mini App criado com sucesso!');
+    }
+
+    function deleteMiniApp(id) {
+      if(confirm('Deseja excluir este Mini App?')) {
+        let apps = getMiniApps();
+        apps = apps.filter(a => a.id !== id);
+        localStorage.setItem('zrx_miniapps', JSON.stringify(apps));
+        renderMiniAppLists();
+      }
+    }
+
+    function renderMiniAppLists() {
+      const apps = getMiniApps();
+      const mgrList = document.getElementById('miniapps-list');
+      const sidebarContainer = document.getElementById('sidebar-miniapps-container');
+      const bottomNav = document.getElementById('bottom-nav-bar');
+
+      if (mgrList) mgrList.innerHTML = '';
+      if (sidebarContainer) sidebarContainer.innerHTML = '';
+
+      // Limpar botões extras da bottom-nav mantendo os 3 padrões
+      const defaultNavBtns = `
+        <button class="nav-item active" onclick="switchTab('tab-dashboard', this)"><span>📊</span>PAINEL</button>
+        <button class="nav-item" onclick="switchTab('tab-denuncias', this)"><span>🚨</span>DENÚNCIAS</button>
+        <button class="nav-item" onclick="switchTab('tab-notificacoes', this)"><span>🔔</span>NOTIFICAÇÕES</button>
+      `;
+      if (bottomNav) bottomNav.innerHTML = defaultNavBtns;
+
+      if (sidebarContainer) sidebarContainer.innerHTML = '<div style="color:var(--main-color); font-size:0.75rem; text-align:center; font-weight:bold; margin-top:5px;">MEUS MINI APPS</div>';
+
+      apps.forEach(app => {
+        // Renderizar no Gerenciador
+        if (mgrList) {
+          mgrList.innerHTML += `
+            <div style="background:#0d0d0d; border:1px solid #333; padding:8px; border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <img src="${app.icon}" style="width:30px; height:30px; border-radius:50%; object-fit:cover;">
+                <div>
+                  <strong style="color:#fff; font-size:0.85rem;">${app.name}</strong><br>
+                  <small style="color:#777; font-size:0.65rem;">Menu: ${app.menuType}</small>
+                </div>
+              </div>
+              <button class="btn-sm" onclick="deleteMiniApp('${app.id}')" style="border-color:#555; color:#aaa;">Excluir</button>
+            </div>
+          `;
+        }
+
+        // Renderizar no Menu Lateral se escolhido
+        if (app.menuType === 'lateral' && sidebarContainer) {
+          sidebarContainer.innerHTML += `
+            <button class="btn-action" style="background:#151515; border:1px solid var(--main-color);" onclick="toggleSidebar(false); launchMiniApp('${app.id}')">
+              📱 ${app.name}
+            </button>
+          `;
+        }
+
+        // Renderizar no Menu Inferior se escolhido
+        if (app.menuType === 'inferior' && bottomNav) {
+          const navBtn = document.createElement('button');
+          navBtn.className = 'nav-item';
+          navBtn.onclick = () => launchMiniApp(app.id);
+          navBtn.innerHTML = `<span>📱</span>${app.name.substring(0, 8)}`;
+          bottomNav.appendChild(navBtn);
+        }
+      });
+    }
+
+    /* EXECUTAR MINI APP */
+    function launchMiniApp(appId) {
+      const apps = getMiniApps();
+      const app = apps.find(a => a.id === appId);
+      if(!app) return;
+
+      currentRunningAppId = appId;
+      selectedMiniAppBtnIndex = 1;
+
+      document.getElementById('runner-app-title').innerText = app.name;
+      document.getElementById('runner-app-icon').src = app.icon;
+
+      document.getElementById('run-btn-1').innerText = app.buttons[0] || 'Botão 1';
+      document.getElementById('run-btn-2').innerText = app.buttons[1] || 'Botão 2';
+      document.getElementById('run-btn-3').innerText = app.buttons[2] || 'Botão 3';
+      document.getElementById('run-btn-4').innerText = app.buttons[3] || 'Botão 4';
+
+      selectMiniAppBtn(1);
+      openModal('miniapp-runner-modal');
+    }
+
+    function selectMiniAppBtn(btnIndex) {
+      selectedMiniAppBtnIndex = btnIndex;
+      for(let i=1; i<=4; i++) {
+        const b = document.getElementById(`run-btn-${i}`);
+        if(i === btnIndex) b.classList.add('selected');
+        else b.classList.remove('selected');
+      }
+
+      // Carregar texto salvo se houver
+      const apps = getMiniApps();
+      const app = apps.find(a => a.id === currentRunningAppId);
+      const textVal = (app && app.savedTexts) ? (app.savedTexts[btnIndex] || '') : '';
+      document.getElementById('runner-text-input').value = textVal;
+
+      renderSavedTextsInRunner();
+    }
+
+    function saveMiniAppText() {
+      const text = document.getElementById('runner-text-input').value;
+      const apps = getMiniApps();
+      const appIndex = apps.findIndex(a => a.id === currentRunningAppId);
+
+      if (appIndex !== -1) {
+        if (!apps[appIndex].savedTexts) apps[appIndex].savedTexts = {};
+        apps[appIndex].savedTexts[selectedMiniAppBtnIndex] = text;
+        localStorage.setItem('zrx_miniapps', JSON.stringify(apps));
+        alert('Texto salvo para o botão!');
+        renderSavedTextsInRunner();
+      }
+    }
+
+    function renderSavedTextsInRunner() {
+      const apps = getMiniApps();
+      const app = apps.find(a => a.id === currentRunningAppId);
+      const container = document.getElementById('runner-saved-texts');
+      if(!container) return;
+      container.innerHTML = '<strong style="color:var(--main-color); font-size:0.75rem;">Textos Gravados neste App:</strong>';
+
+      if (!app || !app.savedTexts) return;
+
+      for (let btnIdx in app.savedTexts) {
+        const val = app.savedTexts[btnIdx];
+        if (val) {
+          container.innerHTML += `
+            <div style="background:#0a0a0a; border:1px solid #333; padding:6px; border-radius:4px; font-size:0.75rem; color:#ccc; display:flex; justify-content:space-between; align-items:center;">
+              <span><strong>${app.buttons[btnIdx-1]}:</strong> ${val.substring(0, 20)}...</span>
+              <button class="btn-sm" onclick="navigator.clipboard.writeText('${val.replace(/'/g, "\\'")}'); alert('Copiado!');">📋</button>
+            </div>
+          `;
+        }
+      }
+    }
+
+    /* MODAL DE ADICIONAR NOVO TEXTO (NOVA ABA) */
+    function openAddTextModal() {
+      document.getElementById('new-text-title-in').value = '';
+      document.getElementById('new-text-body-in').value = '';
+      openModal('add-text-modal');
+    }
+
+    function saveNewTextFromModal() {
+      const title = document.getElementById('new-text-title-in').value.trim();
+      const body = document.getElementById('new-text-body-in').value.trim();
+
+      if (!title || !body) {
+        alert('Preencha o título e o texto!');
+        return;
+      }
+
+      // Salvar direto no cofre global / vault para ficar acessível
+      const vault = getVault();
+      vault.push({ title: title, text: body });
+      localStorage.setItem('zrx_vault', JSON.stringify(vault));
+
+      // Também coloca no campo do botão ativo do Mini App se desejar
+      document.getElementById('runner-text-input').value = body;
+      saveMiniAppText();
+
+      closeModal('add-text-modal');
+      alert('Novo texto cadastrado e atribuído com sucesso!');
+    }
+
+    /* DENÚNCIAS E OUTROS RECURSOS */
     function selectPlatform(p, btn) {
       currentPlatform = p;
       document.querySelectorAll('.btn-platform').forEach(b => b.classList.remove('active'));
@@ -597,10 +1002,7 @@
 
     function showStep2() { 
       const alvo = document.getElementById('field-alvo').value;
-      if (!alvo) {
-        alert('Por favor, informe o ID/Link do alvo!');
-        return;
-      }
+      if (!alvo) { alert('Por favor, informe o ID/Link do alvo!'); return; }
       document.getElementById('step2-area').style.display = 'flex'; 
     }
     
@@ -609,10 +1011,7 @@
       const kwai = document.getElementById('field-kwai-id') ? document.getElementById('field-kwai-id').value : '';
       const texto = document.getElementById('texto-denuncia').value;
 
-      if(!selectedViolation) { 
-        alert('Selecione uma violação!'); 
-        return; 
-      }
+      if(!selectedViolation) { alert('Selecione uma violação!'); return; }
 
       loadEmails();
       const emails = emailData[currentPlatform] || [];
@@ -642,9 +1041,7 @@
       window.location.href = mailtoUrl;
     }
 
-    function getNotifications() {
-      return JSON.parse(localStorage.getItem('zrx_notifs') || '[]');
-    }
+    function getNotifications() { return JSON.parse(localStorage.getItem('zrx_notifs') || '[]'); }
 
     function addNotification(item) {
       const notifs = getNotifications();
@@ -719,16 +1116,13 @@
       }
     }
 
-    /* FUNÇÃO DE CONSULTA DDS - TOTALMENTE DINÂMICA COM VALIDAÇÃO */
+    /* CONSULTA DDS DINÂMICA */
     async function executeDDSQuery() {
       const type = document.getElementById('dds-type-select').value;
       const query = document.getElementById('dds-query-input').value.trim();
       const resultsDiv = document.getElementById('dds-results');
 
-      if (!query) {
-        alert('Por favor, informe o dado para consulta!');
-        return;
-      }
+      if (!query) { alert('Por favor, informe o dado para consulta!'); return; }
 
       resultsDiv.style.display = 'block';
       resultsDiv.innerHTML = '⚡ Consultando banco de dados...';
@@ -765,15 +1159,14 @@
           };
         }
 
-        if (!data || data.erro || data.status === '404' || Object.keys(data).length === 0) {
+        if (!data || data.erro || Object.keys(data).length === 0) {
           resultsDiv.innerHTML = `
             <div style="border-bottom:1px solid var(--main-color); padding-bottom:5px; margin-bottom:8px;">
               <strong>STATUS:</strong> <span style="color:#ff4444;">NÃO ENCONTRADO</span><br>
               <strong>PARÂMETRO BUSCADO:</strong> ${query}
             </div>
             <div style="text-align:center; padding:15px; color:#aaa;">
-              ❌ <strong>Nenhum registro localizado na base de dados.</strong><br>
-              <small>Verifique se o ${type.toUpperCase()} foi digitado corretamente.</small>
+              ❌ <strong>Nenhum registro localizado na base de dados.</strong>
             </div>
           `;
           return;
@@ -785,48 +1178,36 @@
             <strong>TIPO DE CONSULTA:</strong> ${type.toUpperCase()}<br>
             <strong>PARÂMETRO BUSCADO:</strong> ${query}
           </div>
-          
           <strong style="color:var(--main-color);">👤 DADOS PESSOAIS COMPLETOS:</strong><br>
-          <strong>NOME COMPLETO:</strong> ${data.nome || 'N/A'}<br>
-          <strong>CPF:</strong> ${data.cpf || 'N/A'}<br>
-          <strong>SITUAÇÃO CPF:</strong> <span style="color:#00ff66;">${data.situacao_cpf || 'REGULAR'}</span><br>
-          <strong>RG:</strong> ${data.rg || 'N/A'}<br>
-          <strong>DATA DE NASCIMENTO:</strong> ${data.nascimento || 'N/A'}<br>
-          <strong>GÊNERO:</strong> ${data.genero || 'N/A'}<br>
-          <strong>ESTADO CIVIL:</strong> ${data.estado_civil || 'N/A'}<br>
-          <strong>NOME DA MÃE:</strong> ${data.mae || 'N/A'}<br>
-          <strong>NOME DO PAI:</strong> ${data.pai || 'N/A'}<br>
-          
+          <strong>NOME COMPLETO:</strong> ${data.nome}<br>
+          <strong>CPF:</strong> ${data.cpf}<br>
+          <strong>SITUAÇÃO CPF:</strong> <span style="color:#00ff66;">${data.situacao_cpf}</span><br>
+          <strong>RG:</strong> ${data.rg}<br>
+          <strong>DATA DE NASCIMENTO:</strong> ${data.nascimento}<br>
+          <strong>GÊNERO:</strong> ${data.genero}<br>
+          <strong>ESTADO CIVIL:</strong> ${data.estado_civil}<br>
+          <strong>NOME DA MÃE:</strong> ${data.mae}<br>
+          <strong>NOME DO PAI:</strong> ${data.pai}<br>
           <hr style="border-color:#333; margin:8px 0;">
-          
           <strong style="color:var(--main-color);">📞 CONTATO & TELEFONIA:</strong><br>
-          <strong>TELEFONE PRINCIPAL:</strong> ${data.telefone || 'N/A'}<br>
-          <strong>OPERADORA:</strong> ${data.operadora || 'N/A'}<br>
-          <strong>E-MAIL VINCULADO:</strong> ${data.email || 'N/A'}<br>
-
+          <strong>TELEFONE PRINCIPAL:</strong> ${data.telefone}<br>
+          <strong>OPERADORA:</strong> ${data.operadora}<br>
+          <strong>E-MAIL VINCULADO:</strong> ${data.email}<br>
           <hr style="border-color:#333; margin:8px 0;">
-
           <strong style="color:var(--main-color);">🏠 ENDEREÇO E LOCALIZAÇÃO:</strong><br>
-          <strong>LOGRADOURO:</strong> ${data.logradouro || 'N/A'}<br>
-          <strong>BAIRRO:</strong> ${data.bairro || 'N/A'}<br>
-          <strong>CIDADE / UF:</strong> ${data.cidade || 'N/A'}<br>
-          <strong>CEP:</strong> ${data.cep || 'N/A'}<br>
-
+          <strong>LOGRADOURO:</strong> ${data.logradouro}<br>
+          <strong>BAIRRO:</strong> ${data.bairro}<br>
+          <strong>CIDADE / UF:</strong> ${data.cidade}<br>
+          <strong>CEP:</strong> ${data.cep}<br>
           <hr style="border-color:#333; margin:8px 0;">
-
           <strong style="color:var(--main-color);">🚗 REGISTRO DE VEÍCULOS:</strong><br>
-          <strong>PLACA DO VEÍCULO:</strong> ${data.placa || 'N/A'}<br>
-          <strong>VEÍCULO:</strong> ${data.veiculo || 'N/A'}<br>
-          <strong>COR:</strong> ${data.cor || 'N/A'}<br>
-          <strong>MODELO/ANO:</strong> ${data.ano || 'N/A'}<br>
+          <strong>PLACA DO VEÍCULO:</strong> ${data.placa}<br>
+          <strong>VEÍCULO:</strong> ${data.veiculo}<br>
+          <strong>COR:</strong> ${data.cor}<br>
+          <strong>MODELO/ANO:</strong> ${data.ano}<br>
         `;
-
       } catch (err) {
-        resultsDiv.innerHTML = `
-          <div style="color:#ff4444; text-align:center; padding:10px;">
-            ⚠️ Erro ao comunicar com o banco de dados.
-          </div>
-        `;
+        resultsDiv.innerHTML = '<div style="color:#ff4444; text-align:center; padding:10px;">⚠️ Erro ao comunicar com o banco de dados.</div>';
       }
     }
 
@@ -836,9 +1217,7 @@
       fetchIPDetails(`https://ipinfo.io/${ip}/json`);
     }
 
-    function searchMyIP() {
-      fetchIPDetails(`https://ipinfo.io/json`);
-    }
+    function searchMyIP() { fetchIPDetails(`https://ipinfo.io/json`); }
 
     function fetchIPDetails(url) {
       const resContainer = document.getElementById('ip-results');
@@ -856,7 +1235,6 @@
             <strong>🗺️ Coordenadas:</strong> ${data.loc || 'N/A'}<br>
             <strong>🕒 Fuso Horário:</strong> ${data.timezone || 'N/A'}
           `;
-          
           let count = parseInt(localStorage.getItem('zrx_ip_count') || '0');
           localStorage.setItem('zrx_ip_count', count + 1);
           updateDashboardMetrics();
@@ -899,13 +1277,15 @@
       display.innerHTML = `<strong>E-mails atuais para ${plat}:</strong><br>` + (emailData[plat] ? emailData[plat].join('<br>') : 'Nenhum');
     }
 
+    if(document.getElementById('email-plat-select')) {
+      document.getElementById('email-plat-select').addEventListener('change', displayCurrentEmails);
+    }
+
     function openModal(id) { 
       document.getElementById(id).style.display = 'flex'; 
       if(id === 'email-mgr-modal') displayCurrentEmails();
-      if(id === 'ai-chat-modal') {
-        loadAiSettings();
-        renderAiChatHistory();
-      }
+      if(id === 'ai-chat-modal') { loadAiSettings(); renderAiChatHistory(); }
+      if(id === 'miniapp-mgr-modal') { renderMiniAppLists(); }
     }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     
@@ -917,9 +1297,7 @@
       location.reload();
     }
 
-    function getVault() {
-      return JSON.parse(localStorage.getItem('zrx_vault') || '[]');
-    }
+    function getVault() { return JSON.parse(localStorage.getItem('zrx_vault') || '[]'); }
 
     function renderVault() {
       const vault = getVault();
@@ -928,7 +1306,7 @@
       list.innerHTML = '';
       
       if(vault.length === 0) {
-        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">Nenum item salvo ainda.</span>';
+        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">Nenhum item salvo ainda.</span>';
         return;
       }
 
@@ -975,20 +1353,28 @@
       renderVault();
     }
 
+    if (document.getElementById('folder-type-select')) {
+      document.getElementById('folder-type-select').addEventListener('change', function() {
+        if (this.value === 'texto') {
+          document.getElementById('input-texto-area').style.display = 'block';
+          document.getElementById('input-arquivo-area').style.display = 'none';
+        } else {
+          document.getElementById('input-texto-area').style.display = 'none';
+          document.getElementById('input-arquivo-area').style.display = 'block';
+        }
+      });
+    }
+
     function saveItemToFolder() {
       const folderName = document.getElementById('folder-name-in').value.trim();
       const folderType = document.getElementById('folder-type-select').value;
       const itemTitle = document.getElementById('item-title-in').value.trim();
 
-      if (!folderName || !itemTitle) {
-        alert('Preencha o nome da pasta e o nome do item!');
-        return;
-      }
+      if (!folderName || !itemTitle) { alert('Preencha o nome da pasta e o nome do item!'); return; }
 
       if (folderType === 'texto') {
         const textContent = document.getElementById('item-text-in').value;
         if (!textContent) { alert('Cole o texto da trava!'); return; }
-
         saveToStorage(folderName, 'texto', { title: itemTitle, text: textContent });
         document.getElementById('item-text-in').value = '';
         renderFolders();
@@ -996,14 +1382,9 @@
         const fileInput = document.getElementById('item-file-in');
         const file = fileInput.files[0];
         if (!file) { alert('Selecione um arquivo!'); return; }
-
         const reader = new FileReader();
         reader.onload = function(e) {
-          saveToStorage(folderName, 'arquivo', { 
-            title: itemTitle, 
-            fileName: file.name, 
-            fileData: e.target.result 
-          });
+          saveToStorage(folderName, 'arquivo', { title: itemTitle, fileName: file.name, fileData: e.target.result });
           fileInput.value = '';
           renderFolders();
         };
@@ -1013,11 +1394,7 @@
 
     function saveToStorage(folderName, type, dataObj) {
       const vault = JSON.parse(localStorage.getItem('zrx_custom_folders') || '{}');
-      
-      if (!vault[folderName]) {
-        vault[folderName] = { type: type, items: [] };
-      }
-
+      if (!vault[folderName]) vault[folderName] = { type: type, items: [] };
       vault[folderName].items.push(dataObj);
       localStorage.setItem('zrx_custom_folders', JSON.stringify(vault));
       alert('Item salvo com sucesso na pasta "' + folderName + '"!');
@@ -1072,13 +1449,12 @@
 
     function copyFolderText(folderName, index) {
       const vault = JSON.parse(localStorage.getItem('zrx_custom_folders') || '{}');
-      const text = vault[folderName].items[index].text;
-      navigator.clipboard.writeText(text);
+      navigator.clipboard.writeText(vault[folderName].items[index].text);
       alert('Trava copiada para a área de transferência!');
     }
 
     function deleteFolder(folderName) {
-      if (confirm(`Deseja apagar a pasta "${folderName}" e todo o seu conteúdo?`)) {
+      if (confirm(`Deseja apagar a pasta "${folderName}"?`)) {
         const vault = JSON.parse(localStorage.getItem('zrx_custom_folders') || '{}');
         delete vault[folderName];
         localStorage.setItem('zrx_custom_folders', JSON.stringify(vault));
@@ -1086,7 +1462,7 @@
       }
     }
 
-    /* SISTEMA UNIVERSAL DE IA */
+    /* CHAT IA */
     const defaultProviders = {
       openai: { url: 'https://api.openai.com/v1/chat/completions', model: 'gpt-3.5-turbo' },
       groq: { url: 'https://api.groq.com/openai/v1/chat/completions', model: 'llama3-8b-8192' },
@@ -1104,15 +1480,10 @@
     }
 
     function loadAiSettings() {
-      const provider = localStorage.getItem('zrx_ai_provider') || 'openai';
-      const url = localStorage.getItem('zrx_ai_url') || defaultProviders.openai.url;
-      const model = localStorage.getItem('zrx_ai_model') || defaultProviders.openai.model;
-      const apiKey = localStorage.getItem('zrx_openai_key') || '';
-
-      document.getElementById('ai-provider-select').value = provider;
-      document.getElementById('ai-url-input').value = url;
-      document.getElementById('ai-model-input').value = model;
-      document.getElementById('openai-key-input').value = apiKey;
+      document.getElementById('ai-provider-select').value = localStorage.getItem('zrx_ai_provider') || 'openai';
+      document.getElementById('ai-url-input').value = localStorage.getItem('zrx_ai_url') || defaultProviders.openai.url;
+      document.getElementById('ai-model-input').value = localStorage.getItem('zrx_ai_model') || defaultProviders.openai.model;
+      document.getElementById('openai-key-input').value = localStorage.getItem('zrx_openai_key') || '';
     }
 
     function saveApiKey() {
@@ -1120,36 +1491,30 @@
       const url = document.getElementById('ai-url-input').value.trim();
       const model = document.getElementById('ai-model-input').value.trim();
       const keyInput = document.getElementById('openai-key-input').value.trim();
-      const statusMsg = document.getElementById('key-status-msg');
 
-      if (!url || !model) {
-        alert('URL da API e Nome do Modelo são obrigatórios!');
-        return;
-      }
+      if (!url || !model) { alert('URL e Modelo são obrigatórios!'); return; }
 
       localStorage.setItem('zrx_ai_provider', provider);
       localStorage.setItem('zrx_ai_url', url);
       localStorage.setItem('zrx_ai_model', model);
       localStorage.setItem('zrx_openai_key', keyInput);
       
+      const statusMsg = document.getElementById('key-status-msg');
       if (statusMsg) {
         statusMsg.style.display = 'block';
         setTimeout(() => { statusMsg.style.display = 'none'; }, 3000);
       }
-
-      alert('Configurações de IA salvas com sucesso!');
+      alert('Configurações salvas!');
     }
 
     function renderAiChatHistory() {
       const box = document.getElementById('ai-chat-box');
       box.innerHTML = '';
-      
       const history = JSON.parse(localStorage.getItem('zrx_ai_history') || '[]');
       if(history.length === 0) {
-        box.innerHTML = '<div class="chat-msg ai">Olá! Conecte qualquer API/Modelo de IA acima, salve e comece a conversar!</div>';
+        box.innerHTML = '<div class="chat-msg ai">Olá! Conecte qualquer API/Modelo de IA e converse livremente!</div>';
         return;
       }
-
       history.forEach(m => {
         const div = document.createElement('div');
         div.className = `chat-msg ${m.role === 'user' ? 'user' : 'ai'}`;
@@ -1172,13 +1537,12 @@
       const history = JSON.parse(localStorage.getItem('zrx_ai_history') || '[]');
 
       if(!apiKey && provider !== 'ollama') {
-        alert('Por favor, digite sua API Key e clique em "SALVAR IA" antes de enviar!');
+        alert('Por favor, digite sua API Key e clique em SALVAR IA!');
         return;
       }
 
       history.push({ role: 'user', content: text });
       localStorage.setItem('zrx_ai_history', JSON.stringify(history));
-      
       input.value = '';
       renderAiChatHistory();
 
@@ -1191,29 +1555,22 @@
 
       try {
         const headers = { 'Content-Type': 'application/json' };
-        if (apiKey) {
-          headers['Authorization'] = `Bearer ${apiKey}`;
-        }
+        if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`;
 
         const response = await fetch(url, {
           method: 'POST',
           headers: headers,
-          body: JSON.stringify({
-            model: model,
-            messages: history.map(h => ({ role: h.role, content: h.content }))
-          })
+          body: JSON.stringify({ model: model, messages: history.map(h => ({ role: h.role, content: h.content })) })
         });
 
         const data = await response.json();
-
         if (data.choices && data.choices[0] && data.choices[0].message) {
-          const aiReply = data.choices[0].message.content;
-          history.push({ role: 'assistant', content: aiReply });
+          history.push({ role: 'assistant', content: data.choices[0].message.content });
         } else {
-          history.push({ role: 'assistant', content: '⚠️ Erro da IA: ' + (data.error ? (data.error.message || JSON.stringify(data.error)) : 'Resposta inválida do servidor.') });
+          history.push({ role: 'assistant', content: '⚠️ Erro da IA: ' + (data.error ? (data.error.message || JSON.stringify(data.error)) : 'Resposta inválida.') });
         }
       } catch (err) {
-        history.push({ role: 'assistant', content: '⚠️ Erro de conexão com o endpoint da IA.' });
+        history.push({ role: 'assistant', content: '⚠️ Erro de conexão com o servidor da IA.' });
       }
 
       localStorage.setItem('zrx_ai_history', JSON.stringify(history));
@@ -1221,7 +1578,7 @@
     }
 
     function clearAiChat() {
-      if(confirm('Limpar o histórico de conversas da IA?')) {
+      if(confirm('Limpar o histórico de conversas?')) {
         localStorage.removeItem('zrx_ai_history');
         renderAiChatHistory();
       }
@@ -1231,10 +1588,7 @@
       const name = document.getElementById('setup-username').value.trim();
       const pin = document.getElementById('setup-pin').value.trim();
 
-      if(!name || pin.length !== 4) {
-        alert('Informe seu nome e um PIN com 4 dígitos!');
-        return;
-      }
+      if(!name || pin.length !== 4) { alert('Informe seu nome e um PIN de 4 dígitos!'); return; }
 
       localStorage.setItem('n', name);
       localStorage.setItem('zrx_pin', pin);
@@ -1245,36 +1599,33 @@
     }
 
     function showPinLock() {
-      const savedName = localStorage.getItem('n') || 'Operador';
-      const savedAvatar = localStorage.getItem('a') || 'https://via.placeholder.com/70';
-
-      document.getElementById('login-username-display').innerText = savedName;
-      document.getElementById('login-avatar-display').src = savedAvatar;
+      document.getElementById('login-username-display').innerText = localStorage.getItem('n') || 'Operador';
+      document.getElementById('login-avatar-display').src = localStorage.getItem('a') || 'https://via.placeholder.com/70';
       document.getElementById('pin-login-modal').style.display = 'flex';
     }
 
     function validateLoginPin() {
       const enteredPin = document.getElementById('login-pin-input').value.trim();
-      const savedPin = localStorage.getItem('zrx_pin');
-
-      if(enteredPin === savedPin) {
+      if(enteredPin === localStorage.getItem('zrx_pin')) {
         document.getElementById('pin-login-modal').style.display = 'none';
         document.getElementById('login-pin-input').value = '';
         loadUserData();
       } else {
-        alert('❌ PIN incorreto. Tente novamente.');
+        alert('❌ PIN incorreto.');
         document.getElementById('login-pin-input').value = '';
       }
     }
 
     function loadUserData() {
       const name = localStorage.getItem('n') || 'Usuário';
-      const avatar = localStorage.getItem('a') || 'https://via.placeholder.com/55';
+      const avatar = localStorage.getItem('a') || 'https://via.placeholder.com/80';
 
       document.getElementById('dash-username').innerText = name;
       document.getElementById('dash-avatar').src = avatar;
       document.getElementById('in-name').value = name;
 
+      checkStoryExpiration();
+      renderMiniAppLists();
       updateDashboardMetrics();
     }
 
@@ -1315,27 +1666,10 @@
 
       if(localStorage.getItem('b')) document.body.style.backgroundImage = `url('${localStorage.getItem('b')}')`;
 
-      const isConfigured = localStorage.getItem('zrx_configured');
-      if(!isConfigured) {
+      if(!localStorage.getItem('zrx_configured')) {
         document.getElementById('onboarding-modal').style.display = 'flex';
       } else {
         showPinLock();
-      }
-
-      if (document.getElementById('folder-type-select')) {
-        document.getElementById('folder-type-select').addEventListener('change', function() {
-          if (this.value === 'texto') {
-            document.getElementById('input-texto-area').style.display = 'block';
-            document.getElementById('input-arquivo-area').style.display = 'none';
-          } else {
-            document.getElementById('input-texto-area').style.display = 'none';
-            document.getElementById('input-arquivo-area').style.display = 'block';
-          }
-        });
-      }
-
-      if(document.getElementById('email-plat-select')) {
-        document.getElementById('email-plat-select').addEventListener('change', displayCurrentEmails);
       }
 
       renderVault();
