@@ -30,6 +30,7 @@
       background: #0d0d0d; border-right: 2px solid var(--main-color);
       box-shadow: 5px 0 25px var(--shadow-color); z-index: 201;
       transition: transform 0.3s ease; display: flex; flex-direction: column; padding: 20px 15px; gap: 12px;
+      overflow-y: auto;
     }
     .sidebar.active { transform: translateX(280px); }
     .sidebar-title { color: var(--main-color); font-size: 1.1rem; text-align: center; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 10px; }
@@ -117,6 +118,7 @@
 </head>
 <body>
 
+  <!-- INPUTS DE ARQUIVOS OCULTOS -->
   <input type="file" id="file-avatar" accept="image/*" onchange="handleFileSelect(event, 'a')">
   <input type="file" id="file-bg" accept="image/*" onchange="handleFileSelect(event, 'b')">
   <input type="file" id="file-proof" accept="image/*" onchange="handleProofUpload(event)">
@@ -360,6 +362,7 @@
     </div>
   </div>
 
+  <!-- MODAL: CONFIGURAÇÕES -->
   <div id="config-modal" class="modal">
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">Configurações</h3>
@@ -383,6 +386,7 @@
     </div>
   </div>
 
+  <!-- MODAL: VAULT (CAIXA DE TEXTOS / TRAVAS) -->
   <div id="vault-modal" class="modal">
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">Caixa de Textos / Travas</h3>
@@ -399,6 +403,7 @@
     </div>
   </div>
 
+  <!-- MODAL: PASTA DE TRAVAS -->
   <div id="folder-vault-modal" class="modal">
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">📁 PASTA DE TRAVAS</h3>
@@ -433,6 +438,7 @@
     </div>
   </div>
 
+  <!-- MODAL: BUSCA DE IP -->
   <div id="ip-modal" class="modal">
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">🌐 BUSCA DE IP</h3>
@@ -446,6 +452,7 @@
     </div>
   </div>
 
+  <!-- MODAL: GERENCIADOR DE E-MAILS -->
   <div id="email-mgr-modal" class="modal">
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">✉️ ADICIONAR E-MAILS</h3>
@@ -455,7 +462,7 @@
         <option value="Telegram">Telegram</option>
         <option value="Instagram">Instagram</option>
       </select>
-      <textarea id="email-list-input" placeholder="Cole os e-mails aqui..."></textarea>
+      <textarea id="email-list-input" placeholder="Cole os e-mails aqui... (separados por vírgula)"></textarea>
       <button class="btn-action" onclick="saveCustomEmails()">Adicionar E-mails</button>
       <button class="btn-sm" onclick="resetEmailsForSelected()" style="border-color:#555; color:#aaa;">Restaurar E-mails Padrão</button>
       <hr style="border-color:#333;">
@@ -464,6 +471,7 @@
     </div>
   </div>
 
+  <!-- SCRIPT LOGIC -->
   <script>
     let currentPlatform = '';
     let selectedViolation = '';
@@ -572,7 +580,6 @@
       currentPlatform = p;
       document.querySelectorAll('.btn-platform').forEach(b => b.classList.remove('active'));
       if(btn) btn.classList.add('active');
-      else if(event && event.target) event.target.classList.add('active');
       
       document.getElementById('step1-area').style.display = 'flex';
       document.getElementById('step2-area').style.display = 'none';
@@ -586,7 +593,6 @@
       selectedViolation = v;
       document.querySelectorAll('.btn-violation').forEach(b => b.classList.remove('selected'));
       if(btn) btn.classList.add('selected');
-      else if(event && event.target) event.target.classList.add('selected');
     }
 
     function showStep2() { 
@@ -728,20 +734,8 @@
       resultsDiv.innerHTML = '⚡ Consultando banco de dados...';
 
       try {
-        /*
-           INTEGRAÇÃO COM API EXTERNA (OPCIONAL):
-           Descomente as linhas abaixo para conectar com seu provedor HTTP/API real.
-        
-           const token = 'SEU_TOKEN_AQUI';
-           const url = `https://apis.gonzalesdev.shop/?token=${token}&tipo=${type}&busca=${encodeURIComponent(query)}`;
-           const response = await fetch(url);
-           const data = await response.json();
-        */
-
-        // SIMULAÇÃO DE RESPOSTA DA API PARA VALIDAÇÃO LOCAL
         let data = null;
 
-        // Regra de exemplo: Se buscar por "000" ou termos específicos, simula que não encontrou
         if (!query.includes('000') && query.length > 2) {
           const randCpf = `${Math.floor(100+Math.random()*899)}.${Math.floor(100+Math.random()*899)}.${Math.floor(100+Math.random()*899)}-${Math.floor(10+Math.random()*89)}`;
           const randRg = `${Math.floor(10+Math.random()*89)}.${Math.floor(100+Math.random()*899)}.${Math.floor(100+Math.random()*899)}-${Math.floor(0+Math.random()*9)} SSP/SP`;
@@ -771,7 +765,6 @@
           };
         }
 
-        // 🔴 TRAVA: Se não encontrar nenhum registro
         if (!data || data.erro || data.status === '404' || Object.keys(data).length === 0) {
           resultsDiv.innerHTML = `
             <div style="border-bottom:1px solid var(--main-color); padding-bottom:5px; margin-bottom:8px;">
@@ -786,7 +779,6 @@
           return;
         }
 
-        // 🟢 EXIBIÇÃO COMPLETA E DINÂMICA DOS DADOS ENCONTRADOS
         resultsDiv.innerHTML = `
           <div style="border-bottom:1px solid var(--main-color); padding-bottom:5px; margin-bottom:8px;">
             <strong>STATUS:</strong> <span style="color:#00ff66;">Sincronizado</span><br>
@@ -907,10 +899,6 @@
       display.innerHTML = `<strong>E-mails atuais para ${plat}:</strong><br>` + (emailData[plat] ? emailData[plat].join('<br>') : 'Nenhum');
     }
 
-    if(document.getElementById('email-plat-select')) {
-      document.getElementById('email-plat-select').addEventListener('change', displayCurrentEmails);
-    }
-
     function openModal(id) { 
       document.getElementById(id).style.display = 'flex'; 
       if(id === 'email-mgr-modal') displayCurrentEmails();
@@ -940,7 +928,7 @@
       list.innerHTML = '';
       
       if(vault.length === 0) {
-        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">Nenhum item salvo ainda.</span>';
+        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">Nenum item salvo ainda.</span>';
         return;
       }
 
@@ -985,18 +973,6 @@
       vault.splice(index, 1);
       localStorage.setItem('zrx_vault', JSON.stringify(vault));
       renderVault();
-    }
-
-    if (document.getElementById('folder-type-select')) {
-      document.getElementById('folder-type-select').addEventListener('change', function() {
-        if (this.value === 'texto') {
-          document.getElementById('input-texto-area').style.display = 'block';
-          document.getElementById('input-arquivo-area').style.display = 'none';
-        } else {
-          document.getElementById('input-texto-area').style.display = 'none';
-          document.getElementById('input-arquivo-area').style.display = 'block';
-        }
-      });
     }
 
     function saveItemToFolder() {
@@ -1344,6 +1320,22 @@
         document.getElementById('onboarding-modal').style.display = 'flex';
       } else {
         showPinLock();
+      }
+
+      if (document.getElementById('folder-type-select')) {
+        document.getElementById('folder-type-select').addEventListener('change', function() {
+          if (this.value === 'texto') {
+            document.getElementById('input-texto-area').style.display = 'block';
+            document.getElementById('input-arquivo-area').style.display = 'none';
+          } else {
+            document.getElementById('input-texto-area').style.display = 'none';
+            document.getElementById('input-arquivo-area').style.display = 'block';
+          }
+        });
+      }
+
+      if(document.getElementById('email-plat-select')) {
+        document.getElementById('email-plat-select').addEventListener('change', displayCurrentEmails);
       }
 
       renderVault();
