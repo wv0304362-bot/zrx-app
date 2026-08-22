@@ -138,16 +138,23 @@
     .miniapp-section { width: 100%; margin-top: 10px; }
     .miniapp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; margin-top: 10px; }
     .miniapp-card { background: #111; border: 1px solid #333; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; cursor: pointer; position: relative; aspect-ratio: 1; }
-    .miniapp-card .app-icon { font-size: 1.8rem; }
+    .miniapp-card img.app-img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
     .miniapp-card .app-title { font-size: 0.65rem; color: #ccc; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
     .miniapp-add-btn { border: 2px dashed var(--main-color); background: rgba(255,0,0,0.05); color: var(--main-color); font-size: 2rem; font-weight: bold; }
 
     /* STORY VIEWER MODAL */
-    .story-modal { display: none; position: fixed; inset: 0; background: #000; z-index: 1000; flex-direction: column; justify-content: center; align-items: center; }
-    .story-content { width: 100%; height: 100%; max-width: 450px; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; position: relative; }
+    .story-modal { display: none; position: fixed; inset: 0; background: #000; z-index: 1000; flex-direction: column; justify-content: space-between; padding: 20px; }
+    .story-content { width: 100%; height: 100%; max-width: 450px; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; position: relative; margin: 0 auto; }
     .story-progress { width: 100%; height: 3px; background: rgba(255,255,255,0.3); border-radius: 2px; overflow: hidden; position: absolute; top: 15px; left: 0; padding: 0 10px; }
     .story-progress-bar { height: 100%; background: #fff; width: 0%; transition: width 0.1s linear; }
     .story-media { width: 100%; height: 80%; object-fit: contain; border-radius: 10px; margin-top: 30px; }
+
+    /* TELA INTERNA DO MINI APP GERADO */
+    .miniapp-view-screen { display: flex; flex-direction: column; width: 100%; height: 100%; gap: 10px; }
+    .miniapp-top-nav { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #111; border-bottom: 1px solid var(--main-color); border-radius: 8px; }
+    .miniapp-side-layout { display: flex; width: 100%; gap: 10px; min-height: 200px; }
+    .miniapp-sidebar-menu { width: 90px; background: #111; border: 1px solid #333; border-radius: 8px; padding: 8px; display: flex; flex-direction: column; gap: 8px; }
+    .miniapp-bottom-menu { display: flex; justify-content: space-around; background: #111; border: 1px solid #333; border-radius: 8px; padding: 8px; margin-top: auto; }
   </style>
 </head>
 <body>
@@ -156,6 +163,7 @@
   <input type="file" id="file-bg" accept="image/*" onchange="handleFileSelect(event, 'b')">
   <input type="file" id="file-proof" accept="image/*" onchange="handleProofUpload(event)">
   <input type="file" id="file-story" accept="image/*,video/*" onchange="handleStoryUpload(event)">
+  <input type="file" id="file-miniapp-icon" accept="image/*" onchange="handleMiniAppIconUpload(event)">
 
   <!-- ONBOARDING MODAL -->
   <div id="onboarding-modal" class="modal" style="display:none;">
@@ -415,15 +423,60 @@
     </div>
   </div>
 
-  <!-- MODAL: CRIAR MINI APP -->
+  <!-- MODAL: CRIAR MINI APP (FLUXO COMPLETO POR ETAPAS) -->
   <div id="create-miniapp-modal" class="modal">
     <div class="modal-content">
-      <h3 style="color:var(--main-color); text-align:center;">CRIAR NOVO MINI APP</h3>
-      <input type="text" id="app-title-in" placeholder="Nome do App">
-      <input type="text" id="app-icon-in" placeholder="Ícone Emoji (ex: ⚡, 🎮, 🤖)" maxlength="2">
-      <input type="text" id="app-url-in" placeholder="URL / Link do WebApp (https://...)">
-      <button class="btn-action" onclick="saveNewMiniApp()">CRIAR APP</button>
-      <button class="btn-sm" onclick="closeModal('create-miniapp-modal')">Voltar</button>
+      <!-- ETAPA 1: NOME E FOTO -->
+      <div id="miniapp-step-1" class="input-group">
+        <h3 style="color:var(--main-color); text-align:center;">CRIAR MINI APP - ETAPA 1</h3>
+        <p style="font-size:0.8rem; color:#aaa; text-align:center;">Escolha a Foto e o Nome do Mini App</p>
+        
+        <div style="display:flex; justify-content:center; margin:10px 0;">
+          <img id="miniapp-icon-preview" src="https://via.placeholder.com/70" style="width:70px; height:70px; border-radius:50%; border:2px solid var(--main-color); object-fit:cover; cursor:pointer;" onclick="document.getElementById('file-miniapp-icon').click()">
+        </div>
+        <button class="btn-platform" onclick="document.getElementById('file-miniapp-icon').click()">📷 Selecionar Foto do App</button>
+        <input type="text" id="app-title-in" placeholder="Nome do Mini App">
+        <button class="btn-action" onclick="goToMiniAppStep(2)">Avançar: Escolher Layout</button>
+      </div>
+
+      <!-- ETAPA 2: ESCOLHER MENU -->
+      <div id="miniapp-step-2" class="input-group" style="display:none;">
+        <h3 style="color:var(--main-color); text-align:center;">CRIAR MINI APP - ETAPA 2</h3>
+        <p style="font-size:0.8rem; color:#aaa; text-align:center;">Selecione o Tipo de Navegação</p>
+        
+        <button class="btn-platform" onclick="selectMiniAppMenuType('lateral', this)">Menu Lateral</button>
+        <button class="btn-platform" onclick="selectMiniAppMenuType('inferior', this)">Menu Lá Embaixo (Inferior)</button>
+
+        <div style="display:flex; gap:8px; margin-top:10px;">
+          <button class="btn-sm" style="flex:1;" onclick="goToMiniAppStep(1)">Voltar</button>
+          <button class="btn-action" style="flex:2; margin-top:0;" onclick="goToMiniAppStep(3)">Avançar: Editar Botões</button>
+        </div>
+      </div>
+
+      <!-- ETAPA 3: CONFIGURAR BOTÕES E TEXTOS -->
+      <div id="miniapp-step-3" class="input-group" style="display:none;">
+        <h3 style="color:var(--main-color); text-align:center;">CRIAR MINI APP - ETAPA 3</h3>
+        <p style="font-size:0.8rem; color:#aaa; text-align:center;">Adicione botões e seus respectivos textos</p>
+
+        <div id="miniapp-buttons-list" style="display:flex; flex-direction:column; gap:10px; max-height:200px; overflow-y:auto; margin-bottom:5px;"></div>
+
+        <button class="btn-platform" style="border-style:dashed;" onclick="addMiniAppButtonField()">➕ Adicionar Novo Texto/Botão</button>
+
+        <div style="display:flex; gap:8px; margin-top:10px;">
+          <button class="btn-sm" style="flex:1;" onclick="goToMiniAppStep(2)">Voltar</button>
+          <button class="btn-action" style="flex:2; margin-top:0;" onclick="saveNewMiniApp()">SALVAR & CONCLUIR</button>
+        </div>
+      </div>
+
+      <button class="btn-sm" onclick="closeModal('create-miniapp-modal')" style="margin-top:5px;">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- MODAL: VISUALIZAR MINI APP CRIADO -->
+  <div id="view-miniapp-modal" class="modal">
+    <div class="modal-content" style="height:80vh;">
+      <div id="miniapp-view-content" class="miniapp-view-screen"></div>
+      <button class="btn-sm" onclick="closeModal('view-miniapp-modal')" style="margin-top:auto;">Sair do Mini App</button>
     </div>
   </div>
 
@@ -619,9 +672,14 @@
     let activeNotifIndexForProof = null;
     let storyTimer = null;
 
+    // Estado temporário de criação do Mini App
+    let tempMiniAppIcon = 'https://via.placeholder.com/70';
+    let tempMiniAppMenuType = 'lateral';
+    let tempMiniAppButtons = [];
+
     const baseEmailData = {
       'WhatsApp': ['support@whatsapp.com', 'legal@whatsapp.com', 'abuso@whatsapp.com', 'press@whatsapp.com'],
-      'Kwai': ['Report@kwai.com', 'customer-servicer@kwai.com', 'comcustomer-service@kwai.com', 'customer-service@kwai.com', 'support@kuaishousupport.freshdesk.com'],
+      'Kwai': ['Report@kwai.com', 'customer-servicer@kwai.com', 'comcustomer-service@kwai.com', 'customer-service@kwai.com'],
       'Telegram': ['support@telegram.org', 'abuse@telegram.org', 'recover@telegram.org', 'sms@telegram.org'],
       'Instagram': ['support@instagram.com', 'phish@instagram.com', 'abuse@instagram.com', 'privacy@instagram.com']
     };
@@ -864,7 +922,7 @@
       document.getElementById('story-media-container').innerHTML = '';
     }
 
-    /* SISTEMA DE MINI APPS (TELEGRAM STYLE) */
+    /* NOVO SISTEMA COMPLETO DE MINI APPS COM CRIAÇÃO EM ETAPAS */
     function getMiniApps() {
       return JSON.parse(localStorage.getItem('zrx_miniapps') || '[]');
     }
@@ -876,52 +934,164 @@
 
       const apps = getMiniApps();
 
-      // Renderiza todos os apps cadastrados
       apps.forEach((app, idx) => {
         grid.innerHTML += `
-          <div class="miniapp-card" onclick="openMiniApp('${app.url}')">
+          <div class="miniapp-card" onclick="openMiniApp(${idx})">
             <button onclick="event.stopPropagation(); deleteMiniApp(${idx})" style="position:absolute; top:2px; right:4px; background:none; border:none; color:#777; font-size:0.7rem;">✕</button>
-            <div class="app-icon">${app.icon || '📱'}</div>
+            <img src="${app.icon || 'https://via.placeholder.com/32'}" class="app-img">
             <div class="app-title">${app.title}</div>
           </div>
         `;
       });
 
-      // Renderiza SEMPRE o botão "+" no final
       grid.innerHTML += `
-        <div class="miniapp-card miniapp-add-btn" onclick="openModal('create-miniapp-modal')">
+        <div class="miniapp-card miniapp-add-btn" onclick="startCreateMiniApp()">
           +
         </div>
       `;
     }
 
+    function startCreateMiniApp() {
+      tempMiniAppIcon = 'https://via.placeholder.com/70';
+      tempMiniAppMenuType = 'lateral';
+      tempMiniAppButtons = [];
+
+      document.getElementById('app-title-in').value = '';
+      document.getElementById('miniapp-icon-preview').src = tempMiniAppIcon;
+      document.getElementById('miniapp-buttons-list').innerHTML = '';
+
+      // Adiciona o primeiro botão por padrão
+      addMiniAppButtonField();
+      goToMiniAppStep(1);
+      openModal('create-miniapp-modal');
+    }
+
+    function goToMiniAppStep(step) {
+      document.getElementById('miniapp-step-1').style.display = step === 1 ? 'flex' : 'none';
+      document.getElementById('miniapp-step-2').style.display = step === 2 ? 'flex' : 'none';
+      document.getElementById('miniapp-step-3').style.display = step === 3 ? 'flex' : 'none';
+    }
+
+    function handleMiniAppIconUpload(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          tempMiniAppIcon = evt.target.result;
+          document.getElementById('miniapp-icon-preview').src = tempMiniAppIcon;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function selectMiniAppMenuType(type, btn) {
+      tempMiniAppMenuType = type;
+      document.querySelectorAll('#miniapp-step-2 .btn-platform').forEach(b => b.classList.remove('active'));
+      if(btn) btn.classList.add('active');
+    }
+
+    function addMiniAppButtonField() {
+      const container = document.getElementById('miniapp-buttons-list');
+      const index = container.children.length;
+
+      const div = document.createElement('div');
+      div.style.cssText = 'background:#111; border:1px solid #333; padding:8px; border-radius:6px; display:flex; flex-direction:column; gap:5px;';
+      div.innerHTML = `
+        <input type="text" class="btn-title-input" placeholder="Nome do Botão ${index + 1}">
+        <textarea class="btn-text-input" placeholder="Texto que será exibido ao clicar neste botão..." rows="2"></textarea>
+      `;
+      container.appendChild(div);
+    }
+
     function saveNewMiniApp() {
       const title = document.getElementById('app-title-in').value.trim();
-      const icon = document.getElementById('app-icon-in').value.trim();
-      const url = document.getElementById('app-url-in').value.trim();
 
-      if(!title || !url) {
-        alert('Informe pelo menos o Nome e a URL do Mini App!');
+      if(!title) {
+        alert('Por favor, informe o Nome do Mini App!');
         return;
       }
 
+      const buttonsList = [];
+      const titleInputs = document.querySelectorAll('#miniapp-buttons-list .btn-title-input');
+      const textInputs = document.querySelectorAll('#miniapp-buttons-list .btn-text-input');
+
+      titleInputs.forEach((inp, idx) => {
+        const bTitle = inp.value.trim() || `Botão ${idx + 1}`;
+        const bText = textInputs[idx].value.trim() || 'Nenhum texto cadastrado.';
+        buttonsList.push({ name: bTitle, text: bText });
+      });
+
       const apps = getMiniApps();
-      apps.push({ title, icon: icon || '⚡', url });
+      apps.push({
+        title: title,
+        icon: tempMiniAppIcon,
+        menuType: tempMiniAppMenuType,
+        buttons: buttonsList
+      });
+
       localStorage.setItem('zrx_miniapps', JSON.stringify(apps));
-
-      document.getElementById('app-title-in').value = '';
-      document.getElementById('app-icon-in').value = '';
-      document.getElementById('app-url-in').value = '';
-
       closeModal('create-miniapp-modal');
       renderMiniApps();
+      alert('✨ Teu mini app está pronto!');
     }
 
-    function openMiniApp(url) {
-      if(url.startsWith('http')) {
-        window.open(url, '_blank');
+    function openMiniApp(idx) {
+      const apps = getMiniApps();
+      const app = apps[idx];
+      if(!app) return;
+
+      const viewContent = document.getElementById('miniapp-view-content');
+      let buttonsHTML = '';
+
+      if (app.menuType === 'lateral') {
+        buttonsHTML = `
+          <div class="miniapp-top-nav">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <img src="${app.icon}" style="width:25px; height:25px; border-radius:50%; object-fit:cover;">
+              <strong style="color:var(--main-color); font-size:0.9rem;">${app.title}</strong>
+            </div>
+          </div>
+          <div class="miniapp-side-layout">
+            <div class="miniapp-sidebar-menu">
+              ${app.buttons.map((b, i) => `<button class="btn-sm" onclick="showMiniAppButtonText(${idx}, ${i})">${b.name}</button>`).join('')}
+            </div>
+            <div id="miniapp-display-area" style="flex:1; background:#080808; border:1px solid #333; border-radius:8px; padding:10px; font-size:0.85rem; color:#ccc; overflow-y:auto; word-break:break-all;">
+              Clique em um botão lateral para ver o texto.
+            </div>
+          </div>
+        `;
       } else {
-        alert('URL do Mini App: ' + url);
+        buttonsHTML = `
+          <div class="miniapp-top-nav">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <img src="${app.icon}" style="width:25px; height:25px; border-radius:50%; object-fit:cover;">
+              <strong style="color:var(--main-color); font-size:0.9rem;">${app.title}</strong>
+            </div>
+          </div>
+          <div id="miniapp-display-area" style="flex:1; background:#080808; border:1px solid #333; border-radius:8px; padding:10px; font-size:0.85rem; color:#ccc; overflow-y:auto; word-break:break-all;">
+            Clique em um botão no menu inferior para ver o texto.
+          </div>
+          <div class="miniapp-bottom-menu">
+            ${app.buttons.map((b, i) => `<button class="btn-sm" onclick="showMiniAppButtonText(${idx}, ${i})">${b.name}</button>`).join('')}
+          </div>
+        `;
+      }
+
+      viewContent.innerHTML = buttonsHTML;
+      openModal('view-miniapp-modal');
+    }
+
+    function showMiniAppButtonText(appIdx, btnIdx) {
+      const apps = getMiniApps();
+      const app = apps[appIdx];
+      const btn = app.buttons[btnIdx];
+
+      const display = document.getElementById('miniapp-display-area');
+      if(display) {
+        display.innerHTML = `
+          <h4 style="color:var(--main-color); margin-bottom:8px;">${btn.name}</h4>
+          <p style="white-space: pre-wrap;">${btn.text}</p>
+        `;
       }
     }
 
