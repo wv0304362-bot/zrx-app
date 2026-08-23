@@ -34,24 +34,11 @@
     .sidebar.active { transform: translateX(320px); }
     .sidebar-title { color: var(--main-color); font-size: 1.1rem; text-align: center; font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 10px; }
 
-    /* ACCORDION/RETRÁTIL DE OSINT NO MENU LATERAL */
+    /* SEÇÃO DE OSINT NO MENU LATERAL */
     .osint-section-title {
       color: var(--main-color); font-size: 0.8rem; font-weight: bold; text-transform: uppercase;
       margin-top: 10px; text-align: center; border-top: 1px solid #222; padding-top: 10px;
     }
-    .accordion-btn {
-      width: 100%; background: #151515; border: 1px solid #333; color: #fff;
-      padding: 10px; border-radius: 6px; font-weight: bold; font-size: 0.8rem;
-      text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-    }
-    .accordion-btn:hover { border-color: var(--main-color); }
-    .accordion-content {
-      display: none; flex-direction: column; gap: 6px; background: #080808;
-      border: 1px solid #222; padding: 8px; border-radius: 6px; font-size: 0.75rem;
-    }
-    .accordion-content.active { display: flex; }
-    .osint-item { background: #111; border: 1px solid #222; padding: 6px; border-radius: 4px; word-break: break-all; }
-    .osint-item strong { color: var(--main-color); display: block; margin-bottom: 2px; }
 
     /* Container Principal */
     .main-container { flex: 1; width: 100%; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
@@ -82,14 +69,11 @@
     .nav-item span { font-size: 1.2rem; }
     .nav-item.active { color: var(--main-color); }
 
-    /* Inputs de Arquivo Escondidos */
     input[type="file"] { display: none; }
 
-    /* Modais */
     .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 999; justify-content: center; align-items: center; padding: 20px; }
     .modal-content { width: 100%; max-width: 420px; background: #1a1a1a; border: 1px solid var(--main-color); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px; max-height: 90vh; overflow-y: auto; box-shadow: 0 0 25px var(--shadow-color); position: relative; }
 
-    /* Cards de Notificação / Histórico */
     .notif-card { background: #0d0d0d; border: 1px solid var(--main-color); padding: 12px; border-radius: 8px; display: flex; flex-direction: column; gap: 8px; position: relative; }
     .notif-header { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--main-color); font-weight: bold; padding-right: 20px; }
     .notif-body { font-size: 0.85rem; color: #ccc; word-break: break-all; }
@@ -103,7 +87,6 @@
 
     .winchester-footer { text-align: center; color: #777; font-size: 0.75rem; margin-top: 15px; font-weight: bold; letter-spacing: 1px; }
 
-    /* CARD DO PERFIL / DASHBOARD */
     .user-profile-card {
       width: 100%; background: rgba(15, 15, 15, 0.95); border: 1px solid var(--main-color);
       border-radius: 12px; padding: 15px; display: flex; align-items: center; gap: 15px;
@@ -114,10 +97,7 @@
       width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--main-color);
       object-fit: cover; cursor: pointer;
     }
-    .story-ring {
-      border: 3px solid #00ff66 !important;
-      padding: 2px;
-    }
+    .story-ring { border: 3px solid #00ff66 !important; padding: 2px; }
     .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; }
     .metric-card { background: #111; border: 1px solid #333; padding: 10px; border-radius: 8px; text-align: center; }
     .metric-card span { font-size: 0.65rem; color: #aaa; text-transform: uppercase; }
@@ -128,7 +108,6 @@
     .progress-bar { background: #222; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 3px; }
     .progress-bar div { background: var(--main-color); height: 100%; transition: width 0.3s; }
 
-    /* ESTILOS DO CHAT IA */
     .chat-box {
       display: flex; flex-direction: column; gap: 10px;
       height: 250px; overflow-y: auto; padding: 10px;
@@ -138,7 +117,6 @@
     .chat-msg.user { align-self: flex-end; background: var(--main-color); color: #fff; border-bottom-right-radius: 0; }
     .chat-msg.ai { align-self: flex-start; background: #1c1c1c; color: #eee; border: 1px solid #333; border-bottom-left-radius: 0; }
 
-    /* ESTILOS DA TELA DE PERFIL TELEGRAM */
     .telegram-profile { display: flex; flex-direction: column; align-items: center; gap: 15px; width: 100%; }
     .tg-avatar-container { position: relative; width: 100px; height: 100px; cursor: pointer; }
     .tg-avatar-container img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid var(--main-color); }
@@ -153,7 +131,6 @@
     .tg-info-val { font-size: 0.9rem; color: #fff; font-weight: bold; }
     .tg-info-lbl { font-size: 0.7rem; color: #777; }
     
-    /* MINI APPS GRID */
     .miniapp-section { width: 100%; margin-top: 10px; }
     .miniapp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; margin-top: 10px; }
     .miniapp-card { background: #111; border: 1px solid #333; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; cursor: pointer; position: relative; aspect-ratio: 1; }
@@ -161,14 +138,12 @@
     .miniapp-card .app-title { font-size: 0.65rem; color: #ccc; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
     .miniapp-add-btn { border: 2px dashed var(--main-color); background: rgba(255,0,0,0.05); color: var(--main-color); font-size: 2rem; font-weight: bold; }
 
-    /* STORY VIEWER MODAL */
     .story-modal { display: none; position: fixed; inset: 0; background: #000; z-index: 1000; flex-direction: column; justify-content: space-between; padding: 20px; }
     .story-content { width: 100%; height: 100%; max-width: 450px; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; position: relative; margin: 0 auto; }
     .story-progress { width: 100%; height: 3px; background: rgba(255,255,255,0.3); border-radius: 2px; overflow: hidden; position: absolute; top: 15px; left: 0; padding: 0 10px; }
     .story-progress-bar { height: 100%; background: #fff; width: 0%; transition: width 0.1s linear; }
     .story-media { width: 100%; height: 80%; object-fit: contain; border-radius: 10px; margin-top: 30px; }
 
-    /* TELA INTERNA DO MINI APP GERADO */
     .miniapp-view-screen { display: flex; flex-direction: column; width: 100%; height: 100%; gap: 10px; }
     .miniapp-top-nav { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #111; border-bottom: 1px solid var(--main-color); border-radius: 8px; }
     .miniapp-side-layout { display: flex; width: 100%; gap: 10px; min-height: 200px; }
@@ -215,9 +190,7 @@
   <aside id="sidebar" class="sidebar">
     <div class="sidebar-title">OPÇÕES DO SISTEMA</div>
     
-    <!-- PERFIL INSERIDO DENTRO DO MENU LATERAL -->
     <button class="btn-action" onclick="toggleSidebar(false); openModal('profile-modal');">👤 Meu Perfil ZRX</button>
-    
     <button class="btn-action" onclick="toggleSidebar(false); openModal('ai-chat-modal');">🤖 Chat com IA Universal</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('vault-modal');">📦 Caixa de Textos / Travas</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('folder-vault-modal'); renderFolders();">📁 Minhas Pastas de Travas</button>
@@ -237,62 +210,6 @@
 
       <!-- ÁREA ONDE OS DADOS APARECEM EMBAIXO -->
       <div id="osint-results-box" style="display:none; background:#050505; border:1px solid #333; padding:10px; border-radius:6px; font-size:0.75rem; color:#ccc; word-break:break-all; max-height:220px; overflow-y:auto; margin-top:5px;">
-      </div>
-    </div>
-
-    <!-- 1. E-MAIL -->
-    <button class="accordion-btn" onclick="toggleAccordion('acc-email')">
-      ✉️ 1. E-mail (OSINT/Vazamentos) <span>▼</span>
-    </button>
-    <div id="acc-email" class="accordion-content">
-      <div class="osint-item">
-        <strong>EmailRep.io</strong>
-        <span style="font-size:0.65rem; color:#aaa;">Verificação de reputação e vazamentos de e-mail</span>
-      </div>
-      <div class="osint-item">
-        <strong>Epieos</strong>
-        <span style="font-size:0.65rem; color:#aaa;">Rastreamento e checagem de contas vinculo Google</span>
-      </div>
-      <div class="osint-item">
-        <strong>Have I Been Pwned</strong>
-        <span style="font-size:0.65rem; color:#aaa;">Checagem de vazamentos de senhas e dados</span>
-      </div>
-    </div>
-
-    <!-- 2. TELEFONE -->
-    <button class="accordion-btn" onclick="toggleAccordion('acc-phone')">
-      📞 2. Telefone (Operadora/Antifraude) <span>▼</span>
-    </button>
-    <div id="acc-phone" class="accordion-content">
-      <div class="osint-item">
-        <strong>Veriphone & NumVerify</strong>
-        <span style="font-size:0.65rem; color:#aaa;">Validação de linha, país e operadora em tempo real</span>
-      </div>
-      <div class="osint-item">
-        <strong>IPQualityScore Phone</strong>
-        <span style="font-size:0.65rem; color:#aaa;">Detecção de risco, spammers e linhas virtuais (VoIP)</span>
-      </div>
-    </div>
-
-    <!-- 3. CPF / CNPJ -->
-    <button class="accordion-btn" onclick="toggleAccordion('acc-cpf')">
-      🪪 3. CPF / Base Governamental <span>▼</span>
-    </button>
-    <div id="acc-cpf" class="accordion-content">
-      <div class="osint-item">
-        <strong>Consulta de Dados Pessoais / Receita</strong>
-        <span style="font-size:0.65rem; color:#aaa;">Verificação cadastral e histórico público</span>
-      </div>
-    </div>
-
-    <!-- 4. NOME PRÓPRIO -->
-    <button class="accordion-btn" onclick="toggleAccordion('acc-nome')">
-      👤 4. Nome Próprio (Demografia) <span>▼</span>
-    </button>
-    <div id="acc-nome" class="accordion-content">
-      <div class="osint-item">
-        <strong>Agify & Genderize Engine</strong>
-        <span style="font-size:0.65rem; color:#aaa;">Estimativa demográfica, idade provável e gênero</span>
       </div>
     </div>
 
@@ -346,13 +263,13 @@
       <div class="card">
         <h3 style="color:var(--main-color); font-size:1rem;">Desempenho da Semana</h3>
         <div style="height:120px; display:flex; align-items:flex-end; gap:8px; justify-content:space-between; padding-top:10px; border-bottom:1px solid #333;">
-          <div style="flex:1; background:var(--bg-active); height:30%; border-radius:4px 4px 0 0; position:relative;" title="Dom"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#777;">DOM</span></div>
-          <div style="flex:1; background:var(--bg-active); height:45%; border-radius:4px 4px 0 0; position:relative;" title="Seg"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#777;">SEG</span></div>
-          <div style="flex:1; background:var(--bg-active); height:20%; border-radius:4px 4px 0 0; position:relative;" title="Ter"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#777;">TER</span></div>
-          <div style="flex:1; background:var(--bg-active); height:60%; border-radius:4px 4px 0 0; position:relative;" title="Qua"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#777;">QUA</span></div>
-          <div style="flex:1; background:var(--main-color); height:85%; border-radius:4px 4px 0 0; position:relative;" title="Qui"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#fff;">QUI</span></div>
-          <div style="flex:1; background:var(--bg-active); height:40%; border-radius:4px 4px 0 0; position:relative;" title="Sex"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#777;">SEX</span></div>
-          <div style="flex:1; background:var(--bg-active); height:50%; border-radius:4px 4px 0 0; position:relative;" title="Sáb"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#777;">SÁB</span></div>
+          <div style="flex:1; background:var(--bg-active); height:30%; border-radius:4px 4px 0 0; position:relative;"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#777;">DOM</span></div>
+          <div style="flex:1; background:var(--bg-active); height:45%; border-radius:4px 4px 0 0; position:relative;"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#777;">SEG</span></div>
+          <div style="flex:1; background:var(--bg-active); height:20%; border-radius:4px 4px 0 0; position:relative;"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#777;">TER</span></div>
+          <div style="flex:1; background:var(--bg-active); height:60%; border-radius:4px 4px 0 0; position:relative;"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#777;">QUA</span></div>
+          <div style="flex:1; background:var(--main-color); height:85%; border-radius:4px 4px 0 0; position:relative;"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#fff;">QUI</span></div>
+          <div style="flex:1; background:var(--bg-active); height:40%; border-radius:4px 4px 0 0; position:relative;"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#777;">SEX</span></div>
+          <div style="flex:1; background:var(--bg-active); height:50%; border-radius:4px 4px 0 0; position:relative;"><span style="position:absolute; bottom:-18px; width:100%; text-align:center; font-size:0.6rem; color:#777;">SÁB</span></div>
         </div>
       </div>
 
@@ -438,7 +355,6 @@
 
   <!-- MODAIS DO SISTEMA -->
 
-  <!-- MODAL: PERFIL DO USUÁRIO ESTILO TELEGRAM -->
   <div id="profile-modal" class="modal">
     <div class="modal-content">
       <div class="telegram-profile">
@@ -483,16 +399,13 @@
           </div>
         </div>
 
-        <!-- SEÇÃO DE MINI APPS -->
         <div class="miniapp-section">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <strong style="font-size:0.85rem; color:#aaa;">MINI APPS CRIADOS</strong>
             <small style="color:var(--main-color); font-size:0.7rem;">Estilo Telegram</small>
           </div>
 
-          <div class="miniapp-grid" id="miniapp-grid">
-            <!-- Botão de Adicionar MiniApp -->
-          </div>
+          <div class="miniapp-grid" id="miniapp-grid"></div>
         </div>
 
         <button class="btn-action" onclick="triggerStoryUpload()">🎥 PUBLICAR STORY (24H)</button>
@@ -501,7 +414,6 @@
     </div>
   </div>
 
-  <!-- MODAL: EDITAR PERFIL -->
   <div id="edit-profile-modal" class="modal">
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">EDITAR PERFIL</h3>
@@ -514,7 +426,6 @@
     </div>
   </div>
 
-  <!-- MODAL: CRIAR MINI APP -->
   <div id="create-miniapp-modal" class="modal">
     <div class="modal-content">
       <div id="miniapp-step-1" class="input-group">
@@ -560,7 +471,6 @@
     </div>
   </div>
 
-  <!-- MODAL: VISUALIZAR MINI APP -->
   <div id="view-miniapp-modal" class="modal">
     <div class="modal-content" style="height:80vh;">
       <div id="miniapp-view-content" class="miniapp-view-screen"></div>
@@ -568,7 +478,6 @@
     </div>
   </div>
 
-  <!-- MODAL: VIEW STORY -->
   <div id="story-modal" class="story-modal">
     <div class="story-content">
       <div class="story-progress">
@@ -587,7 +496,6 @@
     </div>
   </div>
 
-  <!-- MODAL: CHAT IA UNIVERSAL -->
   <div id="ai-chat-modal" class="modal">
     <div class="modal-content">
       <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid #333; padding-bottom: 8px;">
@@ -596,7 +504,7 @@
       </div>
 
       <div class="chat-box" id="ai-chat-box">
-        <div class="chat-msg ai">Olá! Conecte qualquer serviço de IA (OpenAI, Groq, OpenRouter, Ollama) e converse livremente!</div>
+        <div class="chat-msg ai">Olá! Conecte qualquer serviço de IA e converse livremente!</div>
       </div>
 
       <div class="input-group" style="gap:5px;">
@@ -760,7 +668,6 @@
       gold: { main: '#ffaa00', bgActive: '#442200', shadow: 'rgba(255, 170, 0, 0.3)' }
     };
 
-    /* FUNÇÃO DE CONSULTA AUTOMÁTICA COM SISTEMA DE FALLBACK ENTRE APIS */
     async function realizarConsultaOSINT() {
       const input = document.getElementById('osint-search-input').value.trim();
       const box = document.getElementById('osint-results-box');
@@ -776,20 +683,19 @@
       const cleanInput = input.replace(/\D/g, '');
       let apiUrls = [];
 
-      // Detecta o tipo de entrada para escolher os endpoints correspondentes
       if (input.includes('@')) {
         apiUrls = [
           `https://emailrep.io/${encodeURIComponent(input)}`,
           `https://api.eva.pingutil.com/email?email=${encodeURIComponent(input)}`
         ];
       } else if (cleanInput.length >= 8 && cleanInput.length <= 14 && /^\d+$/.test(cleanInput)) {
-        if (cleanInput.length === 14) { // CNPJ
+        if (cleanInput.length === 14) {
           apiUrls = [
             `https://minhareceita.org/${cleanInput}`,
             `https://receitaws.com.br/v1/cnpj/${cleanInput}`,
             `https://brasilapi.com.br/api/cnpj/v1/${cleanInput}`
           ];
-        } else if (cleanInput.length === 11) { // CPF / Telefone
+        } else if (cleanInput.length === 11) {
           apiUrls = [
             `https://brasilapi.com.br/api/ddd/v1/${cleanInput.substring(0, 2)}`,
             `https://apilayer.net/api/validate?access_key=FREE&number=${cleanInput}`
@@ -799,7 +705,7 @@
             `https://brasilapi.com.br/api/ddd/v1/${cleanInput.substring(0, 2)}`
           ];
         }
-      } else { // Tratado como nome/termo geral
+      } else {
         apiUrls = [
           `https://api.agify.io?name=${encodeURIComponent(input)}`,
           `https://api.genderize.io?name=${encodeURIComponent(input)}`
@@ -807,9 +713,7 @@
       }
 
       let successData = null;
-      let usedApi = '';
 
-      // Tenta a 1ª API, se falhar pula pra 2ª, depois 3ª...
       for (let url of apiUrls) {
         try {
           let response = await fetch(url);
@@ -817,7 +721,6 @@
             let data = await response.json();
             if (data && Object.keys(data).length > 0) {
               successData = data;
-              usedApi = url;
               break; 
             }
           }
@@ -826,11 +729,9 @@
         }
       }
 
-      // Renderiza os dados obtidos ou mensagem de erro
       if (successData) {
         let formattedDetails = '';
         
-        // Formata os campos obtidos em HTML para exibição
         for (let [key, val] of Object.entries(successData)) {
           if (typeof val !== 'object' && val !== null) {
             formattedDetails += `<strong>${key.toUpperCase()}:</strong> ${val}<br>`;
@@ -846,20 +747,12 @@
           ${formattedDetails}
         `;
       } else {
-        // Resposta local detalhada caso nenhuma API pública retorne
         box.innerHTML = `
           <div style="border-bottom:1px solid #333; padding-bottom:5px; margin-bottom:5px; font-weight:bold; color:var(--main-color);">CONSULTA LOCAL</div>
           <strong>DOCUMENTO/TERMO:</strong> ${input}<br>
           <strong>STATUS:</strong> PROCESSADO<br>
           <strong>DETALHES:</strong> Dados enviados com sucesso e validados na base do sistema.
         `;
-      }
-    }
-
-    function toggleAccordion(id) {
-      const el = document.getElementById(id);
-      if(el) {
-        el.classList.toggle('active');
       }
     }
 
@@ -946,7 +839,6 @@
       }
     }
 
-    /* SISTEMA DE PERFIL & STORIES DE 24 HORAS */
     function openProfileScreen() {
       openModal('profile-modal');
       renderProfileData();
@@ -1090,7 +982,6 @@
       document.getElementById('story-media-container').innerHTML = '';
     }
 
-    /* MINI APPS */
     function getMiniApps() {
       return JSON.parse(localStorage.getItem('zrx_miniapps') || '[]');
     }
@@ -1689,7 +1580,6 @@
       }
     }
 
-    /* SISTEMA UNIVERSAL DE IA */
     const defaultProviders = {
       openai: { url: 'https://api.openai.com/v1/chat/completions', model: 'gpt-3.5-turbo' },
       groq: { url: 'https://api.groq.com/openai/v1/chat/completions', model: 'llama3-8b-8192' },
@@ -1844,7 +1734,6 @@
       if(document.getElementById('bar-outros')) document.getElementById('bar-outros').style.width = `${outrosPct}%`;
     }
 
-    /* INICIALIZAÇÃO DA APLICAÇÃO */
     function loadUserData() {
       const savedTheme = localStorage.getItem('zrx_theme') || 'red';
       changeAppTheme(savedTheme);
@@ -1867,52 +1756,8 @@
       updateDashboardMetrics();
     }
 
-    function checkAuth() {
-      const pin = localStorage.getItem('zrx_pin');
-      if (!pin) {
-        document.getElementById('onboarding-modal').style.display = 'flex';
-      } else {
-        const name = localStorage.getItem('n') || 'Operador';
-        const avatar = localStorage.getItem('a') || 'https://via.placeholder.com/70';
-
-        if(document.getElementById('login-username-display')) document.getElementById('login-username-display').innerText = name;
-        if(document.getElementById('login-avatar-display')) document.getElementById('login-avatar-display').src = avatar;
-        document.getElementById('pin-login-modal').style.display = 'flex';
-      }
-    }
-
-    function finishOnboarding() {
-      const username = document.getElementById('setup-username').value.trim();
-      const pin = document.getElementById('setup-pin').value.trim();
-
-      if (!username || pin.length !== 4) {
-        alert('Insira um nome válido e um PIN de exatamente 4 dígitos!');
-        return;
-      }
-
-      localStorage.setItem('n', username);
-      localStorage.setItem('zrx_pin', pin);
-      document.getElementById('onboarding-modal').style.display = 'none';
-      loadUserData();
-    }
-
-    function validateLoginPin() {
-      const enteredPin = document.getElementById('login-pin-input').value.trim();
-      const savedPin = localStorage.getItem('zrx_pin');
-
-      if (enteredPin === savedPin) {
-        document.getElementById('pin-login-modal').style.display = 'none';
-        loadUserData();
-      } else {
-        alert('PIN incorreto!');
-        document.getElementById('login-pin-input').value = '';
-      }
-    }
-
-    // Executa ao carregar
     window.onload = function() {
-      loadEmails();
-      checkAuth();
+      loadUserData();
     };
   </script>
 </body>
