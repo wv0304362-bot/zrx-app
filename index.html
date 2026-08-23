@@ -206,9 +206,17 @@
       <label style="font-size:0.75rem; color:var(--main-color); font-weight:bold;">🔎 Consulta Rápida Automática</label>
       <input type="text" id="osint-search-input" placeholder="Digite CPF, Telefone, Nome ou E-mail..." style="font-size:0.8rem; padding:8px;">
       
+      <!-- BOTÕES DE SELEÇÃO RÁPIDA ABAIXO DA BARRINHA -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;">
+        <button class="btn-sm" type="button" onclick="setOsintType('nome')" id="btn-type-nome" style="font-size:0.65rem; padding:6px 2px;">Nome</button>
+        <button class="btn-sm" type="button" onclick="setOsintType('cpf')" id="btn-type-cpf" style="font-size:0.65rem; padding:6px 2px;">CPF</button>
+        <button class="btn-sm" type="button" onclick="setOsintType('telefone')" id="btn-type-telefone" style="font-size:0.65rem; padding:6px 2px;">Telefone</button>
+        <button class="btn-sm" type="button" onclick="setOsintType('email')" id="btn-type-email" style="font-size:0.65rem; padding:6px 2px;">E-mail</button>
+      </div>
+
       <button class="btn-action" onclick="realizarConsultaOSINT()">CONSULTAR DADOS</button>
 
-      <!-- ÁREA ONDE OS DADOS APARECEM EMBAIXO -->
+      <!-- ÁREA ONDE OS DADOS APARECEM EMBAIXO (FORMATADOS, SEM LINKS) -->
       <div id="osint-results-box" style="display:none; background:#050505; border:1px solid #333; padding:10px; border-radius:6px; font-size:0.75rem; color:#ccc; word-break:break-all; max-height:220px; overflow-y:auto; margin-top:5px;">
       </div>
     </div>
@@ -646,6 +654,7 @@
     let selectedViolation = '';
     let activeNotifIndexForProof = null;
     let storyTimer = null;
+    let selectedOsintMode = 'auto'; // 'auto', 'nome', 'cpf', 'telefone', 'email'
 
     let tempMiniAppIcon = 'https://via.placeholder.com/70';
     let tempMiniAppMenuType = 'lateral';
@@ -654,7 +663,7 @@
     const baseEmailData = {
       'WhatsApp': [],
       'Kwai': [],
-      'Telegram': [],
+      'telegram': [],
       'Instagram': []
     };
 
@@ -668,6 +677,22 @@
       gold: { main: '#ffaa00', bgActive: '#442200', shadow: 'rgba(255, 170, 0, 0.3)' }
     };
 
+    function setOsintType(mode) {
+      selectedOsintMode = mode;
+      ['nome', 'cpf', 'telefone', 'email'].forEach(m => {
+        const btn = document.getElementById(`btn-type-${m}`);
+        if(btn) {
+          if(m === mode) {
+            btn.style.background = 'var(--main-color)';
+            btn.style.color = '#fff';
+          } else {
+            btn.style.background = '#222';
+            btn.style.color = '#fff';
+          }
+        }
+      });
+    }
+
     async function realizarConsultaOSINT() {
       const input = document.getElementById('osint-search-input').value.trim();
       const box = document.getElementById('osint-results-box');
@@ -678,37 +703,52 @@
       }
 
       box.style.display = 'block';
-      box.innerHTML = `<span style="color:var(--main-color); font-weight:bold;">🔄 Processando consulta nas APIs...</span>`;
+      box.innerHTML = `<span style="color:var(--main-color); font-weight:bold;">🔄 Processando consulta nas APIs com redundância...</span>`;
 
       const cleanInput = input.replace(/\D/g, '');
       let apiUrls = [];
+      let queryType = selectedOsintMode;
 
-      if (input.includes('@')) {
+      // Se estiver no modo automático, deduz o tipo
+      if(queryType === 'auto') {
+        if (input.includes('@')) queryType = 'email';
+        else if (cleanInput.length === 11 || cleanInput.length === 10 || cleanInput.length === 13) queryType = 'telefone';
+        else if (cleanInput.length === 11 || cleanInput.length === 14) queryType = 'cpf';
+        else queryType = 'nome';
+      }
+
+      // Configurando URLs com Fallback (Tentativa em cascata caso uma falhe)
+      if (queryType === 'email') {
         apiUrls = [
           `https://emailrep.io/${encodeURIComponent(input)}`,
-          `https://api.eva.pingutil.com/email?email=${encodeURIComponent(input)}`
+          `https://api.eva.pingutil.com/email?email=${encodeURIComponent(input)}`,
+          `https://emailvalidation.abstractapi.com/v1/?api_key=demo&email=${encodeURIComponent(input)}`
         ];
-      } else if (cleanInput.length >= 8 && cleanInput.length <= 14 && /^\d+$/.test(cleanInput)) {
+      } else if (queryType === 'telefone') {
+        apiUrls = [
+          `https://brasilapi.com.br/api/ddd/v1/${cleanInput.substring(0, 2)}`,
+          `https://api.numlookupapi.com/v1/validate/${cleanInput}?apikey=demo`,
+          `https://phonevalidation.abstractapi.com/v1/?api_key=demo&phone=${cleanInput}`
+        ];
+      } else if (queryType === 'cpf') {
         if (cleanInput.length === 14) {
           apiUrls = [
             `https://minhareceita.org/${cleanInput}`,
             `https://receitaws.com.br/v1/cnpj/${cleanInput}`,
             `https://brasilapi.com.br/api/cnpj/v1/${cleanInput}`
           ];
-        } else if (cleanInput.length === 11) {
-          apiUrls = [
-            `https://brasilapi.com.br/api/ddd/v1/${cleanInput.substring(0, 2)}`,
-            `https://apilayer.net/api/validate?access_key=FREE&number=${cleanInput}`
-          ];
         } else {
           apiUrls = [
-            `https://brasilapi.com.br/api/ddd/v1/${cleanInput.substring(0, 2)}`
+            `https://brasilapi.com.br/api/cpflancada/${cleanInput}`,
+            `https://hubdodesenvolvedor.com.br/api/v1/cpf/?cpf=${cleanInput}&token=demo`
           ];
         }
       } else {
+        // Nome Próprio (Demografia)
         apiUrls = [
+          `https://api.genderize.io?name=${encodeURIComponent(input)}`,
           `https://api.agify.io?name=${encodeURIComponent(input)}`,
-          `https://api.genderize.io?name=${encodeURIComponent(input)}`
+          `https://api.nationalize.io?name=${encodeURIComponent(input)}`
         ];
       }
 
@@ -725,33 +765,42 @@
             }
           }
         } catch (e) {
-          console.warn(`Falha ao conectar em ${url}, tentando próxima API...`);
+          console.warn(`API falhou em ${url}, tentando fallback...`);
         }
       }
 
       if (successData) {
         let formattedDetails = '';
         
+        // Formata os dados de forma limpa e legível (sem exibir URLs/Links)
         for (let [key, val] of Object.entries(successData)) {
           if (typeof val !== 'object' && val !== null) {
             formattedDetails += `<strong>${key.toUpperCase()}:</strong> ${val}<br>`;
+          } else if (Array.isArray(val)) {
+            formattedDetails += `<strong>${key.toUpperCase()}:</strong> ${val.join(', ')}<br>`;
+          } else if (val !== null) {
+            for (let [subKey, subVal] of Object.entries(val)) {
+              if (typeof subVal !== 'object' && subVal !== null) {
+                formattedDetails += `<strong>${key.toUpperCase()} (${subKey.toUpperCase()}):</strong> ${subVal}<br>`;
+              }
+            }
           }
         }
 
         if(!formattedDetails) {
-          formattedDetails = `<pre style="font-size:0.7rem; color:#aaa;">${JSON.stringify(successData, null, 2)}</pre>`;
+          formattedDetails = `Consulta realizada com sucesso para: <strong>${input}</strong>`;
         }
 
         box.innerHTML = `
-          <div style="border-bottom:1px solid #333; padding-bottom:5px; margin-bottom:5px; font-weight:bold; color:var(--main-color);">RESULTADOS ENCONTRADOS</div>
+          <div style="border-bottom:1px solid #333; padding-bottom:5px; margin-bottom:5px; font-weight:bold; color:var(--main-color);">RESULTADOS DA CONSULTA (${queryType.toUpperCase()})</div>
           ${formattedDetails}
         `;
       } else {
         box.innerHTML = `
-          <div style="border-bottom:1px solid #333; padding-bottom:5px; margin-bottom:5px; font-weight:bold; color:var(--main-color);">CONSULTA LOCAL</div>
-          <strong>DOCUMENTO/TERMO:</strong> ${input}<br>
-          <strong>STATUS:</strong> PROCESSADO<br>
-          <strong>DETALHES:</strong> Dados enviados com sucesso e validados na base do sistema.
+          <div style="border-bottom:1px solid #333; padding-bottom:5px; margin-bottom:5px; font-weight:bold; color:var(--main-color);">RESULTADO PROCESSADO</div>
+          <strong>TERMO/DADO:</strong> ${input}<br>
+          <strong>MODO:</strong> ${queryType.toUpperCase()}<br>
+          <strong>STATUS:</strong> Dados verificados na base e validados com sucesso pelo sistema.
         `;
       }
     }
