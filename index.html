@@ -26,13 +26,34 @@
     .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
 
     .sidebar {
-      position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
+      position: fixed; top: 0; left: -320px; width: 310px; height: 100%;
       background: #0d0d0d; border-right: 2px solid var(--main-color);
       box-shadow: 5px 0 25px var(--shadow-color); z-index: 201;
-      transition: transform 0.3s ease; display: flex; flex-direction: column; padding: 20px 15px; gap: 12px; overflow-y: auto;
+      transition: transform 0.3s ease; display: flex; flex-direction: column; padding: 20px 15px; gap: 10px; overflow-y: auto;
     }
-    .sidebar.active { transform: translateX(280px); }
-    .sidebar-title { color: var(--main-color); font-size: 1.1rem; text-align: center; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+    .sidebar.active { transform: translateX(320px); }
+    .sidebar-title { color: var(--main-color); font-size: 1.1rem; text-align: center; font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+
+    /* ACCORDION/RETRÁTIL DE OSINT NO MENU LATERAL */
+    .osint-section-title {
+      color: var(--main-color); font-size: 0.8rem; font-weight: bold; text-transform: uppercase;
+      margin-top: 10px; text-align: center; border-top: 1px solid #222; padding-top: 10px;
+    }
+    .accordion-btn {
+      width: 100%; background: #151515; border: 1px solid #333; color: #fff;
+      padding: 10px; border-radius: 6px; font-weight: bold; font-size: 0.8rem;
+      text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    }
+    .accordion-btn:hover { border-color: var(--main-color); }
+    .accordion-content {
+      display: none; flex-direction: column; gap: 6px; background: #080808;
+      border: 1px solid #222; padding: 8px; border-radius: 6px; font-size: 0.75rem;
+    }
+    .accordion-content.active { display: flex; }
+    .osint-item { background: #111; border: 1px solid #222; padding: 6px; border-radius: 4px; word-break: break-all; }
+    .osint-item strong { color: var(--main-color); display: block; margin-bottom: 2px; }
+    .osint-item a { color: #888; text-decoration: none; font-family: monospace; font-size: 0.68rem; display: block; }
+    .osint-item a:hover { color: #fff; text-decoration: underline; }
 
     /* Container Principal */
     .main-container { flex: 1; width: 100%; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
@@ -206,6 +227,157 @@
     <button class="btn-action" onclick="toggleSidebar(false); openModal('email-mgr-modal');">✉️ Gerenciador de E-mails</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('config-modal');">⚙️ Configurações</button>
     
+    <!-- NOVO: SISTEMA DE INVESTIGAÇÃO & OSINT -->
+    <div class="osint-section-title">🔍 CONSULTAS & OSINT</div>
+
+    <!-- 1. E-MAIL -->
+    <button class="accordion-btn" onclick="toggleAccordion('acc-email')">
+      ✉️ 1. E-mail (OSINT/Vazamentos) <span>▼</span>
+    </button>
+    <div id="acc-email" class="accordion-content">
+      <div class="osint-item">
+        <strong>EmailRep.io</strong>
+        <a href="https://emailrep.io/" target="_blank">GET https://emailrep.io/{email}</a>
+      </div>
+      <div class="osint-item">
+        <strong>Epieos</strong>
+        <span style="font-size:0.65rem; color:#aaa;">Raspagem/API privada p/ serviços Google</span>
+      </div>
+      <div class="osint-item">
+        <strong>SEON (Email API)</strong>
+        <a href="https://api.seon.io/SeonBadgev2.0/email-api/v2.2/" target="_blank">POST https://api.seon.io/SeonBadgev2.0/email-api/v2.2/{email}</a>
+      </div>
+      <div class="osint-item">
+        <strong>Abstract API (Email)</strong>
+        <a href="https://emailvalidation.abstractapi.com/v1/" target="_blank">GET https://emailvalidation.abstractapi.com/v1/?api_key={KEY}&email={email}</a>
+      </div>
+      <div class="osint-item">
+        <strong>Hunter.io</strong>
+        <a href="https://api.hunter.io/v2/email-verifier" target="_blank">GET https://api.hunter.io/v2/email-verifier?email={email}&api_key={KEY}</a>
+      </div>
+      <div class="osint-item">
+        <strong>ZeroBounce</strong>
+        <a href="https://api.zerobounce.net/v2/validate" target="_blank">GET https://api.zerobounce.net/v2/validate?api_key={KEY}&email={email}</a>
+      </div>
+      <div class="osint-item">
+        <strong>Have I Been Pwned (HIBP)</strong>
+        <a href="https://haveibeenpwned.com/api/v3/breachedaccount/" target="_blank">GET https://haveibeenpwned.com/api/v3/breachedaccount/{account}</a>
+      </div>
+      <div class="osint-item">
+        <strong>LeakCheck.io</strong>
+        <a href="https://leakcheck.io/api/v2/query/" target="_blank">GET https://leakcheck.io/api/v2/query/{value}</a>
+      </div>
+      <div class="osint-item">
+        <strong>IPQualityScore (IPQS Email)</strong>
+        <a href="https://ipqualityscore.com/api/json/email/" target="_blank">GET https://ipqualityscore.com/api/json/email/{KEY}/{email}</a>
+      </div>
+      <div class="osint-item">
+        <strong>Kickbox</strong>
+        <a href="https://api.kickbox.com/v2/verify" target="_blank">GET https://api.kickbox.com/v2/verify?email={email}&apikey={KEY}</a>
+      </div>
+      <div class="osint-item">
+        <strong>Mailboxlayer</strong>
+        <a href="http://apilayer.net/api/check" target="_blank">GET http://apilayer.net/api/check?access_key={KEY}&email={email}</a>
+      </div>
+      <div class="osint-item">
+        <strong>Social Catfish</strong>
+        <span style="font-size:0.65rem; color:#aaa;">Consulta via formulário/API de checagem</span>
+      </div>
+      <div class="osint-item">
+        <strong>Holehe (CLI)</strong>
+        <span style="font-size:0.65rem; color:#aaa;">holehe email@exemplo.com</span>
+      </div>
+      <div class="osint-item">
+        <strong>Social Scan (CLI)</strong>
+        <span style="font-size:0.65rem; color:#aaa;">socialscan email@exemplo.com</span>
+      </div>
+    </div>
+
+    <!-- 2. TELEFONE -->
+    <button class="accordion-btn" onclick="toggleAccordion('acc-phone')">
+      📞 2. Telefone (Operadora/Antifraude) <span>▼</span>
+    </button>
+    <div id="acc-phone" class="accordion-content">
+      <div class="osint-item">
+        <strong>Veriphone</strong>
+        <a href="https://api.veriphone.io/v2/verify" target="_blank">GET https://api.veriphone.io/v2/verify?phone={phone}&key={KEY}</a>
+      </div>
+      <div class="osint-item">
+        <strong>Phone-Number-API</strong>
+        <a href="https://phone-number-api.com/c-brazil-br/" target="_blank">GET https://phone-number-api.com/c-brazil-br/{number}</a>
+      </div>
+      <div class="osint-item">
+        <strong>Numlookupapi</strong>
+        <a href="https://api.numlookupapi.com/v1/validate/" target="_blank">GET https://api.numlookupapi.com/v1/validate/{number}?apikey={KEY}</a>
+      </div>
+      <div class="osint-item">
+        <strong>Abstract API (Phone)</strong>
+        <a href="https://phonevalidation.abstractapi.com/v1/" target="_blank">GET https://phonevalidation.abstractapi.com/v1/?api_key={KEY}&phone={phone}</a>
+      </div>
+      <div class="osint-item">
+        <strong>Twilio Lookups API</strong>
+        <a href="https://lookups.twilio.com/v2/PhoneNumbers/" target="_blank">GET https://lookups.twilio.com/v2/PhoneNumbers/{PhoneNumber}</a>
+      </div>
+      <div class="osint-item">
+        <strong>SEON (Phone API)</strong>
+        <a href="https://api.seon.io/SeonBadgev2.0/phone-api/v2.2/" target="_blank">POST https://api.seon.io/SeonBadgev2.0/phone-api/v2.2/{phone}</a>
+      </div>
+      <div class="osint-item">
+        <strong>NumVerify (APILayer)</strong>
+        <a href="https://api.apilayer.com/number_verification/validate" target="_blank">GET https://api.apilayer.com/number_verification/validate?number={number}</a>
+      </div>
+      <div class="osint-item">
+        <strong>IPQualityScore (IPQS Phone)</strong>
+        <a href="https://ipqualityscore.com/api/json/phone/" target="_blank">GET https://ipqualityscore.com/api/json/phone/{KEY}/{phone}</a>
+      </div>
+    </div>
+
+    <!-- 3. CPF / CNPJ -->
+    <button class="accordion-btn" onclick="toggleAccordion('acc-cpf')">
+      🪪 3. CPF / Base Governamental <span>▼</span>
+    </button>
+    <div id="acc-cpf" class="accordion-content">
+      <div class="osint-item">
+        <strong>ReceitaWS (CNPJ)</strong>
+        <a href="https://receitaws.com.br/v1/cnpj/" target="_blank">GET https://receitaws.com.br/v1/cnpj/{cnpj}</a>
+      </div>
+      <div class="osint-item">
+        <strong>CPF.CNPJ API</strong>
+        <a href="https://comercial.cpfcnpj.com.br/Consulta/" target="_blank">GET https://comercial.cpfcnpj.com.br/Consulta/{KEY}/{CPF_OU_CNPJ}</a>
+      </div>
+      <div class="osint-item">
+        <strong>Hub do Desenvolvedor</strong>
+        <a href="https://hubdodesenvolvedor.com.br/api/v1/cpf/" target="_blank">GET https://hubdodesenvolvedor.com.br/api/v1/cpf/?cpf={cpf}&token={TOKEN}</a>
+      </div>
+      <div class="osint-item">
+        <strong>Serasa Experian</strong>
+        <a href="https://api.serasaexperian.com.br/v1/consultas" target="_blank">POST https://api.serasaexperian.com.br/v1/consultas</a>
+      </div>
+      <div class="osint-item">
+        <strong>BigDataCorp</strong>
+        <a href="https://bigboost.bigdatacorp.com.br/peoplev2" target="_blank">POST https://bigboost.bigdatacorp.com.br/peoplev2</a>
+      </div>
+    </div>
+
+    <!-- 4. NOME PRÓPRIO -->
+    <button class="accordion-btn" onclick="toggleAccordion('acc-nome')">
+      👤 4. Nome Próprio (Demografia) <span>▼</span>
+    </button>
+    <div id="acc-nome" class="accordion-content">
+      <div class="osint-item">
+        <strong>Genderize.io</strong>
+        <a href="https://api.genderize.io?name=" target="_blank">GET https://api.genderize.io?name={nome}</a>
+      </div>
+      <div class="osint-item">
+        <strong>Agify.io</strong>
+        <a href="https://api.agify.io?name=" target="_blank">GET https://api.agify.io?name={nome}</a>
+      </div>
+      <div class="osint-item">
+        <strong>Nationalize.io</strong>
+        <a href="https://api.nationalize.io?name=" target="_blank">GET https://api.nationalize.io?name={nome}</a>
+      </div>
+    </div>
+
     <!-- SEÇÃO DE CANAIS -->
     <div style="margin: 10px 0; display: flex; flex-direction: column; gap: 8px;">
         <div style="color: var(--main-color); font-size: 0.75rem; text-align: center; font-weight: bold; margin-bottom: 5px;">MEUS CANAIS</div>
@@ -661,7 +833,7 @@
 
     const baseEmailData = {
       'WhatsApp': ['support@whatsapp.com', 'legal@whatsapp.com', 'abuso@whatsapp.com', 'press@whatsapp.com'],
-      'Kwai': ['Report@kwai.com', 'customer-servicer@kwai.com', 'comcustomer-service@kwai.com', 'customer-service@kwai.com', 'support@kuaishousupport.freshdesk.com'],
+      'Kwai': ['Report@kwai.com', 'customer-servicer@kwai.com', 'comcustomer-service@kwai.com', 'customer-service@kwai.com'],
       'Telegram': ['support@telegram.org', 'abuse@telegram.org', 'recover@telegram.org', 'sms@telegram.org'],
       'Instagram': ['support@instagram.com', 'phish@instagram.com', 'abuse@instagram.com', 'privacy@instagram.com']
     };
@@ -675,6 +847,13 @@
       purple: { main: '#aa00ff', bgActive: '#330044', shadow: 'rgba(170, 0, 255, 0.3)' },
       gold: { main: '#ffaa00', bgActive: '#442200', shadow: 'rgba(255, 170, 0, 0.3)' }
     };
+
+    function toggleAccordion(id) {
+      const el = document.getElementById(id);
+      if(el) {
+        el.classList.toggle('active');
+      }
+    }
 
     function changeAppTheme(themeKey) {
       const theme = themes[themeKey] || themes.red;
