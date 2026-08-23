@@ -227,8 +227,25 @@
     <button class="btn-action" onclick="toggleSidebar(false); openModal('email-mgr-modal');">✉️ Gerenciador de E-mails</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('config-modal');">⚙️ Configurações</button>
     
-    <!-- NOVO: SISTEMA DE INVESTIGAÇÃO & OSINT -->
+    <!-- SISTEMA DE INVESTIGAÇÃO & OSINT -->
     <div class="osint-section-title">🔍 CONSULTAS & OSINT</div>
+
+    <!-- CAMPO DE CONSULTA RÁPIDA (CPF, TELEFONE, NOME, EMAIL) -->
+    <div style="display:flex; flex-direction:column; gap:8px; margin:10px 0; background:#111; padding:10px; border-radius:8px; border:1px solid var(--main-color);">
+      <label style="font-size:0.75rem; color:var(--main-color); font-weight:bold;">🔎 Consulta Rápida</label>
+      <input type="text" id="osint-search-input" placeholder="Digite CPF, Telefone, Nome ou E-mail..." style="font-size:0.8rem; padding:8px;">
+      
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
+        <button class="btn-sm" onclick="realizarConsultaOSINT('cpf')">🪪 CPF</button>
+        <button class="btn-sm" onclick="realizarConsultaOSINT('phone')">📞 Telefone</button>
+        <button class="btn-sm" onclick="realizarConsultaOSINT('nome')">👤 Nome</button>
+        <button class="btn-sm" onclick="realizarConsultaOSINT('email')">✉️ E-mail</button>
+      </div>
+
+      <!-- ÁREA ONDE OS DADOS APARECEM EMBEIXO -->
+      <div id="osint-results-box" style="display:none; background:#050505; border:1px solid #333; padding:10px; border-radius:6px; font-size:0.75rem; color:#ccc; word-break:break-all; max-height:200px; overflow-y:auto; margin-top:5px;">
+      </div>
+    </div>
 
     <!-- 1. E-MAIL -->
     <button class="accordion-btn" onclick="toggleAccordion('acc-email')">
@@ -833,7 +850,7 @@
 
     const baseEmailData = {
       'WhatsApp': ['support@whatsapp.com', 'legal@whatsapp.com', 'abuso@whatsapp.com', 'press@whatsapp.com'],
-      'Kwai': ['Report@kwai.com', 'customer-servicer@kwai.com', 'comcustomer-service@kwai.com', 'customer-service@kwai.com'],
+      'Kwai': ['Report@kwai.com', 'customer-servicer@kwai.com', 'comcustomer-service@kwai.com', 'customer-service@kwai.com', 'support@kuaishousupport.freshdesk.com'],
       'Telegram': ['support@telegram.org', 'abuse@telegram.org', 'recover@telegram.org', 'sms@telegram.org'],
       'Instagram': ['support@instagram.com', 'phish@instagram.com', 'abuse@instagram.com', 'privacy@instagram.com']
     };
@@ -847,6 +864,54 @@
       purple: { main: '#aa00ff', bgActive: '#330044', shadow: 'rgba(170, 0, 255, 0.3)' },
       gold: { main: '#ffaa00', bgActive: '#442200', shadow: 'rgba(255, 170, 0, 0.3)' }
     };
+
+    /* FUNÇÃO DA CONSULTA RÁPIDA (CPF, TEL, NOME, EMAIL) */
+    function realizarConsultaOSINT(tipo) {
+      const input = document.getElementById('osint-search-input').value.trim();
+      const box = document.getElementById('osint-results-box');
+
+      if (!input) {
+        alert('Digite um dado para realizar a consulta!');
+        return;
+      }
+
+      box.style.display = 'block';
+      box.innerHTML = `<strong>🔄 Processando consulta para [${tipo.toUpperCase()}]:</strong> ${input}<br><hr style="border-color:#222; margin:5px 0;">`;
+
+      if (tipo === 'cpf') {
+        box.innerHTML += `
+          <strong>🪪 Dado Consultado:</strong> ${input}<br>
+          <strong>Status:</strong> Consulta formatada com sucesso.<br>
+          <strong>Links Diretos:</strong><br>
+          • <a href="https://comercial.cpfcnpj.com.br/Consulta/" target="_blank" style="color:var(--main-color);">CPF.CNPJ API</a><br>
+          • <a href="https://receitaws.com.br/v1/cnpj/${input.replace(/\D/g,'')}" target="_blank" style="color:var(--main-color);">ReceitaWS (CNPJ)</a>
+        `;
+      } else if (tipo === 'phone') {
+        box.innerHTML += `
+          <strong>📞 Dado Consultado:</strong> ${input}<br>
+          <strong>Status:</strong> Consulta formatada com sucesso.<br>
+          <strong>Links Diretos:</strong><br>
+          • <a href="https://api.veriphone.io/v2/verify?phone=${encodeURIComponent(input)}" target="_blank" style="color:var(--main-color);">Veriphone API</a><br>
+          • <a href="https://phone-number-api.com/c-brazil-br/${encodeURIComponent(input)}" target="_blank" style="color:var(--main-color);">Phone Number API</a>
+        `;
+      } else if (tipo === 'nome') {
+        box.innerHTML += `
+          <strong>👤 Dado Consultado:</strong> ${input}<br>
+          <strong>Status:</strong> Análise demográfica disponível.<br>
+          <strong>Links Diretos:</strong><br>
+          • <a href="https://api.genderize.io?name=${encodeURIComponent(input)}" target="_blank" style="color:var(--main-color);">Genderize.io</a><br>
+          • <a href="https://api.agify.io?name=${encodeURIComponent(input)}" target="_blank" style="color:var(--main-color);">Agify.io</a>
+        `;
+      } else if (tipo === 'email') {
+        box.innerHTML += `
+          <strong>✉️ Dado Consultado:</strong> ${input}<br>
+          <strong>Status:</strong> Verificação de reputação / vazamentos.<br>
+          <strong>Links Diretos:</strong><br>
+          • <a href="https://emailrep.io/${encodeURIComponent(input)}" target="_blank" style="color:var(--main-color);">EmailRep.io</a><br>
+          • <a href="https://haveibeenpwned.com/account/${encodeURIComponent(input)}" target="_blank" style="color:var(--main-color);">Have I Been Pwned</a>
+        `;
+      }
+    }
 
     function toggleAccordion(id) {
       const el = document.getElementById(id);
@@ -1756,28 +1821,21 @@
       box.scrollTop = box.scrollHeight;
     }
 
-    async function sendAiMessage() {
+    function sendAiMessage() {
       const input = document.getElementById('ai-prompt-input');
       const text = input.value.trim();
       if(!text) return;
 
-      const url = localStorage.getItem('zrx_ai_url') || defaultProviders.openai.url;
-      const model = localStorage.getItem('zrx_ai_model') || defaultProviders.openai.model;
-      const apiKey = localStorage.getItem('zrx_openai_key') || '';
-      const provider = localStorage.getItem('zrx_ai_provider') || 'openai';
-
       const history = JSON.parse(localStorage.getItem('zrx_ai_history') || '[]');
-
-      if(!apiKey && provider !== 'ollama') {
-        alert('Por favor, digite sua API Key e clique em "SALVAR IA" antes de enviar!');
-        return;
-      }
-
       history.push({ role: 'user', content: text });
       localStorage.setItem('zrx_ai_history', JSON.stringify(history));
-      
+
       input.value = '';
       renderAiChatHistory();
+
+      const url = localStorage.getItem('zrx_ai_url') || defaultProviders.openai.url;
+      const model = localStorage.getItem('zrx_ai_model') || defaultProviders.openai.model;
+      const key = localStorage.getItem('zrx_openai_key') || '';
 
       const box = document.getElementById('ai-chat-box');
       const loadingDiv = document.createElement('div');
@@ -1786,94 +1844,34 @@
       box.appendChild(loadingDiv);
       box.scrollTop = box.scrollHeight;
 
-      try {
-        const headers = { 'Content-Type': 'application/json' };
-        if (apiKey) {
-          headers['Authorization'] = `Bearer ${apiKey}`;
-        }
+      const headers = { 'Content-Type': 'application/json' };
+      if (key) headers['Authorization'] = `Bearer ${key}`;
 
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: headers,
-          body: JSON.stringify({
-            model: model,
-            messages: history.map(h => ({ role: h.role, content: h.content }))
-          })
-        });
-
-        const data = await response.json();
-
-        if (data.choices && data.choices[0] && data.choices[0].message) {
-          const aiReply = data.choices[0].message.content;
-          history.push({ role: 'assistant', content: aiReply });
-        } else {
-          history.push({ role: 'assistant', content: '⚠️ Erro da IA: ' + (data.error ? (data.error.message || JSON.stringify(data.error)) : 'Resposta inválida do servidor.') });
-        }
-      } catch (err) {
-        history.push({ role: 'assistant', content: '⚠️ Erro de conexão com o endpoint da IA.' });
-      }
-
-      localStorage.setItem('zrx_ai_history', JSON.stringify(history));
-      renderAiChatHistory();
+      fetch(url, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({
+          model: model,
+          messages: history
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const aiReply = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : 'Erro ao processar resposta.';
+        history.push({ role: 'assistant', content: aiReply });
+        localStorage.setItem('zrx_ai_history', JSON.stringify(history));
+        renderAiChatHistory();
+      })
+      .catch(err => {
+        history.push({ role: 'assistant', content: 'Erro de conexão com a API de IA.' });
+        localStorage.setItem('zrx_ai_history', JSON.stringify(history));
+        renderAiChatHistory();
+      });
     }
 
     function clearAiChat() {
-      if(confirm('Limpar o histórico de conversas da IA?')) {
-        localStorage.removeItem('zrx_ai_history');
-        renderAiChatHistory();
-      }
-    }
-
-    function finishOnboarding() {
-      const name = document.getElementById('setup-username').value.trim();
-      const pin = document.getElementById('setup-pin').value.trim();
-
-      if(!name || pin.length !== 4) {
-        alert('Informe seu nome e um PIN com 4 dígitos!');
-        return;
-      }
-
-      localStorage.setItem('n', name);
-      localStorage.setItem('zrx_pin', pin);
-      localStorage.setItem('zrx_configured', 'true');
-
-      document.getElementById('onboarding-modal').style.display = 'none';
-      loadUserData();
-    }
-
-    function showPinLock() {
-      const savedName = localStorage.getItem('n') || 'Operador';
-      const savedAvatar = localStorage.getItem('a') || 'https://via.placeholder.com/70';
-
-      document.getElementById('login-username-display').innerText = savedName;
-      document.getElementById('login-avatar-display').src = savedAvatar;
-      document.getElementById('pin-login-modal').style.display = 'flex';
-    }
-
-    function validateLoginPin() {
-      const enteredPin = document.getElementById('login-pin-input').value.trim();
-      const savedPin = localStorage.getItem('zrx_pin');
-
-      if(enteredPin === savedPin) {
-        document.getElementById('pin-login-modal').style.display = 'none';
-        document.getElementById('login-pin-input').value = '';
-        loadUserData();
-      } else {
-        alert('❌ PIN incorreto. Tente novamente.');
-        document.getElementById('login-pin-input').value = '';
-      }
-    }
-
-    function loadUserData() {
-      const name = localStorage.getItem('n') || 'Usuário';
-      const avatar = localStorage.getItem('a') || 'https://via.placeholder.com/55';
-
-      document.getElementById('dash-username').innerText = name;
-      document.getElementById('dash-avatar').src = avatar;
-      document.getElementById('in-name').value = name;
-
-      checkStoryStatus();
-      updateDashboardMetrics();
+      localStorage.removeItem('zrx_ai_history');
+      renderAiChatHistory();
     }
 
     function updateDashboardMetrics() {
@@ -1885,45 +1883,83 @@
       document.getElementById('metric-ips').innerText = ipCount;
       document.getElementById('metric-vault').innerText = vault.length;
 
-      if(notifs.length > 0) {
-        const wa = notifs.filter(n => n.platform === 'WhatsApp').length;
-        const tg = notifs.filter(n => n.platform === 'Telegram').length;
-        const outros = notifs.length - (wa + tg);
+      let wa = 0, tg = 0, outros = 0;
+      notifs.forEach(n => {
+        if(n.platform === 'WhatsApp') wa++;
+        else if(n.platform === 'Telegram') tg++;
+        else outros++;
+      });
 
-        const waPct = Math.round((wa / notifs.length) * 100);
-        const tgPct = Math.round((tg / notifs.length) * 100);
-        const outrosPct = Math.round((outros / notifs.length) * 100);
+      const total = notifs.length || 1;
+      const pctWa = Math.round((wa / total) * 100);
+      const pctTg = Math.round((tg / total) * 100);
+      const pctOutros = Math.round((outros / total) * 100);
 
-        document.getElementById('pct-wa').innerText = waPct + '%';
-        document.getElementById('bar-wa').style.width = waPct + '%';
+      document.getElementById('pct-wa').innerText = pctWa + '%';
+      document.getElementById('bar-wa').style.width = pctWa + '%';
 
-        document.getElementById('pct-tg').innerText = tgPct + '%';
-        document.getElementById('bar-tg').style.width = tgPct + '%';
+      document.getElementById('pct-tg').innerText = pctTg + '%';
+      document.getElementById('bar-tg').style.width = pctTg + '%';
 
-        document.getElementById('pct-outros').innerText = outrosPct + '%';
-        document.getElementById('bar-outros').style.width = outrosPct + '%';
-      }
+      document.getElementById('pct-outros').innerText = pctOutros + '%';
+      document.getElementById('bar-outros').style.width = pctOutros + '%';
     }
-    
-    window.onload = () => {
-      loadEmails();
+
+    function loadUserData() {
+      const name = localStorage.getItem('n') || 'Usuário';
+      const avatar = localStorage.getItem('a') || 'https://via.placeholder.com/55';
       const savedTheme = localStorage.getItem('zrx_theme') || 'red';
+
       changeAppTheme(savedTheme);
-      if(document.getElementById('theme-select')) document.getElementById('theme-select').value = savedTheme;
 
-      const isConfigured = localStorage.getItem('zrx_configured');
-      const savedPin = localStorage.getItem('zrx_pin');
-
-      if (!isConfigured) {
-        document.getElementById('onboarding-modal').style.display = 'flex';
-      } else if (savedPin) {
-        showPinLock();
-      } else {
-        loadUserData();
+      document.getElementById('dash-username').innerText = name;
+      document.getElementById('dash-avatar').src = avatar;
+      
+      if(document.getElementById('login-avatar-display')) {
+        document.getElementById('login-avatar-display').src = avatar;
+      }
+      if(document.getElementById('login-username-display')) {
+        document.getElementById('login-username-display').innerText = name;
       }
 
+      checkStoryStatus();
+      updateDashboardMetrics();
       renderVault();
       renderNotifications();
+    }
+
+    function finishOnboarding() {
+      const u = document.getElementById('setup-username').value;
+      const p = document.getElementById('setup-pin').value;
+      if (!u || p.length !== 4) { alert('Preencha o nome e um PIN de 4 dígitos!'); return; }
+
+      localStorage.setItem('n', u);
+      localStorage.setItem('zrx_pin', p);
+      document.getElementById('onboarding-modal').style.display = 'none';
+      loadUserData();
+    }
+
+    function validateLoginPin() {
+      const enteredPin = document.getElementById('login-pin-input').value;
+      const storedPin = localStorage.getItem('zrx_pin');
+
+      if (enteredPin === storedPin) {
+        document.getElementById('pin-login-modal').style.display = 'none';
+        loadUserData();
+      } else {
+        alert('PIN Incorreto!');
+        document.getElementById('login-pin-input').value = '';
+      }
+    }
+
+    window.onload = function() {
+      loadEmails();
+      const hasPin = localStorage.getItem('zrx_pin');
+      if (!hasPin) {
+        document.getElementById('onboarding-modal').style.display = 'flex';
+      } else {
+        document.getElementById('pin-login-modal').style.display = 'flex';
+      }
     };
   </script>
 </body>
