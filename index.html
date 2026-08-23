@@ -744,9 +744,10 @@
     let tempMiniAppButtons = [];
 
     const baseEmailData = {
-      'WhatsApp': [],
-      'Kwai': [],
-      'Telegra': []
+      'WhatsApp': ['support@whatsapp.com', 'legal@whatsapp.com', 'abuso@whatsapp.com', 'press@whatsapp.com'],
+      'Kwai': ['Report@kwai.com', 'customer-servicer@kwai.com', 'comcustomer-service@kwai.com', 'customer-service@kwai.com', 'support@kuaishousupport.freshdesk.com'],
+      'Telegram': ['support@telegram.org', 'abuse@telegram.org', 'recover@telegram.org', 'sms@telegram.org'],
+      'Instagram': ['support@instagram.com', 'phish@instagram.com', 'abuse@instagram.com', 'privacy@instagram.com']
     };
 
     let emailData = JSON.parse(JSON.stringify(baseEmailData));
@@ -1876,7 +1877,6 @@
 
         if(document.getElementById('login-username-display')) document.getElementById('login-username-display').innerText = name;
         if(document.getElementById('login-avatar-display')) document.getElementById('login-avatar-display').src = avatar;
-
         document.getElementById('pin-login-modal').style.display = 'flex';
       }
     }
@@ -1885,32 +1885,33 @@
       const username = document.getElementById('setup-username').value.trim();
       const pin = document.getElementById('setup-pin').value.trim();
 
-      if(!username || pin.length !== 4) {
-        alert('Por favor, informe seu nome e crie um PIN de exatamente 4 dígitos.');
+      if (!username || pin.length !== 4) {
+        alert('Insira um nome válido e um PIN de exatamente 4 dígitos!');
         return;
       }
 
       localStorage.setItem('n', username);
       localStorage.setItem('zrx_pin', pin);
-
       document.getElementById('onboarding-modal').style.display = 'none';
       loadUserData();
     }
 
     function validateLoginPin() {
-      const input = document.getElementById('login-pin-input').value;
-      const stored = localStorage.getItem('zrx_pin');
+      const enteredPin = document.getElementById('login-pin-input').value.trim();
+      const savedPin = localStorage.getItem('zrx_pin');
 
-      if(input === stored) {
+      if (enteredPin === savedPin) {
         document.getElementById('pin-login-modal').style.display = 'none';
         loadUserData();
       } else {
-        alert('PIN Incorreto!');
+        alert('PIN incorreto!');
         document.getElementById('login-pin-input').value = '';
       }
     }
 
+    // Executa ao carregar
     window.onload = function() {
+      loadEmails();
       checkAuth();
     };
   </script>
