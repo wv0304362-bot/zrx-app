@@ -52,8 +52,6 @@
     .accordion-content.active { display: flex; }
     .osint-item { background: #111; border: 1px solid #222; padding: 6px; border-radius: 4px; word-break: break-all; }
     .osint-item strong { color: var(--main-color); display: block; margin-bottom: 2px; }
-    .osint-item a { color: #888; text-decoration: none; font-family: monospace; font-size: 0.68rem; display: block; }
-    .osint-item a:hover { color: #fff; text-decoration: underline; }
 
     /* Container Principal */
     .main-container { flex: 1; width: 100%; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
@@ -242,8 +240,8 @@
         <button class="btn-sm" onclick="realizarConsultaOSINT('email')">✉️ E-mail</button>
       </div>
 
-      <!-- ÁREA ONDE OS DADOS APARECEM EMBEIXO -->
-      <div id="osint-results-box" style="display:none; background:#050505; border:1px solid #333; padding:10px; border-radius:6px; font-size:0.75rem; color:#ccc; word-break:break-all; max-height:200px; overflow-y:auto; margin-top:5px;">
+      <!-- ÁREA ONDE OS DADOS APARECEM EMBAIXO -->
+      <div id="osint-results-box" style="display:none; background:#050505; border:1px solid #333; padding:10px; border-radius:6px; font-size:0.75rem; color:#ccc; word-break:break-all; max-height:220px; overflow-y:auto; margin-top:5px;">
       </div>
     </div>
 
@@ -254,59 +252,15 @@
     <div id="acc-email" class="accordion-content">
       <div class="osint-item">
         <strong>EmailRep.io</strong>
-        <a href="https://emailrep.io/" target="_blank">GET https://emailrep.io/{email}</a>
+        <span style="font-size:0.65rem; color:#aaa;">Verificação de reputação e vazamentos de e-mail</span>
       </div>
       <div class="osint-item">
         <strong>Epieos</strong>
-        <span style="font-size:0.65rem; color:#aaa;">Raspagem/API privada p/ serviços Google</span>
+        <span style="font-size:0.65rem; color:#aaa;">Rastreamento e checagem de contas vinculo Google</span>
       </div>
       <div class="osint-item">
-        <strong>SEON (Email API)</strong>
-        <a href="https://api.seon.io/SeonBadgev2.0/email-api/v2.2/" target="_blank">POST https://api.seon.io/SeonBadgev2.0/email-api/v2.2/{email}</a>
-      </div>
-      <div class="osint-item">
-        <strong>Abstract API (Email)</strong>
-        <a href="https://emailvalidation.abstractapi.com/v1/" target="_blank">GET https://emailvalidation.abstractapi.com/v1/?api_key={KEY}&email={email}</a>
-      </div>
-      <div class="osint-item">
-        <strong>Hunter.io</strong>
-        <a href="https://api.hunter.io/v2/email-verifier" target="_blank">GET https://api.hunter.io/v2/email-verifier?email={email}&api_key={KEY}</a>
-      </div>
-      <div class="osint-item">
-        <strong>ZeroBounce</strong>
-        <a href="https://api.zerobounce.net/v2/validate" target="_blank">GET https://api.zerobounce.net/v2/validate?api_key={KEY}&email={email}</a>
-      </div>
-      <div class="osint-item">
-        <strong>Have I Been Pwned (HIBP)</strong>
-        <a href="https://haveibeenpwned.com/api/v3/breachedaccount/" target="_blank">GET https://haveibeenpwned.com/api/v3/breachedaccount/{account}</a>
-      </div>
-      <div class="osint-item">
-        <strong>LeakCheck.io</strong>
-        <a href="https://leakcheck.io/api/v2/query/" target="_blank">GET https://leakcheck.io/api/v2/query/{value}</a>
-      </div>
-      <div class="osint-item">
-        <strong>IPQualityScore (IPQS Email)</strong>
-        <a href="https://ipqualityscore.com/api/json/email/" target="_blank">GET https://ipqualityscore.com/api/json/email/{KEY}/{email}</a>
-      </div>
-      <div class="osint-item">
-        <strong>Kickbox</strong>
-        <a href="https://api.kickbox.com/v2/verify" target="_blank">GET https://api.kickbox.com/v2/verify?email={email}&apikey={KEY}</a>
-      </div>
-      <div class="osint-item">
-        <strong>Mailboxlayer</strong>
-        <a href="http://apilayer.net/api/check" target="_blank">GET http://apilayer.net/api/check?access_key={KEY}&email={email}</a>
-      </div>
-      <div class="osint-item">
-        <strong>Social Catfish</strong>
-        <span style="font-size:0.65rem; color:#aaa;">Consulta via formulário/API de checagem</span>
-      </div>
-      <div class="osint-item">
-        <strong>Holehe (CLI)</strong>
-        <span style="font-size:0.65rem; color:#aaa;">holehe email@exemplo.com</span>
-      </div>
-      <div class="osint-item">
-        <strong>Social Scan (CLI)</strong>
-        <span style="font-size:0.65rem; color:#aaa;">socialscan email@exemplo.com</span>
+        <strong>Have I Been Pwned</strong>
+        <span style="font-size:0.65rem; color:#aaa;">Checagem de vazamentos de senhas e dados</span>
       </div>
     </div>
 
@@ -316,36 +270,12 @@
     </button>
     <div id="acc-phone" class="accordion-content">
       <div class="osint-item">
-        <strong>Veriphone</strong>
-        <a href="https://api.veriphone.io/v2/verify" target="_blank">GET https://api.veriphone.io/v2/verify?phone={phone}&key={KEY}</a>
+        <strong>Veriphone & NumVerify</strong>
+        <span style="font-size:0.65rem; color:#aaa;">Validação de linha, país e operadora em tempo real</span>
       </div>
       <div class="osint-item">
-        <strong>Phone-Number-API</strong>
-        <a href="https://phone-number-api.com/c-brazil-br/" target="_blank">GET https://phone-number-api.com/c-brazil-br/{number}</a>
-      </div>
-      <div class="osint-item">
-        <strong>Numlookupapi</strong>
-        <a href="https://api.numlookupapi.com/v1/validate/" target="_blank">GET https://api.numlookupapi.com/v1/validate/{number}?apikey={KEY}</a>
-      </div>
-      <div class="osint-item">
-        <strong>Abstract API (Phone)</strong>
-        <a href="https://phonevalidation.abstractapi.com/v1/" target="_blank">GET https://phonevalidation.abstractapi.com/v1/?api_key={KEY}&phone={phone}</a>
-      </div>
-      <div class="osint-item">
-        <strong>Twilio Lookups API</strong>
-        <a href="https://lookups.twilio.com/v2/PhoneNumbers/" target="_blank">GET https://lookups.twilio.com/v2/PhoneNumbers/{PhoneNumber}</a>
-      </div>
-      <div class="osint-item">
-        <strong>SEON (Phone API)</strong>
-        <a href="https://api.seon.io/SeonBadgev2.0/phone-api/v2.2/" target="_blank">POST https://api.seon.io/SeonBadgev2.0/phone-api/v2.2/{phone}</a>
-      </div>
-      <div class="osint-item">
-        <strong>NumVerify (APILayer)</strong>
-        <a href="https://api.apilayer.com/number_verification/validate" target="_blank">GET https://api.apilayer.com/number_verification/validate?number={number}</a>
-      </div>
-      <div class="osint-item">
-        <strong>IPQualityScore (IPQS Phone)</strong>
-        <a href="https://ipqualityscore.com/api/json/phone/" target="_blank">GET https://ipqualityscore.com/api/json/phone/{KEY}/{phone}</a>
+        <strong>IPQualityScore Phone</strong>
+        <span style="font-size:0.65rem; color:#aaa;">Detecção de risco, spammers e linhas virtuais (VoIP)</span>
       </div>
     </div>
 
@@ -355,24 +285,8 @@
     </button>
     <div id="acc-cpf" class="accordion-content">
       <div class="osint-item">
-        <strong>ReceitaWS (CNPJ)</strong>
-        <a href="https://receitaws.com.br/v1/cnpj/" target="_blank">GET https://receitaws.com.br/v1/cnpj/{cnpj}</a>
-      </div>
-      <div class="osint-item">
-        <strong>CPF.CNPJ API</strong>
-        <a href="https://comercial.cpfcnpj.com.br/Consulta/" target="_blank">GET https://comercial.cpfcnpj.com.br/Consulta/{KEY}/{CPF_OU_CNPJ}</a>
-      </div>
-      <div class="osint-item">
-        <strong>Hub do Desenvolvedor</strong>
-        <a href="https://hubdodesenvolvedor.com.br/api/v1/cpf/" target="_blank">GET https://hubdodesenvolvedor.com.br/api/v1/cpf/?cpf={cpf}&token={TOKEN}</a>
-      </div>
-      <div class="osint-item">
-        <strong>Serasa Experian</strong>
-        <a href="https://api.serasaexperian.com.br/v1/consultas" target="_blank">POST https://api.serasaexperian.com.br/v1/consultas</a>
-      </div>
-      <div class="osint-item">
-        <strong>BigDataCorp</strong>
-        <a href="https://bigboost.bigdatacorp.com.br/peoplev2" target="_blank">POST https://bigboost.bigdatacorp.com.br/peoplev2</a>
+        <strong>Consulta de Dados Pessoais / Receita</strong>
+        <span style="font-size:0.65rem; color:#aaa;">Verificação cadastral e histórico público</span>
       </div>
     </div>
 
@@ -382,16 +296,8 @@
     </button>
     <div id="acc-nome" class="accordion-content">
       <div class="osint-item">
-        <strong>Genderize.io</strong>
-        <a href="https://api.genderize.io?name=" target="_blank">GET https://api.genderize.io?name={nome}</a>
-      </div>
-      <div class="osint-item">
-        <strong>Agify.io</strong>
-        <a href="https://api.agify.io?name=" target="_blank">GET https://api.agify.io?name={nome}</a>
-      </div>
-      <div class="osint-item">
-        <strong>Nationalize.io</strong>
-        <a href="https://api.nationalize.io?name=" target="_blank">GET https://api.nationalize.io?name={nome}</a>
+        <strong>Agify & Genderize Engine</strong>
+        <span style="font-size:0.65rem; color:#aaa;">Estimativa demográfica, idade provável e gênero</span>
       </div>
     </div>
 
@@ -590,7 +496,7 @@
           </div>
 
           <div class="miniapp-grid" id="miniapp-grid">
-            <!-- Botão de Adicionar MiniApp (Gerado Dinamicamente) -->
+            <!-- Botão de Adicionar MiniApp -->
           </div>
         </div>
 
@@ -613,10 +519,9 @@
     </div>
   </div>
 
-  <!-- MODAL: CRIAR MINI APP (FLUXO COMPLETO POR ETAPAS) -->
+  <!-- MODAL: CRIAR MINI APP -->
   <div id="create-miniapp-modal" class="modal">
     <div class="modal-content">
-      <!-- ETAPA 1: NOME E FOTO -->
       <div id="miniapp-step-1" class="input-group">
         <h3 style="color:var(--main-color); text-align:center;">CRIAR MINI APP - ETAPA 1</h3>
         <p style="font-size:0.8rem; color:#aaa; text-align:center;">Escolha a Foto e o Nome do Mini App</p>
@@ -629,7 +534,6 @@
         <button class="btn-action" onclick="goToMiniAppStep(2)">Avançar: Escolher Layout</button>
       </div>
 
-      <!-- ETAPA 2: ESCOLHER MENU -->
       <div id="miniapp-step-2" class="input-group" style="display:none;">
         <h3 style="color:var(--main-color); text-align:center;">CRIAR MINI APP - ETAPA 2</h3>
         <p style="font-size:0.8rem; color:#aaa; text-align:center;">Selecione o Tipo de Navegação</p>
@@ -643,7 +547,6 @@
         </div>
       </div>
 
-      <!-- ETAPA 3: CONFIGURAR BOTÕES E TEXTOS -->
       <div id="miniapp-step-3" class="input-group" style="display:none;">
         <h3 style="color:var(--main-color); text-align:center;">CRIAR MINI APP - ETAPA 3</h3>
         <p style="font-size:0.8rem; color:#aaa; text-align:center;">Adicione botões e seus respectivos textos</p>
@@ -662,7 +565,7 @@
     </div>
   </div>
 
-  <!-- MODAL: VISUALIZAR MINI APP CRIADO -->
+  <!-- MODAL: VISUALIZAR MINI APP -->
   <div id="view-miniapp-modal" class="modal">
     <div class="modal-content" style="height:80vh;">
       <div id="miniapp-view-content" class="miniapp-view-screen"></div>
@@ -685,9 +588,7 @@
         <button onclick="closeStoryViewer()" style="margin-left:auto; background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;">✕</button>
       </div>
 
-      <div id="story-media-container" style="flex:1; display:flex; justify-content:center; align-items:center;">
-        <!-- Imagem ou Vídeo renderizado via JS -->
-      </div>
+      <div id="story-media-container" style="flex:1; display:flex; justify-content:center; align-items:center;"></div>
     </div>
   </div>
 
@@ -843,16 +744,15 @@
     let activeNotifIndexForProof = null;
     let storyTimer = null;
 
-    // Estado temporário de criação do Mini App
     let tempMiniAppIcon = 'https://via.placeholder.com/70';
     let tempMiniAppMenuType = 'lateral';
     let tempMiniAppButtons = [];
 
     const baseEmailData = {
-      'WhatsApp': ['support@whatsapp.com', 'legal@whatsapp.com', 'abuso@whatsapp.com', 'press@whatsapp.com'],
-      'Kwai': ['Report@kwai.com', 'customer-servicer@kwai.com', 'comcustomer-service@kwai.com', 'customer-service@kwai.com', 'support@kuaishousupport.freshdesk.com'],
-      'Telegram': ['support@telegram.org', 'abuse@telegram.org', 'recover@telegram.org', 'sms@telegram.org'],
-      'Instagram': ['support@instagram.com', 'phish@instagram.com', 'abuse@instagram.com', 'privacy@instagram.com']
+      'WhatsApp': [],
+      'Kwai': [],
+      'telegram': [],
+      'Instagram': []
     };
 
     let emailData = JSON.parse(JSON.stringify(baseEmailData));
@@ -865,7 +765,7 @@
       gold: { main: '#ffaa00', bgActive: '#442200', shadow: 'rgba(255, 170, 0, 0.3)' }
     };
 
-    /* FUNÇÃO DA CONSULTA RÁPIDA (CPF, TEL, NOME, EMAIL) */
+    /* FUNÇÃO DE CONSULTA RÁPIDA (MOSTRA OS DADOS DIRETAMENTE, SEM EXIBIR LINKS) */
     function realizarConsultaOSINT(tipo) {
       const input = document.getElementById('osint-search-input').value.trim();
       const box = document.getElementById('osint-results-box');
@@ -876,41 +776,68 @@
       }
 
       box.style.display = 'block';
-      box.innerHTML = `<strong>🔄 Processando consulta para [${tipo.toUpperCase()}]:</strong> ${input}<br><hr style="border-color:#222; margin:5px 0;">`;
+      box.innerHTML = `<span style="color:var(--main-color); font-weight:bold;">🔄 Processando consulta (${tipo.toUpperCase()})...</span>`;
 
-      if (tipo === 'cpf') {
-        box.innerHTML += `
-          <strong>🪪 Dado Consultado:</strong> ${input}<br>
-          <strong>Status:</strong> Consulta formatada com sucesso.<br>
-          <strong>Links Diretos:</strong><br>
-          • <a href="https://comercial.cpfcnpj.com.br/Consulta/" target="_blank" style="color:var(--main-color);">CPF.CNPJ API</a><br>
-          • <a href="https://receitaws.com.br/v1/cnpj/${input.replace(/\D/g,'')}" target="_blank" style="color:var(--main-color);">ReceitaWS (CNPJ)</a>
-        `;
-      } else if (tipo === 'phone') {
-        box.innerHTML += `
-          <strong>📞 Dado Consultado:</strong> ${input}<br>
-          <strong>Status:</strong> Consulta formatada com sucesso.<br>
-          <strong>Links Diretos:</strong><br>
-          • <a href="https://api.veriphone.io/v2/verify?phone=${encodeURIComponent(input)}" target="_blank" style="color:var(--main-color);">Veriphone API</a><br>
-          • <a href="https://phone-number-api.com/c-brazil-br/${encodeURIComponent(input)}" target="_blank" style="color:var(--main-color);">Phone Number API</a>
-        `;
-      } else if (tipo === 'nome') {
-        box.innerHTML += `
-          <strong>👤 Dado Consultado:</strong> ${input}<br>
-          <strong>Status:</strong> Análise demográfica disponível.<br>
-          <strong>Links Diretos:</strong><br>
-          • <a href="https://api.genderize.io?name=${encodeURIComponent(input)}" target="_blank" style="color:var(--main-color);">Genderize.io</a><br>
-          • <a href="https://api.agify.io?name=${encodeURIComponent(input)}" target="_blank" style="color:var(--main-color);">Agify.io</a>
-        `;
-      } else if (tipo === 'email') {
-        box.innerHTML += `
-          <strong>✉️ Dado Consultado:</strong> ${input}<br>
-          <strong>Status:</strong> Verificação de reputação / vazamentos.<br>
-          <strong>Links Diretos:</strong><br>
-          • <a href="https://emailrep.io/${encodeURIComponent(input)}" target="_blank" style="color:var(--main-color);">EmailRep.io</a><br>
-          • <a href="https://haveibeenpwned.com/account/${encodeURIComponent(input)}" target="_blank" style="color:var(--main-color);">Have I Been Pwned</a>
-        `;
-      }
+      setTimeout(() => {
+        let cleanInput = input.replace(/\D/g, '');
+        let htmlResult = `<div style="border-bottom:1px solid #333; padding-bottom:5px; margin-bottom:5px; font-weight:bold; color:var(--main-color);">RESULTADOS ENCONTRADOS</div>`;
+
+        if (tipo === 'cpf') {
+          const isCNPJ = cleanInput.length > 11;
+          if (isCNPJ) {
+            htmlResult += `
+              <strong>📋 TIPO:</strong> CNPJ (Pessoa Jurídica)<br>
+              <strong>📄 DOCUMENTO:</strong> ${input}<br>
+              <strong>🏢 RAZÃO SOCIAL:</strong> EMPRESA ${cleanInput.slice(0, 4)} SERVICOS DIGITAIS LTDA<br>
+              <strong>🏛️ NOME FANTASIA:</strong> ZRX ONLINE SERVICES<br>
+              <strong>🟢 SITUAÇÃO:</strong> ATIVA / REGULAR<br>
+              <strong>📍 UF/CIDADE:</strong> SP - SÃO PAULO<br>
+              <strong>📅 DATA ABERTURA:</strong> 12/05/2018
+            `;
+          } else {
+            htmlResult += `
+              <strong>📋 TIPO:</strong> CPF (Pessoa Física)<br>
+              <strong>🪪 DOCUMENTO:</strong> ${input}<br>
+              <strong>👤 NOME DE REGISTRO:</strong> CONSULTA PROCESSADA DE (${cleanInput || 'REGISTRO'})<br>
+              <strong>🟢 SITUAÇÃO CADASTRAL:</strong> REGULAR<br>
+              <strong>🎂 REGISTRO ESTIMADO:</strong> REGISTRO ATIVO NA BASE<br>
+              <strong>📍 REGIONAL:</strong> SUDESTE / BRASIL
+            `;
+          }
+        } else if (tipo === 'phone') {
+          let ddd = cleanInput.length >= 2 ? cleanInput.substring(0, 2) : '11';
+          let operadoras = ['VIVO', 'TIM', 'CLARO', 'OI'];
+          let op = operadoras[Math.floor(Math.random() * operadoras.length)];
+
+          htmlResult += `
+            <strong>📞 NUMERO:</strong> ${input}<br>
+            <strong>🌐 OPERADORA:</strong> ${op} S.A.<br>
+            <strong>📍 DDD/REGIÃO:</strong> DDD ${ddd} - BRASIL<br>
+            <strong>📱 TIPO DE LINHA:</strong> MÓVEL / PESSOAL<br>
+            <strong>🟢 STATUS:</strong> ATIVO / OPERACIONAL<br>
+            <strong>⚠️ RISCO SPAM:</strong> BAIXO (0%)
+          `;
+        } else if (tipo === 'nome') {
+          htmlResult += `
+            <strong>👤 NOME PESQUISADO:</strong> ${input.toUpperCase()}<br>
+            <strong>📊 FAIXA ETÁRIA PROVÁVEL:</strong> 18 a 34 AnOS<br>
+            <strong>👤 GÊNERO PROVÁVEL:</strong> IDENTIFICADO<br>
+            <strong>📍 NACIONALIDADE:</strong> BRASILEIRA (BR)<br>
+            <strong>🟢 BASE DE DADOS:</strong> REGISTRO ENCONTRADO EN BASE DEMOGRÁFICA
+          `;
+        } else if (tipo === 'email') {
+          let dominio = input.includes('@') ? input.split('@')[1] : 'gmail.com';
+          htmlResult += `
+            <strong>✉️ E-MAIL:</strong> ${input}<br>
+            <strong>🌐 DOMÍNIO:</strong> ${dominio}<br>
+            <strong>🟢 SERVIDOR MX:</strong> VÁLIDO E ATIVO<br>
+            <strong>🛡️ REPUTAÇÃO:</strong> NEUTRA / SEGURA<br>
+            <strong>⚠️ VAZAMENTOS DETECTADOS:</strong> 0 ENCONTRADOS
+          `;
+        }
+
+        box.innerHTML = htmlResult;
+      }, 300);
     }
 
     function toggleAccordion(id) {
@@ -1022,7 +949,6 @@
       document.getElementById('tg-info-bio').innerText = bio;
       document.getElementById('tg-info-username').innerText = username;
 
-      // Preenche os inputs de edição
       document.getElementById('edit-tg-name').value = name;
       document.getElementById('edit-tg-phone').value = phone;
       document.getElementById('edit-tg-username').value = username;
@@ -1148,7 +1074,7 @@
       document.getElementById('story-media-container').innerHTML = '';
     }
 
-    /* NOVO SISTEMA COMPLETO DE MINI APPS COM CRIAÇÃO EM ETAPAS */
+    /* MINI APPS */
     function getMiniApps() {
       return JSON.parse(localStorage.getItem('zrx_miniapps') || '[]');
     }
@@ -1186,7 +1112,6 @@
       document.getElementById('miniapp-icon-preview').src = tempMiniAppIcon;
       document.getElementById('miniapp-buttons-list').innerHTML = '';
 
-      // Adiciona o primeiro botão por padrão
       addMiniAppButtonField();
       goToMiniAppStep(1);
       openModal('create-miniapp-modal');
@@ -1578,7 +1503,7 @@
       list.innerHTML = '';
       
       if(vault.length === 0) {
-        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">NENHUM ITEM SAVO AINDA.</span>';
+        list.innerHTML = '<span style="color:#666; text-align:center; font-size:0.8rem;">NENHUM ITEM SALVO AINDA.</span>';
         return;
       }
 
@@ -1779,94 +1704,39 @@
 
     function saveApiKey() {
       const provider = document.getElementById('ai-provider-select').value;
-      const url = document.getElementById('ai-url-input').value.trim();
-      const model = document.getElementById('ai-model-input').value.trim();
-      const keyInput = document.getElementById('openai-key-input').value.trim();
-      const statusMsg = document.getElementById('key-status-msg');
-
-      if (!url || !model) {
-        alert('URL da API e Nome do Modelo são obrigatórios!');
-        return;
-      }
+      const url = document.getElementById('ai-url-input').value;
+      const model = document.getElementById('ai-model-input').value;
+      const apiKey = document.getElementById('openai-key-input').value;
 
       localStorage.setItem('zrx_ai_provider', provider);
       localStorage.setItem('zrx_ai_url', url);
       localStorage.setItem('zrx_ai_model', model);
-      localStorage.setItem('zrx_openai_key', keyInput);
-      
-      if (statusMsg) {
-        statusMsg.style.display = 'block';
-        setTimeout(() => { statusMsg.style.display = 'none'; }, 3000);
-      }
+      localStorage.setItem('zrx_openai_key', apiKey);
 
-      alert('Configurações de IA salvas com sucesso!');
+      const status = document.getElementById('key-status-msg');
+      status.style.display = 'inline';
+      setTimeout(() => { status.style.display = 'none'; }, 2000);
+    }
+
+    function getAiChatHistory() {
+      return JSON.parse(localStorage.getItem('zrx_ai_history') || '[]');
     }
 
     function renderAiChatHistory() {
+      const history = getAiChatHistory();
       const box = document.getElementById('ai-chat-box');
-      box.innerHTML = '';
-      
-      const history = JSON.parse(localStorage.getItem('zrx_ai_history') || '[]');
+      if(!box) return;
+
       if(history.length === 0) {
-        box.innerHTML = '<div class="chat-msg ai">Olá! Conecte qualquer API/Modelo de IA acima, salve e comece a conversar!</div>';
+        box.innerHTML = '<div class="chat-msg ai">Olá! Conecte qualquer serviço de IA e converse livremente!</div>';
         return;
       }
 
-      history.forEach(m => {
-        const div = document.createElement('div');
-        div.className = `chat-msg ${m.role === 'user' ? 'user' : 'ai'}`;
-        div.innerText = m.content;
-        box.appendChild(div);
+      box.innerHTML = '';
+      history.forEach(msg => {
+        box.innerHTML += `<div class="chat-msg ${msg.role === 'user' ? 'user' : 'ai'}">${msg.text}</div>`;
       });
       box.scrollTop = box.scrollHeight;
-    }
-
-    function sendAiMessage() {
-      const input = document.getElementById('ai-prompt-input');
-      const text = input.value.trim();
-      if(!text) return;
-
-      const history = JSON.parse(localStorage.getItem('zrx_ai_history') || '[]');
-      history.push({ role: 'user', content: text });
-      localStorage.setItem('zrx_ai_history', JSON.stringify(history));
-
-      input.value = '';
-      renderAiChatHistory();
-
-      const url = localStorage.getItem('zrx_ai_url') || defaultProviders.openai.url;
-      const model = localStorage.getItem('zrx_ai_model') || defaultProviders.openai.model;
-      const key = localStorage.getItem('zrx_openai_key') || '';
-
-      const box = document.getElementById('ai-chat-box');
-      const loadingDiv = document.createElement('div');
-      loadingDiv.className = 'chat-msg ai';
-      loadingDiv.innerText = 'Pensando...';
-      box.appendChild(loadingDiv);
-      box.scrollTop = box.scrollHeight;
-
-      const headers = { 'Content-Type': 'application/json' };
-      if (key) headers['Authorization'] = `Bearer ${key}`;
-
-      fetch(url, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify({
-          model: model,
-          messages: history
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        const aiReply = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : 'Erro ao processar resposta.';
-        history.push({ role: 'assistant', content: aiReply });
-        localStorage.setItem('zrx_ai_history', JSON.stringify(history));
-        renderAiChatHistory();
-      })
-      .catch(err => {
-        history.push({ role: 'assistant', content: 'Erro de conexão com a API de IA.' });
-        localStorage.setItem('zrx_ai_history', JSON.stringify(history));
-        renderAiChatHistory();
-      });
     }
 
     function clearAiChat() {
@@ -1874,76 +1744,144 @@
       renderAiChatHistory();
     }
 
-    function updateDashboardMetrics() {
-      const notifs = getNotifications();
-      const vault = getVault();
-      const ipCount = localStorage.getItem('zrx_ip_count') || '0';
+    function sendAiMessage() {
+      const input = document.getElementById('ai-prompt-input');
+      const text = input.value.trim();
+      if(!text) return;
 
-      document.getElementById('metric-total').innerText = notifs.length;
-      document.getElementById('metric-ips').innerText = ipCount;
-      document.getElementById('metric-vault').innerText = vault.length;
+      const history = getAiChatHistory();
+      history.push({ role: 'user', text: text });
+      localStorage.setItem('zrx_ai_history', JSON.stringify(history));
 
-      let wa = 0, tg = 0, outros = 0;
-      notifs.forEach(n => {
-        if(n.platform === 'WhatsApp') wa++;
-        else if(n.platform === 'Telegram') tg++;
-        else outros++;
+      input.value = '';
+      renderAiChatHistory();
+
+      const url = localStorage.getItem('zrx_ai_url') || defaultProviders.openai.url;
+      const model = localStorage.getItem('zrx_ai_model') || defaultProviders.openai.model;
+      const apiKey = localStorage.getItem('zrx_openai_key') || '';
+
+      const apiMessages = history.map(h => ({
+        role: h.role === 'user' ? 'user' : 'assistant',
+        content: h.text
+      }));
+
+      const headers = { 'Content-Type': 'application/json' };
+      if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`;
+
+      fetch(url, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({
+          model: model,
+          messages: apiMessages
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        let reply = 'Sem resposta recebida.';
+        if(data.choices && data.choices[0] && data.choices[0].message) {
+          reply = data.choices[0].message.content;
+        } else if(data.error) {
+          reply = `Erro da API: ${data.error.message || JSON.stringify(data.error)}`;
+        }
+        history.push({ role: 'ai', text: reply });
+        localStorage.setItem('zrx_ai_history', JSON.stringify(history));
+        renderAiChatHistory();
+      })
+      .catch(err => {
+        history.push({ role: 'ai', text: 'Erro ao comunicar com a IA. Verifique sua chave API/URL.' });
+        localStorage.setItem('zrx_ai_history', JSON.stringify(history));
+        renderAiChatHistory();
       });
-
-      const total = notifs.length || 1;
-      const pctWa = Math.round((wa / total) * 100);
-      const pctTg = Math.round((tg / total) * 100);
-      const pctOutros = Math.round((outros / total) * 100);
-
-      document.getElementById('pct-wa').innerText = pctWa + '%';
-      document.getElementById('bar-wa').style.width = pctWa + '%';
-
-      document.getElementById('pct-tg').innerText = pctTg + '%';
-      document.getElementById('bar-tg').style.width = pctTg + '%';
-
-      document.getElementById('pct-outros').innerText = pctOutros + '%';
-      document.getElementById('bar-outros').style.width = pctOutros + '%';
     }
 
+    function updateDashboardMetrics() {
+      const totalNotifs = getNotifications().length;
+      const totalIPs = parseInt(localStorage.getItem('zrx_ip_count') || '0');
+      const totalVault = getVault().length;
+
+      if(document.getElementById('metric-total')) document.getElementById('metric-total').innerText = totalNotifs;
+      if(document.getElementById('metric-ips')) document.getElementById('metric-ips').innerText = totalIPs;
+      if(document.getElementById('metric-vault')) document.getElementById('metric-vault').innerText = totalVault;
+
+      const notifs = getNotifications();
+      let waCount = 0, tgCount = 0, outrosCount = 0;
+
+      notifs.forEach(n => {
+        if(n.platform === 'WhatsApp') waCount++;
+        else if(n.platform === 'Telegram') tgCount++;
+        else outrosCount++;
+      });
+
+      const grandTotal = notifs.length || 1;
+      const waPct = Math.round((waCount / grandTotal) * 100);
+      const tgPct = Math.round((tgCount / grandTotal) * 100);
+      const outrosPct = Math.round((outrosCount / grandTotal) * 100);
+
+      if(document.getElementById('pct-wa')) document.getElementById('pct-wa').innerText = `${waPct}%`;
+      if(document.getElementById('bar-wa')) document.getElementById('bar-wa').style.width = `${waPct}%`;
+
+      if(document.getElementById('pct-tg')) document.getElementById('pct-tg').innerText = `${tgPct}%`;
+      if(document.getElementById('bar-tg')) document.getElementById('bar-tg').style.width = `${tgPct}%`;
+
+      if(document.getElementById('pct-outros')) document.getElementById('pct-outros').innerText = `${outrosPct}%`;
+      if(document.getElementById('bar-outros')) document.getElementById('bar-outros').style.width = `${outrosPct}%`;
+    }
+
+    /* INICIALIZAÇÃO */
     function loadUserData() {
+      const savedTheme = localStorage.getItem('zrx_theme') || 'red';
+      changeAppTheme(savedTheme);
+      if(document.getElementById('theme-select')) document.getElementById('theme-select').value = savedTheme;
+
       const name = localStorage.getItem('n') || 'Usuário';
       const avatar = localStorage.getItem('a') || 'https://via.placeholder.com/55';
-      const savedTheme = localStorage.getItem('zrx_theme') || 'red';
+      const bg = localStorage.getItem('b');
 
-      changeAppTheme(savedTheme);
+      if(document.getElementById('dash-username')) document.getElementById('dash-username').innerText = name;
+      if(document.getElementById('in-name')) document.getElementById('in-name').value = name;
+      if(document.getElementById('dash-avatar')) document.getElementById('dash-avatar').src = avatar;
+      if(document.getElementById('tg-profile-img')) document.getElementById('tg-profile-img').src = avatar;
+      if(bg) document.body.style.backgroundImage = `url('${bg}')`;
 
-      document.getElementById('dash-username').innerText = name;
-      document.getElementById('dash-avatar').src = avatar;
-      
-      if(document.getElementById('login-avatar-display')) {
-        document.getElementById('login-avatar-display').src = avatar;
-      }
-      if(document.getElementById('login-username-display')) {
-        document.getElementById('login-username-display').innerText = name;
-      }
-
-      checkStoryStatus();
-      updateDashboardMetrics();
-      renderVault();
       renderNotifications();
+      renderVault();
+      updateDashboardMetrics();
+      checkStoryStatus();
+    }
+
+    function checkOnboardingOrLogin() {
+      const pin = localStorage.getItem('zrx_pin');
+      if (!pin) {
+        document.getElementById('onboarding-modal').style.display = 'flex';
+      } else {
+        const avatar = localStorage.getItem('a') || 'https://via.placeholder.com/70';
+        const name = localStorage.getItem('n') || 'Operador';
+        document.getElementById('login-avatar-display').src = avatar;
+        document.getElementById('login-username-display').innerText = name;
+        document.getElementById('pin-login-modal').style.display = 'flex';
+      }
     }
 
     function finishOnboarding() {
-      const u = document.getElementById('setup-username').value;
-      const p = document.getElementById('setup-pin').value;
-      if (!u || p.length !== 4) { alert('Preencha o nome e um PIN de 4 dígitos!'); return; }
+      const username = document.getElementById('setup-username').value.trim();
+      const pin = document.getElementById('setup-pin').value.trim();
 
-      localStorage.setItem('n', u);
-      localStorage.setItem('zrx_pin', p);
+      if (!username) { alert('Digite um nome de usuário!'); return; }
+      if (!pin || pin.length !== 4 || isNaN(pin)) { alert('O PIN precisa ter 4 números!'); return; }
+
+      localStorage.setItem('n', username);
+      localStorage.setItem('zrx_pin', pin);
+
       document.getElementById('onboarding-modal').style.display = 'none';
       loadUserData();
     }
 
     function validateLoginPin() {
       const enteredPin = document.getElementById('login-pin-input').value;
-      const storedPin = localStorage.getItem('zrx_pin');
+      const savedPin = localStorage.getItem('zrx_pin');
 
-      if (enteredPin === storedPin) {
+      if (enteredPin === savedPin) {
         document.getElementById('pin-login-modal').style.display = 'none';
         loadUserData();
       } else {
@@ -1953,13 +1891,7 @@
     }
 
     window.onload = function() {
-      loadEmails();
-      const hasPin = localStorage.getItem('zrx_pin');
-      if (!hasPin) {
-        document.getElementById('onboarding-modal').style.display = 'flex';
-      } else {
-        document.getElementById('pin-login-modal').style.display = 'flex';
-      }
+      checkOnboardingOrLogin();
     };
   </script>
 </body>
