@@ -200,7 +200,6 @@
     <button class="btn-action" onclick="toggleSidebar(false); openModal('vault-modal');">📦 Caixa de Textos / Travas</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('folder-vault-modal'); renderFolders();">📁 Minhas Pastas de Travas</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('ip-modal');">🌐 Buscar IP</button>
-    <button class="btn-action" onclick="toggleSidebar(false); openModal('dds-modal');">🔍 CONSULTA DDS</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('email-mgr-modal');">✉️ Gerenciador de E-mails</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('config-modal');">⚙️ Configurações</button>
     
@@ -498,25 +497,6 @@
       <div id="story-media-container" style="flex:1; display:flex; justify-content:center; align-items:center;">
         <!-- Imagem ou Vídeo renderizado via JS -->
       </div>
-    </div>
-  </div>
-
-  <!-- MODAL: CONSULTA DDS -->
-  <div id="dds-modal" class="modal">
-    <div class="modal-content">
-      <h3 style="color:var(--main-color); text-align:center;">🔍 CONSULTA DDS</h3>
-      <select id="dds-type-select">
-        <option value="cpf">Consulta por CPF</option>
-        <option value="telefone">Consulta por Telefone / WhatsApp</option>
-        <option value="nome">Consulta por Nome Completo</option>
-        <option value="placa">Consulta por Placa de Veículo</option>
-      </select>
-      <input type="text" id="dds-query-input" placeholder="Digite o dado para busca...">
-      <button class="btn-action" onclick="executeDDSQuery()">CONSULTAR DADOS</button>
-      
-      <div id="dds-results" style="background:#0a0a0a; border:1px solid var(--main-color); padding:12px; border-radius:6px; font-size:0.85rem; color:#ccc; display:none; max-height:350px; overflow-y:auto; word-break:break-all; line-height:1.4;"></div>
-      
-      <button class="btn-sm" onclick="closeModal('dds-modal')">Voltar</button>
     </div>
   </div>
 
@@ -1249,117 +1229,6 @@
       }
     }
 
-    /* FUNÇÃO DE CONSULTA DDS - TOTALMENTE DINÂMICA COM VALIDAÇÃO */
-    async function executeDDSQuery() {
-      const type = document.getElementById('dds-type-select').value;
-      const query = document.getElementById('dds-query-input').value.trim();
-      const resultsDiv = document.getElementById('dds-results');
-
-      if (!query) {
-        alert('Por favor, informe o dado para consulta!');
-        return;
-      }
-
-      resultsDiv.style.display = 'block';
-      resultsDiv.innerHTML = '⚡ Consultando banco de dados...';
-
-      try {
-        let data = null;
-
-        if (!query.includes('000') && query.length > 2) {
-          const randCpf = `${Math.floor(100+Math.random()*899)}.${Math.floor(100+Math.random()*899)}.${Math.floor(100+Math.random()*899)}-${Math.floor(10+Math.random()*89)}`;
-          const randRg = `${Math.floor(10+Math.random()*89)}.${Math.floor(100+Math.random()*899)}.${Math.floor(100+Math.random()*899)}-${Math.floor(0+Math.random()*9)} SSP/SP`;
-          const randTel = `+55 11 9${Math.floor(1000+Math.random()*8999)}-${Math.floor(1000+Math.random()*8999)}`;
-          
-          data = {
-            nome: type === 'nome' ? query.toUpperCase() : 'CARLOS EDUARDO SILVA',
-            cpf: type === 'cpf' ? query : randCpf,
-            situacao_cpf: 'REGULAR',
-            rg: randRg,
-            nascimento: '14/05/1988 (37 anos)',
-            genero: 'MASCULINO',
-            estado_civil: 'SOLTEIRO',
-            mae: 'MARIA DAS GRAÇAS SILVA',
-            pai: 'JOSÉ CARLOS DA SILVA',
-            telefone: type === 'telefone' ? query : randTel,
-            operadora: 'VIVO (PRÉ-PAGO)',
-            email: `${query.toLowerCase().replace(/\s+/g, '.')}@email.com`,
-            logradouro: 'RUA DAS PALMEIRAS, Nº 450',
-            bairro: 'JARDIM PAULISTA',
-            cidade: 'SÃO PAULO / SP',
-            cep: '01415-000',
-            placa: type === 'placa' ? query.toUpperCase() : 'ABC-1D23',
-            veiculo: 'HONDA CIVIC SEDAN',
-            cor: 'PRETO',
-            ano: '2021 / 2022'
-          };
-        }
-
-        if (!data || data.erro || data.status === '404' || Object.keys(data).length === 0) {
-          resultsDiv.innerHTML = `
-            <div style="border-bottom:1px solid var(--main-color); padding-bottom:5px; margin-bottom:8px;">
-              <strong>STATUS:</strong> <span style="color:#ff4444;">NÃO ENCONTRADO</span><br>
-              <strong>PARÂMETRO BUSCADO:</strong> ${query}
-            </div>
-            <div style="text-align:center; padding:15px; color:#aaa;">
-              ❌ <strong>Nenhum registro localizado na base de dados.</strong><br>
-              <small>Verifique se o ${type.toUpperCase()} foi digitado corretamente.</small>
-            </div>
-          `;
-          return;
-        }
-
-        resultsDiv.innerHTML = `
-          <div style="border-bottom:1px solid var(--main-color); padding-bottom:5px; margin-bottom:8px;">
-            <strong>STATUS:</strong> <span style="color:#00ff66;">Sincronizado</span><br>
-            <strong>TIPO DE CONSULTA:</strong> ${type.toUpperCase()}<br>
-            <strong>PARÂMETRO BUSCADO:</strong> ${query}
-          </div>
-          
-          <strong style="color:var(--main-color);">👤 DADOS PESSOAIS COMPLETOS:</strong><br>
-          <strong>NOME COMPLETO:</strong> ${data.nome || 'N/A'}<br>
-          <strong>CPF:</strong> ${data.cpf || 'N/A'}<br>
-          <strong>SITUAÇÃO CPF:</strong> <span style="color:#00ff66;">${data.situacao_cpf || 'REGULAR'}</span><br>
-          <strong>RG:</strong> ${data.rg || 'N/A'}<br>
-          <strong>DATA DE NASCIMENTO:</strong> ${data.nascimento || 'N/A'}<br>
-          <strong>GÊNERO:</strong> ${data.genero || 'N/A'}<br>
-          <strong>ESTADO CIVIL:</strong> ${data.estado_civil || 'N/A'}<br>
-          <strong>NOME DA MÃE:</strong> ${data.mae || 'N/A'}<br>
-          <strong>NOME DO PAI:</strong> ${data.pai || 'N/A'}<br>
-          
-          <hr style="border-color:#333; margin:8px 0;">
-          
-          <strong style="color:var(--main-color);">📞 CONTATO & TELEFONIA:</strong><br>
-          <strong>TELEFONE PRINCIPAL:</strong> ${data.telefone || 'N/A'}<br>
-          <strong>OPERADORA:</strong> ${data.operadora || 'N/A'}<br>
-          <strong>E-MAIL VINCULADO:</strong> ${data.email || 'N/A'}<br>
-
-          <hr style="border-color:#333; margin:8px 0;">
-
-          <strong style="color:var(--main-color);">🏠 ENDEREÇO E LOCALIZAÇÃO:</strong><br>
-          <strong>LOGRADOURO:</strong> ${data.logradouro || 'N/A'}<br>
-          <strong>BAIRRO:</strong> ${data.bairro || 'N/A'}<br>
-          <strong>CIDADE / UF:</strong> ${data.cidade || 'N/A'}<br>
-          <strong>CEP:</strong> ${data.cep || 'N/A'}<br>
-
-          <hr style="border-color:#333; margin:8px 0;">
-
-          <strong style="color:var(--main-color);">🚗 REGISTRO DE VEÍCULOS:</strong><br>
-          <strong>PLACA DO VEÍCULO:</strong> ${data.placa || 'N/A'}<br>
-          <strong>VEÍCULO:</strong> ${data.veiculo || 'N/A'}<br>
-          <strong>COR:</strong> ${data.cor || 'N/A'}<br>
-          <strong>MODELO/ANO:</strong> ${data.ano || 'N/A'}<br>
-        `;
-
-      } catch (err) {
-        resultsDiv.innerHTML = `
-          <div style="color:#ff4444; text-align:center; padding:10px;">
-            ⚠️ Erro ao comunicar com o banco de dados.
-          </div>
-        `;
-      }
-    }
-
     function searchIP() {
       const ip = document.getElementById('ip-input').value.trim();
       if(!ip) { alert('Digite um IP!'); return; }
@@ -1861,13 +1730,15 @@
       changeAppTheme(savedTheme);
       if(document.getElementById('theme-select')) document.getElementById('theme-select').value = savedTheme;
 
-      if(localStorage.getItem('b')) document.body.style.backgroundImage = `url('${localStorage.getItem('b')}')`;
-
       const isConfigured = localStorage.getItem('zrx_configured');
-      if(!isConfigured) {
+      const savedPin = localStorage.getItem('zrx_pin');
+
+      if (!isConfigured) {
         document.getElementById('onboarding-modal').style.display = 'flex';
-      } else {
+      } else if (savedPin) {
         showPinLock();
+      } else {
+        loadUserData();
       }
 
       renderVault();
