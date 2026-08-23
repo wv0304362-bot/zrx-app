@@ -15,7 +15,7 @@
     body { background-color: #000; color: #fff; min-height: 100vh; display: flex; flex-direction: column; background-size: cover; background-position: center; padding-bottom: 75px; overflow-x: hidden; }
     
     /* Topo Apenas com as Três Barrinhas */
-    .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 15px; background: rgba(0,0,0,0.85); border-bottom: 2px solid var(--main-color); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(5px); }
+    .top-bar { display: flex; align-items: center; justify-content: flex-start; padding: 15px; background: rgba(0,0,0,0.85); border-bottom: 2px solid var(--main-color); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(5px); }
     .menu-btn { background: none; border: none; color: var(--main-color); font-size: 1.8rem; cursor: pointer; }
 
     /* MENU LATERAL DESLIZANTE (SIDEBAR) */
@@ -195,7 +195,10 @@
   <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar(false)"></div>
   <aside id="sidebar" class="sidebar">
     <div class="sidebar-title">OPÇÕES DO SISTEMA</div>
+    
+    <!-- PERFIL INSERIDO DENTRO DO MENU LATERAL -->
     <button class="btn-action" onclick="toggleSidebar(false); openModal('profile-modal');">👤 Meu Perfil ZRX</button>
+    
     <button class="btn-action" onclick="toggleSidebar(false); openModal('ai-chat-modal');">🤖 Chat com IA Universal</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('vault-modal');">📦 Caixa de Textos / Travas</button>
     <button class="btn-action" onclick="toggleSidebar(false); openModal('folder-vault-modal'); renderFolders();">📁 Minhas Pastas de Travas</button>
@@ -218,7 +221,6 @@
   <!-- TOPO: APENAS 3 BARRINHAS -->
   <div class="top-bar">
     <button class="menu-btn" onclick="toggleSidebar(true)">☰</button>
-    <button class="btn-sm" onclick="openModal('profile-modal')" style="background:none; border:none; color:var(--main-color); font-size:1.2rem; cursor:pointer;">👤</button>
   </div>
 
   <div class="main-container">
@@ -659,7 +661,7 @@
 
     const baseEmailData = {
       'WhatsApp': ['support@whatsapp.com', 'legal@whatsapp.com', 'abuso@whatsapp.com', 'press@whatsapp.com'],
-      'Kwai': ['Report@kwai.com', 'customer-servicer@kwai.com', 'comcustomer-service@kwai.com', 'customer-service@kwai.com'],
+      'Kwai': ['Report@kwai.com', 'customer-servicer@kwai.com', 'comcustomer-service@kwai.com', 'customer-service@kwai.com', 'support@kuaishousupport.freshdesk.com'],
       'Telegram': ['support@telegram.org', 'abuse@telegram.org', 'recover@telegram.org', 'sms@telegram.org'],
       'Instagram': ['support@instagram.com', 'phish@instagram.com', 'abuse@instagram.com', 'privacy@instagram.com']
     };
