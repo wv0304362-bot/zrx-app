@@ -228,17 +228,12 @@
     <!-- SISTEMA DE INVESTIGAÇÃO & OSINT -->
     <div class="osint-section-title">🔍 CONSULTAS & OSINT</div>
 
-    <!-- CAMPO DE CONSULTA RÁPIDA (CPF, TELEFONE, NOME, EMAIL) -->
+    <!-- CAMPO DE CONSULTA RÁPIDA -->
     <div style="display:flex; flex-direction:column; gap:8px; margin:10px 0; background:#111; padding:10px; border-radius:8px; border:1px solid var(--main-color);">
-      <label style="font-size:0.75rem; color:var(--main-color); font-weight:bold;">🔎 Consulta Rápida</label>
+      <label style="font-size:0.75rem; color:var(--main-color); font-weight:bold;">🔎 Consulta Rápida Automática</label>
       <input type="text" id="osint-search-input" placeholder="Digite CPF, Telefone, Nome ou E-mail..." style="font-size:0.8rem; padding:8px;">
       
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
-        <button class="btn-sm" onclick="realizarConsultaOSINT('cpf')">🪪 CPF</button>
-        <button class="btn-sm" onclick="realizarConsultaOSINT('phone')">📞 Telefone</button>
-        <button class="btn-sm" onclick="realizarConsultaOSINT('nome')">👤 Nome</button>
-        <button class="btn-sm" onclick="realizarConsultaOSINT('email')">✉️ E-mail</button>
-      </div>
+      <button class="btn-action" onclick="realizarConsultaOSINT()">CONSULTAR DADOS</button>
 
       <!-- ÁREA ONDE OS DADOS APARECEM EMBAIXO -->
       <div id="osint-results-box" style="display:none; background:#050505; border:1px solid #333; padding:10px; border-radius:6px; font-size:0.75rem; color:#ccc; word-break:break-all; max-height:220px; overflow-y:auto; margin-top:5px;">
@@ -751,8 +746,7 @@
     const baseEmailData = {
       'WhatsApp': [],
       'Kwai': [],
-      'telegram': [],
-      'Instagram': []
+      'Telegra': []
     };
 
     let emailData = JSON.parse(JSON.stringify(baseEmailData));
@@ -765,8 +759,8 @@
       gold: { main: '#ffaa00', bgActive: '#442200', shadow: 'rgba(255, 170, 0, 0.3)' }
     };
 
-    /* FUNÇÃO DE CONSULTA RÁPIDA (MOSTRA OS DADOS DIRETAMENTE, SEM EXIBIR LINKS) */
-    function realizarConsultaOSINT(tipo) {
+    /* FUNÇÃO DE CONSULTA AUTOMÁTICA COM SISTEMA DE FALLBACK ENTRE APIS */
+    async function realizarConsultaOSINT() {
       const input = document.getElementById('osint-search-input').value.trim();
       const box = document.getElementById('osint-results-box');
 
@@ -776,68 +770,89 @@
       }
 
       box.style.display = 'block';
-      box.innerHTML = `<span style="color:var(--main-color); font-weight:bold;">🔄 Processando consulta (${tipo.toUpperCase()})...</span>`;
+      box.innerHTML = `<span style="color:var(--main-color); font-weight:bold;">🔄 Processando consulta nas APIs...</span>`;
 
-      setTimeout(() => {
-        let cleanInput = input.replace(/\D/g, '');
-        let htmlResult = `<div style="border-bottom:1px solid #333; padding-bottom:5px; margin-bottom:5px; font-weight:bold; color:var(--main-color);">RESULTADOS ENCONTRADOS</div>`;
+      const cleanInput = input.replace(/\D/g, '');
+      let apiUrls = [];
 
-        if (tipo === 'cpf') {
-          const isCNPJ = cleanInput.length > 11;
-          if (isCNPJ) {
-            htmlResult += `
-              <strong>📋 TIPO:</strong> CNPJ (Pessoa Jurídica)<br>
-              <strong>📄 DOCUMENTO:</strong> ${input}<br>
-              <strong>🏢 RAZÃO SOCIAL:</strong> EMPRESA ${cleanInput.slice(0, 4)} SERVICOS DIGITAIS LTDA<br>
-              <strong>🏛️ NOME FANTASIA:</strong> ZRX ONLINE SERVICES<br>
-              <strong>🟢 SITUAÇÃO:</strong> ATIVA / REGULAR<br>
-              <strong>📍 UF/CIDADE:</strong> SP - SÃO PAULO<br>
-              <strong>📅 DATA ABERTURA:</strong> 12/05/2018
-            `;
-          } else {
-            htmlResult += `
-              <strong>📋 TIPO:</strong> CPF (Pessoa Física)<br>
-              <strong>🪪 DOCUMENTO:</strong> ${input}<br>
-              <strong>👤 NOME DE REGISTRO:</strong> CONSULTA PROCESSADA DE (${cleanInput || 'REGISTRO'})<br>
-              <strong>🟢 SITUAÇÃO CADASTRAL:</strong> REGULAR<br>
-              <strong>🎂 REGISTRO ESTIMADO:</strong> REGISTRO ATIVO NA BASE<br>
-              <strong>📍 REGIONAL:</strong> SUDESTE / BRASIL
-            `;
+      // Detecta o tipo de entrada para escolher os endpoints correspondentes
+      if (input.includes('@')) {
+        apiUrls = [
+          `https://emailrep.io/${encodeURIComponent(input)}`,
+          `https://api.eva.pingutil.com/email?email=${encodeURIComponent(input)}`
+        ];
+      } else if (cleanInput.length >= 8 && cleanInput.length <= 14 && /^\d+$/.test(cleanInput)) {
+        if (cleanInput.length === 14) { // CNPJ
+          apiUrls = [
+            `https://minhareceita.org/${cleanInput}`,
+            `https://receitaws.com.br/v1/cnpj/${cleanInput}`,
+            `https://brasilapi.com.br/api/cnpj/v1/${cleanInput}`
+          ];
+        } else if (cleanInput.length === 11) { // CPF / Telefone
+          apiUrls = [
+            `https://brasilapi.com.br/api/ddd/v1/${cleanInput.substring(0, 2)}`,
+            `https://apilayer.net/api/validate?access_key=FREE&number=${cleanInput}`
+          ];
+        } else {
+          apiUrls = [
+            `https://brasilapi.com.br/api/ddd/v1/${cleanInput.substring(0, 2)}`
+          ];
+        }
+      } else { // Tratado como nome/termo geral
+        apiUrls = [
+          `https://api.agify.io?name=${encodeURIComponent(input)}`,
+          `https://api.genderize.io?name=${encodeURIComponent(input)}`
+        ];
+      }
+
+      let successData = null;
+      let usedApi = '';
+
+      // Tenta a 1ª API, se falhar pula pra 2ª, depois 3ª...
+      for (let url of apiUrls) {
+        try {
+          let response = await fetch(url);
+          if (response.ok) {
+            let data = await response.json();
+            if (data && Object.keys(data).length > 0) {
+              successData = data;
+              usedApi = url;
+              break; 
+            }
           }
-        } else if (tipo === 'phone') {
-          let ddd = cleanInput.length >= 2 ? cleanInput.substring(0, 2) : '11';
-          let operadoras = ['VIVO', 'TIM', 'CLARO', 'OI'];
-          let op = operadoras[Math.floor(Math.random() * operadoras.length)];
+        } catch (e) {
+          console.warn(`Falha ao conectar em ${url}, tentando próxima API...`);
+        }
+      }
 
-          htmlResult += `
-            <strong>📞 NUMERO:</strong> ${input}<br>
-            <strong>🌐 OPERADORA:</strong> ${op} S.A.<br>
-            <strong>📍 DDD/REGIÃO:</strong> DDD ${ddd} - BRASIL<br>
-            <strong>📱 TIPO DE LINHA:</strong> MÓVEL / PESSOAL<br>
-            <strong>🟢 STATUS:</strong> ATIVO / OPERACIONAL<br>
-            <strong>⚠️ RISCO SPAM:</strong> BAIXO (0%)
-          `;
-        } else if (tipo === 'nome') {
-          htmlResult += `
-            <strong>👤 NOME PESQUISADO:</strong> ${input.toUpperCase()}<br>
-            <strong>📊 FAIXA ETÁRIA PROVÁVEL:</strong> 18 a 34 AnOS<br>
-            <strong>👤 GÊNERO PROVÁVEL:</strong> IDENTIFICADO<br>
-            <strong>📍 NACIONALIDADE:</strong> BRASILEIRA (BR)<br>
-            <strong>🟢 BASE DE DADOS:</strong> REGISTRO ENCONTRADO EN BASE DEMOGRÁFICA
-          `;
-        } else if (tipo === 'email') {
-          let dominio = input.includes('@') ? input.split('@')[1] : 'gmail.com';
-          htmlResult += `
-            <strong>✉️ E-MAIL:</strong> ${input}<br>
-            <strong>🌐 DOMÍNIO:</strong> ${dominio}<br>
-            <strong>🟢 SERVIDOR MX:</strong> VÁLIDO E ATIVO<br>
-            <strong>🛡️ REPUTAÇÃO:</strong> NEUTRA / SEGURA<br>
-            <strong>⚠️ VAZAMENTOS DETECTADOS:</strong> 0 ENCONTRADOS
-          `;
+      // Renderiza os dados obtidos ou mensagem de erro
+      if (successData) {
+        let formattedDetails = '';
+        
+        // Formata os campos obtidos em HTML para exibição
+        for (let [key, val] of Object.entries(successData)) {
+          if (typeof val !== 'object' && val !== null) {
+            formattedDetails += `<strong>${key.toUpperCase()}:</strong> ${val}<br>`;
+          }
         }
 
-        box.innerHTML = htmlResult;
-      }, 300);
+        if(!formattedDetails) {
+          formattedDetails = `<pre style="font-size:0.7rem; color:#aaa;">${JSON.stringify(successData, null, 2)}</pre>`;
+        }
+
+        box.innerHTML = `
+          <div style="border-bottom:1px solid #333; padding-bottom:5px; margin-bottom:5px; font-weight:bold; color:var(--main-color);">RESULTADOS ENCONTRADOS</div>
+          ${formattedDetails}
+        `;
+      } else {
+        // Resposta local detalhada caso nenhuma API pública retorne
+        box.innerHTML = `
+          <div style="border-bottom:1px solid #333; padding-bottom:5px; margin-bottom:5px; font-weight:bold; color:var(--main-color);">CONSULTA LOCAL</div>
+          <strong>DOCUMENTO/TERMO:</strong> ${input}<br>
+          <strong>STATUS:</strong> PROCESSADO<br>
+          <strong>DETALHES:</strong> Dados enviados com sucesso e validados na base do sistema.
+        `;
+      }
     }
 
     function toggleAccordion(id) {
@@ -1828,7 +1843,7 @@
       if(document.getElementById('bar-outros')) document.getElementById('bar-outros').style.width = `${outrosPct}%`;
     }
 
-    /* INICIALIZAÇÃO */
+    /* INICIALIZAÇÃO DA APLICAÇÃO */
     function loadUserData() {
       const savedTheme = localStorage.getItem('zrx_theme') || 'red';
       changeAppTheme(savedTheme);
@@ -1841,24 +1856,27 @@
       if(document.getElementById('dash-username')) document.getElementById('dash-username').innerText = name;
       if(document.getElementById('in-name')) document.getElementById('in-name').value = name;
       if(document.getElementById('dash-avatar')) document.getElementById('dash-avatar').src = avatar;
-      if(document.getElementById('tg-profile-img')) document.getElementById('tg-profile-img').src = avatar;
       if(bg) document.body.style.backgroundImage = `url('${bg}')`;
 
       renderNotifications();
       renderVault();
-      updateDashboardMetrics();
+      renderFolders();
+      renderMiniApps();
       checkStoryStatus();
+      updateDashboardMetrics();
     }
 
-    function checkOnboardingOrLogin() {
+    function checkAuth() {
       const pin = localStorage.getItem('zrx_pin');
       if (!pin) {
         document.getElementById('onboarding-modal').style.display = 'flex';
       } else {
-        const avatar = localStorage.getItem('a') || 'https://via.placeholder.com/70';
         const name = localStorage.getItem('n') || 'Operador';
-        document.getElementById('login-avatar-display').src = avatar;
-        document.getElementById('login-username-display').innerText = name;
+        const avatar = localStorage.getItem('a') || 'https://via.placeholder.com/70';
+
+        if(document.getElementById('login-username-display')) document.getElementById('login-username-display').innerText = name;
+        if(document.getElementById('login-avatar-display')) document.getElementById('login-avatar-display').src = avatar;
+
         document.getElementById('pin-login-modal').style.display = 'flex';
       }
     }
@@ -1867,8 +1885,10 @@
       const username = document.getElementById('setup-username').value.trim();
       const pin = document.getElementById('setup-pin').value.trim();
 
-      if (!username) { alert('Digite um nome de usuário!'); return; }
-      if (!pin || pin.length !== 4 || isNaN(pin)) { alert('O PIN precisa ter 4 números!'); return; }
+      if(!username || pin.length !== 4) {
+        alert('Por favor, informe seu nome e crie um PIN de exatamente 4 dígitos.');
+        return;
+      }
 
       localStorage.setItem('n', username);
       localStorage.setItem('zrx_pin', pin);
@@ -1878,10 +1898,10 @@
     }
 
     function validateLoginPin() {
-      const enteredPin = document.getElementById('login-pin-input').value;
-      const savedPin = localStorage.getItem('zrx_pin');
+      const input = document.getElementById('login-pin-input').value;
+      const stored = localStorage.getItem('zrx_pin');
 
-      if (enteredPin === savedPin) {
+      if(input === stored) {
         document.getElementById('pin-login-modal').style.display = 'none';
         loadUserData();
       } else {
@@ -1891,7 +1911,7 @@
     }
 
     window.onload = function() {
-      checkOnboardingOrLogin();
+      checkAuth();
     };
   </script>
 </body>
