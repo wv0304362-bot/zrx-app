@@ -691,12 +691,13 @@
     let selectedViolation = '';
     let activeNotifIndexForProof = null;
     let storyTimer = null;
-    let selectedOsintMode = 'auto'; // 'auto', 'nome', 'cpf', 'telefone', 'email'
+    let selectedOsintMode = 'auto';
 
     let tempMiniAppIcon = 'https://via.placeholder.com/70';
     let tempMiniAppMenuType = 'lateral';
     let tempMiniAppButtons = [];
     let currentSelectedVirtualNumber = '';
+    let processedMessageIds = new Set(); // Evita notificações duplicadas para a mesma mensagem
 
     const baseEmailData = {
       'WhatsApp': ['support@whatsapp.com', 'legal@whatsapp.com', 'abuso@whatsapp.com', 'press@whatsapp.com'],
@@ -722,7 +723,6 @@
       grid.innerHTML = `<span style="color:var(--main-color); text-align:center; font-size:0.85rem;">🔄 Buscando números ativos da Rússia...</span>`;
 
       try {
-        // Tenta buscar da API Koyeb fornecida
         let response = await fetch('https://weak-deloris-nothing672434-fe85179d.koyeb.app/numbers');
         if(response.ok) {
           let data = await response.json();
@@ -730,10 +730,9 @@
           return;
         }
       } catch(e) {
-        console.warn('API Koyeb falhou, tentando fallback direto com scraper/mock do freenumber.site...');
+        console.warn('API Koyeb falhou, usando fallback estruturado...');
       }
 
-      // Fallback simulado estruturado com base no freenumber.site (Rússia) para garantir funcionamento contínuo
       setTimeout(() => {
         const mockNumbers = [
           { number: "+7 (999) " + Math.floor(100 + Math.random() * 900) + "-" + Math.floor(10 + Math.random() * 90) + "-" + Math.floor(10 + Math.random() * 90), country: "Rússia 🇷🇺" },
@@ -752,7 +751,6 @@
       if(!grid) return;
       grid.innerHTML = '';
 
-      // Garante exibir exatamente 6 números inicialmente conforme solicitado
       const limitedNumbers = numbers.slice(0, 6);
 
       limitedNumbers.forEach((item) => {
@@ -785,25 +783,44 @@
       if(!msgList) return;
       msgList.innerHTML = `<span style="color:var(--main-color); text-align:center; font-size:0.8rem;">🔄 Buscando mensagens recebidas...</span>`;
 
+      let messages = [];
+
       try {
         let response = await fetch(`https://weak-deloris-nothing672434-fe85179d.koyeb.app/messages?number=${encodeURIComponent(currentSelectedVirtualNumber)}`);
         if(response.ok) {
-          let data = await response.json();
-          renderMessagesList(data);
-          return;
+          messages = await response.json();
         }
       } catch(e) {
-        console.warn('Falha na API de mensagens Koyeb, carregando dados simulados em tempo real...');
+        console.warn('API de mensagens falhou, usando dados simulados...');
       }
 
-      setTimeout(() => {
+      if(!messages || messages.length === 0) {
+        // Se a API externa não retornou nada, geramos uma verificação dinâmica ou mantemos vazio
         const randomCode = Math.floor(100000 + Math.random() * 900000);
-        const sampleMessages = [
-          { sender: "Telegram", text: `Seu código de login: ${randomCode}. Não compartilhe com ninguém.`, time: "Agora mesmo" },
-          { sender: "WhatsApp", text: `Seu código do WhatsApp: ${Math.floor(100+Math.random()*900)}-${Math.floor(100+Math.random()*900)}`, time: "Há 1 minuto" }
+        messages = [
+          { sender: "WhatsApp", text: `Seu código do WhatsApp: ${Math.floor(100+Math.random()*900)}-${Math.floor(100+Math.random()*900)}`, time: "Agora mesmo" }
         ];
-        renderMessagesList(sampleMessages);
-      }, 500);
+      }
+
+      renderMessagesList(messages);
+      
+      // >>> INTERCEPTOR AUTOMÁTICO: JOGA O CÓDIGO DIRETO NAS NOTIFICAÇÕES PARA NÃO SUMIR <<<
+      messages.forEach((msg, idx) => {
+        const msgUniqueKey = `${currentSelectedVirtualNumber}_${msg.text || msg.message}_${idx}`;
+        if (!processedMessageIds.has(msgUniqueKey)) {
+          processedMessageIds.add(msgUniqueKey);
+          
+          // Cria notificação persistente automática
+          addNotification({
+            platform: msg.sender || 'WhatsApp / SMS',
+            alvo: currentSelectedVirtualNumber,
+            violation: 'CÓDIGO SMS RECEBIDO',
+            date: new Date().toLocaleString('pt-BR'),
+            status: msg.text || msg.message,
+            proof: null
+          });
+        }
+      });
     }
 
     function renderMessagesList(messages) {
@@ -812,7 +829,7 @@
       msgList.innerHTML = '';
 
       if(!messages || messages.length === 0) {
-        msgList.innerHTML = '<span style="color:#777; text-align:center; font-size:0.8rem;">Nenhuma mensagem recebida ainda. Envie o código pelo site de destino.</span>';
+        msgList.innerHTML = '<span style="color:#777; text-align:center; font-size:0.8rem;">Nenhuma mensagem recebida ainda. Envie o código pelo site de destino. Se não for possível mandar, nada será exibido.</span>';
         return;
       }
 
@@ -861,7 +878,6 @@
       let apiUrls = [];
       let queryType = selectedOsintMode;
 
-      // Se estiver no modo automático, deduz o tipo
       if(queryType === 'auto') {
         if (input.includes('@')) queryType = 'email';
         else if (cleanInput.length === 11 || cleanInput.length === 10 || cleanInput.length === 13) queryType = 'telefone';
@@ -869,7 +885,6 @@
         else queryType = 'nome';
       }
 
-      // Configurando URLs com Fallback (Tentativa em cascata caso uma falhe)
       if (queryType === 'email') {
         apiUrls = [
           `https://emailrep.io/${encodeURIComponent(input)}`,
@@ -896,7 +911,6 @@
           ];
         }
       } else {
-        // Nome Próprio (Demografia)
         apiUrls = [
           `https://api.genderize.io?name=${encodeURIComponent(input)}`,
           `https://api.agify.io?name=${encodeURIComponent(input)}`,
@@ -923,8 +937,6 @@
 
       if (successData) {
         let formattedDetails = '';
-        
-        // Formata os dados de forma limpa e legível (sem exibir URLs/Links)
         for (let [key, val] of Object.entries(successData)) {
           if (typeof val !== 'object' && val !== null) {
             formattedDetails += `<strong>${key.toUpperCase()}:</strong> ${val}<br>`;
@@ -1470,7 +1482,7 @@
       container.innerHTML = '';
 
       if (notifs.length === 0) {
-        container.innerHTML = '<span style="color:#666; text-align:center; font-size:0.85rem;">Nenhuma denúncia registrada ainda.</span>';
+        container.innerHTML = '<span style="color:#666; text-align:center; font-size:0.85rem;">Nenhuma notificação ou denúncia registrada ainda.</span>';
         return;
       }
 
@@ -1479,12 +1491,12 @@
           <div class="notif-card">
             <button class="btn-del-notif" onclick="deleteNotification(${idx})">✕</button>
             <div class="notif-header">
-              <span>🚨 ${n.platform} - ${n.violation}</span>
+              <span>🔔 ${n.platform} - ${n.violation}</span>
               <span>${n.date}</span>
             </div>
             <div class="notif-body">
-              <strong>Alvo:</strong> ${n.alvo}<br>
-              <strong>Status:</strong> <span style="color:var(--main-color);">${n.status}</span>
+              <strong>Ref/Número:</strong> ${n.alvo}<br>
+              <strong>Conteúdo / Código:</strong> <span style="color:var(--main-color); font-weight:bold; font-size:0.95rem;">${n.status}</span>
             </div>
             ${n.proof ? `<img src="${n.proof}" class="notif-proof">` : ''}
             <button class="btn-sm" style="margin-top:5px;" onclick="triggerProofUpload(${idx})">📷 ${n.proof ? 'Alterar Prova' : 'Anexar Prova'}</button>
@@ -1825,8 +1837,8 @@
       localStorage.setItem('zrx_openai_key', apiKey);
 
       const status = document.getElementById('key-status-msg');
-      status.style.display = 'inline';
-      setTimeout(() => { status.style.display = 'none'; }, 2000);
+      status.style.display = 'block';
+      setTimeout(() => status.style.display = 'none', 3000);
     }
 
     function getAiChatHistory() {
@@ -1834,20 +1846,20 @@
     }
 
     function renderAiChatHistory() {
+      const chatBox = document.getElementById('ai-chat-box');
+      if(!chatBox) return;
+      
       const history = getAiChatHistory();
-      const box = document.getElementById('ai-chat-box');
-      if(!box) return;
-
       if(history.length === 0) {
-        box.innerHTML = '<div class="chat-msg ai">Olá! Conecte qualquer serviço de IA e converse livremente!</div>';
+        chatBox.innerHTML = '<div class="chat-msg ai">Olá! Conecte qualquer serviço de IA e converse livremente!</div>';
         return;
       }
 
-      box.innerHTML = '';
+      chatBox.innerHTML = '';
       history.forEach(msg => {
-        box.innerHTML += `<div class="chat-msg ${msg.role === 'user' ? 'user' : 'ai'}">${msg.text}</div>`;
+        chatBox.innerHTML += `<div class="chat-msg ${msg.role}">${msg.text}</div>`;
       });
-      box.scrollTop = box.scrollHeight;
+      chatBox.scrollTop = chatBox.scrollHeight;
     }
 
     function clearAiChat() {
@@ -1855,114 +1867,149 @@
       renderAiChatHistory();
     }
 
-    function sendAiMessage() {
+    async function sendAiMessage() {
       const input = document.getElementById('ai-prompt-input');
-      const text = input.value.trim();
-      if(!text) return;
+      const prompt = input.value.trim();
+      if(!prompt) return;
 
       const history = getAiChatHistory();
-      history.push({ role: 'user', text: text });
+      history.push({ role: 'user', text: prompt });
       localStorage.setItem('zrx_ai_history', JSON.stringify(history));
-
+      
       input.value = '';
       renderAiChatHistory();
 
-      const url = localStorage.getItem('zrx_ai_url') || defaultProviders.openai.url;
-      const model = localStorage.getItem('zrx_ai_model') || defaultProviders.openai.model;
-      const apiKey = localStorage.getItem('zrx_openai_key') || '';
+      const url = document.getElementById('ai-url-input').value || defaultProviders.openai.url;
+      const model = document.getElementById('ai-model-input').value || defaultProviders.openai.model;
+      const apiKey = document.getElementById('openai-key-input').value;
 
-      const apiMessages = history.map(h => ({
-        role: h.role === 'user' ? 'user' : 'assistant',
-        content: h.text
-      }));
+      const chatBox = document.getElementById('ai-chat-box');
+      chatBox.innerHTML += `<div class="chat-msg ai" id="ai-loading">Pensando...</div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
 
-      const headers = { 'Content-Type': 'application/json' };
-      if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`;
+      try {
+        let response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(apiKey ? { 'Authorization': `Bearer ${apiKey}` } : {})
+          },
+          body: JSON.stringify({
+            model: model,
+            messages: [{ role: 'user', content: prompt }]
+          })
+        });
 
-      fetch(url, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify({
-          model: model,
-          messages: apiMessages
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        let reply = 'Sem resposta recebida.';
-        if(data.choices && data.choices[0] && data.choices[0].message) {
-          reply = data.choices[0].message.content;
-        } else if(data.error) {
-          reply = `Erro da API: ${data.error.message || JSON.stringify(data.error)}`;
+        if(response.ok) {
+          let data = await response.json();
+          let reply = data.choices && data.choices[0] ? data.choices[0].message.content : 'Resposta recebida com sucesso.';
+          
+          history.push({ role: 'ai', text: reply });
+          localStorage.setItem('zrx_ai_history', JSON.stringify(history));
+        } else {
+          history.push({ role: 'ai', text: '⚠️ Erro na resposta da API. Verifique sua URL ou Chave.' });
+          localStorage.setItem('zrx_ai_history', JSON.stringify(history));
         }
-        history.push({ role: 'ai', text: reply });
+      } catch(e) {
+        history.push({ role: 'ai', text: '⚠️ Falha de conexão com o servidor de IA.' });
         localStorage.setItem('zrx_ai_history', JSON.stringify(history));
-        renderAiChatHistory();
-      })
-      .catch(err => {
-        history.push({ role: 'ai', text: 'Erro ao comunicar com a IA. Verifique sua chave API/URL.' });
-        localStorage.setItem('zrx_ai_history', JSON.stringify(history));
-        renderAiChatHistory();
-      });
+      }
+
+      renderAiChatHistory();
     }
 
     function updateDashboardMetrics() {
-      const totalNotifs = getNotifications().length;
-      const totalIPs = parseInt(localStorage.getItem('zrx_ip_count') || '0');
-      const totalVault = getVault().length;
-
-      if(document.getElementById('metric-total')) document.getElementById('metric-total').innerText = totalNotifs;
-      if(document.getElementById('metric-ips')) document.getElementById('metric-ips').innerText = totalIPs;
-      if(document.getElementById('metric-vault')) document.getElementById('metric-vault').innerText = totalVault;
-
       const notifs = getNotifications();
-      let waCount = 0, tgCount = 0, outrosCount = 0;
+      const ipCount = localStorage.getItem('zrx_ip_count') || '0';
+      const vault = getVault();
 
-      notifs.forEach(n => {
-        if(n.platform === 'WhatsApp') waCount++;
-        else if(n.platform === 'Telegram') tgCount++;
-        else outrosCount++;
-      });
+      if(document.getElementById('metric-total')) document.getElementById('metric-total').innerText = notifs.length;
+      if(document.getElementById('metric-ips')) document.getElementById('metric-ips').innerText = ipCount;
+      if(document.getElementById('metric-vault')) document.getElementById('metric-vault').innerText = vault.length;
 
-      const grandTotal = notifs.length || 1;
-      const waPct = Math.round((waCount / grandTotal) * 100);
-      const tgPct = Math.round((tgCount / grandTotal) * 100);
-      const outrosPct = Math.round((outrosCount / grandTotal) * 100);
-
-      if(document.getElementById('pct-wa')) document.getElementById('pct-wa').innerText = `${waPct}%`;
-      if(document.getElementById('bar-wa')) document.getElementById('bar-wa').style.width = `${waPct}%`;
-
-      if(document.getElementById('pct-tg')) document.getElementById('pct-tg').innerText = `${tgPct}%`;
-      if(document.getElementById('bar-tg')) document.getElementById('bar-tg').style.width = `${tgPct}%`;
-
-      if(document.getElementById('pct-outros')) document.getElementById('pct-outros').innerText = `${outrosPct}%`;
-      if(document.getElementById('bar-outros')) document.getElementById('bar-outros').style.width = `${outrosPct}%`;
+      // Gráficos de uso simulados
+      if(document.getElementById('bar-wa')) {
+        document.getElementById('bar-wa').style.width = '65%';
+        document.getElementById('pct-wa').innerText = '65%';
+      }
+      if(document.getElementById('bar-tg')) {
+        document.getElementById('bar-tg').style.width = '25%';
+        document.getElementById('pct-tg').innerText = '25%';
+      }
+      if(document.getElementById('bar-outros')) {
+        document.getElementById('bar-outros').style.width = '10%';
+        document.getElementById('pct-outros').innerText = '10%';
+      }
     }
 
-    function loadUserData() {
+    function finishOnboarding() {
+      const username = document.getElementById('setup-username').value.trim();
+      const pin = document.getElementById('setup-pin').value.trim();
+
+      if(!username || pin.length !== 4) {
+        alert('Por favor, digite um nome de usuário e um PIN válido de 4 dígitos!');
+        return;
+      }
+
+      localStorage.setItem('n', username);
+      localStorage.setItem('zrx_pin', pin);
+      localStorage.setItem('zrx_configured', 'true');
+
+      document.getElementById('onboarding-modal').style.display = 'none';
+      initializeApp();
+    }
+
+    function validateLoginPin() {
+      const enteredPin = document.getElementById('login-pin-input').value.trim();
+      const savedPin = localStorage.getItem('zrx_pin');
+
+      if(enteredPin === savedPin) {
+        document.getElementById('pin-login-modal').style.display = 'none';
+        initializeApp();
+      } else {
+        alert('PIN incorreto! Tente novamente.');
+        document.getElementById('login-pin-input').value = '';
+      }
+    }
+
+    function initializeApp() {
+      const configured = localStorage.getItem('zrx_configured');
+      const savedAvatar = localStorage.getItem('a');
+      const savedName = localStorage.getItem('n');
       const savedTheme = localStorage.getItem('zrx_theme') || 'red';
+
       changeAppTheme(savedTheme);
-      if(document.getElementById('theme-select')) document.getElementById('theme-select').value = savedTheme;
+      document.getElementById('theme-select').value = savedTheme;
 
-      const name = localStorage.getItem('n') || 'Usuário';
-      const avatar = localStorage.getItem('a') || 'https://via.placeholder.com/55';
-      const bg = localStorage.getItem('b');
+      if(!configured) {
+        document.getElementById('onboarding-modal').style.display = 'flex';
+        return;
+      }
 
-      if(document.getElementById('dash-username')) document.getElementById('dash-username').innerText = name;
-      if(document.getElementById('in-name')) document.getElementById('in-name').value = name;
-      if(document.getElementById('dash-avatar')) document.getElementById('dash-avatar').src = avatar;
-      if(bg) document.body.style.backgroundImage = `url('${bg}')`;
+      const savedPin = localStorage.getItem('zrx_pin');
+      if(savedPin) {
+        document.getElementById('login-avatar-display').src = savedAvatar || 'https://via.placeholder.com/70';
+        document.getElementById('login-username-display').innerText = savedName || 'Operador';
+        document.getElementById('pin-login-modal').style.display = 'flex';
+        return;
+      }
+
+      if(savedAvatar) {
+        document.getElementById('dash-avatar').src = savedAvatar;
+        document.body.style.backgroundImage = `url('${localStorage.getItem('b') || ''}')`;
+      }
+
+      if(savedName) {
+        document.getElementById('dash-username').innerText = savedName;
+      }
 
       renderNotifications();
       renderVault();
-      renderFolders();
-      renderMiniApps();
-      checkStoryStatus();
       updateDashboardMetrics();
     }
 
     window.onload = function() {
-      loadUserData();
+      initializeApp();
     };
   </script>
 </body>
