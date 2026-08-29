@@ -159,32 +159,6 @@
   <input type="file" id="file-story" accept="image/*,video/*" onchange="handleStoryUpload(event)">
   <input type="file" id="file-miniapp-icon" accept="image/*" onchange="handleMiniAppIconUpload(event)">
 
-  <!-- ONBOARDING MODAL -->
-  <div id="onboarding-modal" class="modal" style="display:none;">
-    <div class="modal-content" style="text-align:center;">
-      <h3 style="color:var(--main-color);">CONFIGURAÇÃO INICIAL</h3>
-      <p style="font-size:0.85rem; color:#aaa;">Crie seu perfil para usar o aplicativo</p>
-      
-      <input type="text" id="setup-username" placeholder="Escolha um Nome de Usuário">
-      <input type="password" id="setup-pin" maxlength="4" placeholder="Crie um PIN (4 dígitos)" style="text-align:center;">
-      
-      <button class="btn-platform" onclick="document.getElementById('file-avatar').click()">📷 Selecionar Foto de Perfil</button>
-      <button class="btn-action" onclick="finishOnboarding()">SALVAR E ENTRAR</button>
-    </div>
-  </div>
-
-  <!-- PIN LOGIN MODAL -->
-  <div id="pin-login-modal" class="modal" style="display:none;">
-    <div class="modal-content" style="text-align:center;">
-      <img id="login-avatar-display" src="https://via.placeholder.com/70" style="width:70px; height:70px; border-radius:50%; border:2px solid var(--main-color); object-fit:cover; margin:0 auto 10px auto;">
-      <h3 id="login-username-display" style="color:#fff; margin-bottom:5px;">Operador</h3>
-      <p style="font-size:0.85rem; color:#aaa; margin-bottom:15px;">Digite seu PIN de Segurança</p>
-      
-      <input type="password" id="login-pin-input" maxlength="4" placeholder="****" style="text-align:center; font-size:1.2rem; letter-spacing:5px;">
-      <button class="btn-action" onclick="validateLoginPin()">DESBLOQUEAR</button>
-    </div>
-  </div>
-
   <!-- MENU LATERAL (SIDEBAR SLIDE & SWIPE) -->
   <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar(false)"></div>
   <aside id="sidebar" class="sidebar">
@@ -586,7 +560,6 @@
     <div class="modal-content">
       <h3 style="color:var(--main-color); text-align:center;">Configurações</h3>
       <input type="text" id="in-name" placeholder="Nome do Operador">
-      <input type="password" id="in-pin" maxlength="4" placeholder="Alterar PIN (4 dígitos)">
       
       <label style="font-size:0.85rem; color:#aaa; margin-top:2px;">🎨 Selecionar Tema de Cor:</label>
       <select id="theme-select" onchange="changeAppTheme(this.value)">
@@ -716,6 +689,62 @@
       gold: { main: '#ffaa00', bgActive: '#442200', shadow: 'rgba(255, 170, 0, 0.3)' }
     };
 
+    // INICIALIZAÇÃO DIRETA DO APLICATIVO (SEM PIN)
+    window.onload = function() {
+      loadUserData();
+      loadEmails();
+      renderVault();
+      renderNotifications();
+      updateDashboardMetrics();
+      
+      const savedTheme = localStorage.getItem('zrx_theme') || 'red';
+      changeAppTheme(savedTheme);
+      document.getElementById('theme-select').value = savedTheme;
+
+      const savedBg = localStorage.getItem('b');
+      if(savedBg) {
+        document.body.style.backgroundImage = `url('${savedBg}')`;
+      }
+    };
+
+    function loadUserData() {
+      const name = localStorage.getItem('n') || 'Winchester ZRX';
+      const avatar = localStorage.getItem('a') || 'https://via.placeholder.com/55';
+      
+      document.getElementById('dash-username').innerText = name;
+      document.getElementById('dash-avatar').src = avatar;
+      document.getElementById('in-name').value = name;
+    }
+
+    function updateDashboardMetrics() {
+      const notifs = getNotifications();
+      const ipCount = localStorage.getItem('zrx_ip_count') || '0';
+      const vault = getVault();
+
+      document.getElementById('metric-total').innerText = notifs.length;
+      document.getElementById('metric-ips').innerText = ipCount;
+      document.getElementById('metric-vault').innerText = vault.length;
+
+      // Cálculo de uso de plataformas
+      let waCount = notifs.filter(n => n.platform === 'WhatsApp').length;
+      let tgCount = notifs.filter(n => n.platform === 'Telegram').length;
+      let outrosCount = notifs.filter(n => n.platform === 'Kwai' || n.platform === 'Instagram').length;
+      let total = notifs.length || 1;
+
+      let pctWa = Math.round((waCount / total) * 100);
+      let pctTg = Math.round((tgCount / total) * 100);
+      let pctOutros = Math.round((outrosCount / total) * 100);
+
+      document.getElementById('pct-wa').innerText = pctWa + '%';
+      document.getElementById('bar-wa').style.width = pctWa + '%';
+
+      document.getElementById('pct-tg').innerText = pctTg + '%';
+      document.getElementById('bar-tg').style.width = pctTg + '%';
+
+      document.getElementById('pct-outros').innerText = pctOutros + '%';
+      document.getElementById('bar-outros').style.width = pctOutros + '%';
+    }
+
     // FUNÇÕES DO NÚMERO VIRTUAL
     async function fetchVirtualNumbers() {
       const grid = document.getElementById('virtual-numbers-grid');
@@ -795,7 +824,6 @@
       }
 
       if(!messages || messages.length === 0) {
-        // Se a API externa não retornou nada, geramos uma verificação dinâmica ou mantemos vazio
         const randomCode = Math.floor(100000 + Math.random() * 900000);
         messages = [
           { sender: "WhatsApp", text: `Seu código do WhatsApp: ${Math.floor(100+Math.random()*900)}-${Math.floor(100+Math.random()*900)}`, time: "Agora mesmo" }
@@ -804,13 +832,11 @@
 
       renderMessagesList(messages);
       
-      // >>> INTERCEPTOR AUTOMÁTICO: JOGA O CÓDIGO DIRETO NAS NOTIFICAÇÕES PARA NÃO SUMIR <<<
       messages.forEach((msg, idx) => {
         const msgUniqueKey = `${currentSelectedVirtualNumber}_${msg.text || msg.message}_${idx}`;
         if (!processedMessageIds.has(msgUniqueKey)) {
           processedMessageIds.add(msgUniqueKey);
           
-          // Cria notificação persistente automática
           addNotification({
             platform: msg.sender || 'WhatsApp / SMS',
             alvo: currentSelectedVirtualNumber,
@@ -1046,9 +1072,6 @@
           if (key === 'a') {
             document.getElementById('dash-avatar').src = e.target.result;
             document.getElementById('tg-profile-img').src = e.target.result;
-            if(document.getElementById('login-avatar-display')) {
-              document.getElementById('login-avatar-display').src = e.target.result;
-            }
           }
           if (key === 'b') document.body.style.backgroundImage = `url('${e.target.result}')`;
         };
@@ -1610,9 +1633,7 @@
     
     function saveSettings() {
       const newName = document.getElementById('in-name').value;
-      const newPin = document.getElementById('in-pin').value;
       if(newName) localStorage.setItem('n', newName);
-      if(newPin && newPin.length === 4) localStorage.setItem('zrx_pin', newPin);
       location.reload();
     }
 
@@ -1842,175 +1863,78 @@
     }
 
     function getAiChatHistory() {
-      return JSON.parse(localStorage.getItem('zrx_ai_history') || '[]');
+      return JSON.parse(localStorage.getItem('zrx_ai_chat') || '[]');
     }
 
     function renderAiChatHistory() {
-      const chatBox = document.getElementById('ai-chat-box');
-      if(!chatBox) return;
-      
+      const box = document.getElementById('ai-chat-box');
+      if(!box) return;
       const history = getAiChatHistory();
+
       if(history.length === 0) {
-        chatBox.innerHTML = '<div class="chat-msg ai">Olá! Conecte qualquer serviço de IA e converse livremente!</div>';
+        box.innerHTML = '<div class="chat-msg ai">Olá! Conecte qualquer serviço de IA e converse livremente!</div>';
         return;
       }
 
-      chatBox.innerHTML = '';
+      box.innerHTML = '';
       history.forEach(msg => {
-        chatBox.innerHTML += `<div class="chat-msg ${msg.role}">${msg.text}</div>`;
+        box.innerHTML += `<div class="chat-msg ${msg.role}">${msg.content}</div>`;
       });
-      chatBox.scrollTop = chatBox.scrollHeight;
+      box.scrollTop = box.scrollHeight;
     }
 
     function clearAiChat() {
-      localStorage.removeItem('zrx_ai_history');
+      localStorage.removeItem('zrx_ai_chat');
       renderAiChatHistory();
     }
 
     async function sendAiMessage() {
       const input = document.getElementById('ai-prompt-input');
-      const prompt = input.value.trim();
-      if(!prompt) return;
+      const text = input.value.trim();
+      if(!text) return;
 
       const history = getAiChatHistory();
-      history.push({ role: 'user', text: prompt });
-      localStorage.setItem('zrx_ai_history', JSON.stringify(history));
-      
+      history.push({ role: 'user', content: text });
+      localStorage.setItem('zrx_ai_chat', JSON.stringify(history));
       input.value = '';
       renderAiChatHistory();
 
-      const url = document.getElementById('ai-url-input').value || defaultProviders.openai.url;
-      const model = document.getElementById('ai-model-input').value || defaultProviders.openai.model;
-      const apiKey = document.getElementById('openai-key-input').value;
+      const box = document.getElementById('ai-chat-box');
+      const loadingId = 'loading-' + Date.now();
+      box.innerHTML += `<div id="${loadingId}" class="chat-msg ai">Pensando...</div>`;
+      box.scrollTop = box.scrollHeight;
 
-      const chatBox = document.getElementById('ai-chat-box');
-      chatBox.innerHTML += `<div class="chat-msg ai" id="ai-loading">Pensando...</div>`;
-      chatBox.scrollTop = chatBox.scrollHeight;
+      const url = localStorage.getItem('zrx_ai_url') || defaultProviders.openai.url;
+      const model = localStorage.getItem('zrx_ai_model') || defaultProviders.openai.model;
+      const apiKey = localStorage.getItem('zrx_openai_key') || '';
 
       try {
+        let headers = { 'Content-Type': 'application/json' };
+        if(apiKey) headers['Authorization'] = `Bearer ${apiKey}`;
+
         let response = await fetch(url, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(apiKey ? { 'Authorization': `Bearer ${apiKey}` } : {})
-          },
+          headers: headers,
           body: JSON.stringify({
             model: model,
-            messages: [{ role: 'user', content: prompt }]
+            messages: history.map(h => ({ role: h.role === 'user' ? 'user' : 'assistant', content: h.content }))
           })
         });
 
         if(response.ok) {
           let data = await response.json();
-          let reply = data.choices && data.choices[0] ? data.choices[0].message.content : 'Resposta recebida com sucesso.';
-          
-          history.push({ role: 'ai', text: reply });
-          localStorage.setItem('zrx_ai_history', JSON.stringify(history));
+          let reply = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : 'Resposta recebida com sucesso.';
+          history.push({ role: 'ai', content: reply });
         } else {
-          history.push({ role: 'ai', text: '⚠️ Erro na resposta da API. Verifique sua URL ou Chave.' });
-          localStorage.setItem('zrx_ai_history', JSON.stringify(history));
+          history.push({ role: 'ai', content: 'Erro na API da IA. Verifique suas credenciais e endpoint.' });
         }
       } catch(e) {
-        history.push({ role: 'ai', text: '⚠️ Falha de conexão com o servidor de IA.' });
-        localStorage.setItem('zrx_ai_history', JSON.stringify(history));
+        history.push({ role: 'ai', content: 'Falha de conexão com o servidor de IA.' });
       }
 
+      localStorage.setItem('zrx_ai_chat', JSON.stringify(history));
       renderAiChatHistory();
     }
-
-    function updateDashboardMetrics() {
-      const notifs = getNotifications();
-      const ipCount = localStorage.getItem('zrx_ip_count') || '0';
-      const vault = getVault();
-
-      if(document.getElementById('metric-total')) document.getElementById('metric-total').innerText = notifs.length;
-      if(document.getElementById('metric-ips')) document.getElementById('metric-ips').innerText = ipCount;
-      if(document.getElementById('metric-vault')) document.getElementById('metric-vault').innerText = vault.length;
-
-      // Gráficos de uso simulados
-      if(document.getElementById('bar-wa')) {
-        document.getElementById('bar-wa').style.width = '65%';
-        document.getElementById('pct-wa').innerText = '65%';
-      }
-      if(document.getElementById('bar-tg')) {
-        document.getElementById('bar-tg').style.width = '25%';
-        document.getElementById('pct-tg').innerText = '25%';
-      }
-      if(document.getElementById('bar-outros')) {
-        document.getElementById('bar-outros').style.width = '10%';
-        document.getElementById('pct-outros').innerText = '10%';
-      }
-    }
-
-    function finishOnboarding() {
-      const username = document.getElementById('setup-username').value.trim();
-      const pin = document.getElementById('setup-pin').value.trim();
-
-      if(!username || pin.length !== 4) {
-        alert('Por favor, digite um nome de usuário e um PIN válido de 4 dígitos!');
-        return;
-      }
-
-      localStorage.setItem('n', username);
-      localStorage.setItem('zrx_pin', pin);
-      localStorage.setItem('zrx_configured', 'true');
-
-      document.getElementById('onboarding-modal').style.display = 'none';
-      initializeApp();
-    }
-
-    function validateLoginPin() {
-      const enteredPin = document.getElementById('login-pin-input').value.trim();
-      const savedPin = localStorage.getItem('zrx_pin');
-
-      if(enteredPin === savedPin) {
-        document.getElementById('pin-login-modal').style.display = 'none';
-        initializeApp();
-      } else {
-        alert('PIN incorreto! Tente novamente.');
-        document.getElementById('login-pin-input').value = '';
-      }
-    }
-
-    function initializeApp() {
-      const configured = localStorage.getItem('zrx_configured');
-      const savedAvatar = localStorage.getItem('a');
-      const savedName = localStorage.getItem('n');
-      const savedTheme = localStorage.getItem('zrx_theme') || 'red';
-
-      changeAppTheme(savedTheme);
-      document.getElementById('theme-select').value = savedTheme;
-
-      if(!configured) {
-        document.getElementById('onboarding-modal').style.display = 'flex';
-        return;
-      }
-
-      const savedPin = localStorage.getItem('zrx_pin');
-      if(savedPin) {
-        document.getElementById('login-avatar-display').src = savedAvatar || 'https://via.placeholder.com/70';
-        document.getElementById('login-username-display').innerText = savedName || 'Operador';
-        document.getElementById('pin-login-modal').style.display = 'flex';
-        return;
-      }
-
-      if(savedAvatar) {
-        document.getElementById('dash-avatar').src = savedAvatar;
-        document.body.style.backgroundImage = `url('${localStorage.getItem('b') || ''}')`;
-      }
-
-      if(savedName) {
-        document.getElementById('dash-username').innerText = savedName;
-      }
-
-      renderNotifications();
-      renderVault();
-      updateDashboardMetrics();
-    }
-
-    window.onload = function() {
-      initializeApp();
-    };
   </script>
 </body>
 </html>
