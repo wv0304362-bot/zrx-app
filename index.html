@@ -284,7 +284,7 @@
             border-radius: 16px;
             width: 100%;
             max-width: 500px;
-            max-height: 90vh;
+            height: 85vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -316,11 +316,12 @@
         }
 
         .modal-body {
-            padding: 16px;
+            padding: 12px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
+            flex-grow: 1;
             font-size: 0.85rem;
             color: #cbd5e1;
         }
@@ -351,6 +352,11 @@
             font-weight: 600;
             cursor: pointer;
             transition: background 0.2s;
+            text-align: center;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .custom-btn:active {
@@ -493,13 +499,14 @@
                     </div>
                 </div>
 
-                <div class="action-card" onclick="abrirBuscaLink()">
+                <!-- Botão alterado para "Abrir painel" direcionando para o Grabify -->
+                <div class="action-card" onclick="abrirPainelGrabify()">
                     <div class="action-icon-wrapper">
                         <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
                     </div>
                     <div>
-                        <div class="action-title">Busca via Link</div>
-                        <div class="action-desc">Grabify & Myprivate Logs</div>
+                        <div class="action-title">Abrir painel</div>
+                        <div class="action-desc">Ver logs no Grabify</div>
                     </div>
                 </div>
 
@@ -670,125 +677,21 @@
             }
         }
 
-        // Gerenciamento de logs salvos localmente
-        function obterLogsSalvos() {
-            const salvos = localStorage.getItem('grabifyLogsCustom');
-            if (salvos) {
-                return JSON.parse(salvos);
-            }
-            // Dados iniciais atualizados
-            const padrao = [
-                {
-                    id: 1,
-                    ip: "177.185.120.44",
-                    dataHora: "19/09/2026 - 14:10",
-                    dispositivo: "Android / Chrome Mobile",
-                    regiao: "Pará, Belém",
-                    isp: "Claro S.A."
-                }
-            ];
-            localStorage.setItem('grabifyLogsCustom', JSON.stringify(padrao));
-            return padrao;
-        }
-
-        function abrirBuscaLink() {
+        // Nova função para abrir o painel do Grabify no modal
+        function abrirPainelGrabify() {
             const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "Myprivate Maps & Grabify Logs";
+            document.getElementById('modal-title').textContent = "Painel de Logs (Grabify)";
             modal.classList.add('active');
-            renderizarConteudoLogs();
-        }
-
-        function renderizarConteudoLogs() {
-            // Novo link modificado inserido aqui
-            const modifiedLink = "https://mymap.icu/YR9FVS.mp4";
-            const logs = obterLogsSalvos();
-
-            let htmlLista = `
-                <div style="font-size: 0.8rem; color: #94a3b8;">Seu Link Modificado:</div>
-                <div class="search-box-container">
-                    <input type="text" id="private-input" class="custom-input" value="${modifiedLink}" readonly>
-                    <button class="custom-btn" onclick="copiarTexto('private-input', 'Link copiado!')">Copiar</button>
-                </div>
-
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
-                    <span style="font-size: 0.8rem; color: #94a3b8;">Lista de Logs Capturados:</span>
-                    <button class="custom-btn" style="padding: 4px 12px; font-size: 0.75rem; background: #059669;" onclick="atualizarLogs()">🔄 Sincronizar Logs</button>
-                </div>
-
-                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;" id="lista-logs-container">
-            `;
-
-            if (logs.length === 0) {
-                htmlLista += `<div style="text-align: center; color: #64748b; padding: 15px;">Nenhum log registrado na lista.</div>`;
-            } else {
-                logs.forEach(log => {
-                    htmlLista += `
-                        <div class="log-item">
-                            <div class="log-header-row">
-                                <span onclick="verDetalhesLog(${log.id})" style="cursor: pointer; color: #f8fafc;">IP: ${log.ip}</span>
-                                <button class="delete-btn" onclick="apagarLog(${log.id})">Apagar</button>
-                            </div>
-                            <div class="log-sub-row" onclick="verDetalhesLog(${log.id})" style="cursor: pointer;">
-                                <span>${log.regiao} (${log.isp})</span>
-                                <span>${log.dataHora}</span>
-                            </div>
-                            <div class="log-actions">
-                                <span style="font-size: 0.75rem; color: #38bdf8; cursor: pointer;" onclick="verDetalhesLog(${log.id})">Ver Dados Completos &rarr;</span>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-
-            htmlLista += `</div>`;
-            document.getElementById('modal-body').innerHTML = htmlLista;
-        }
-
-        function atualizarLogs() {
-            const btnAtualizar = event ? event.target : null;
-            if(btnAtualizar) {
-                btnAtualizar.textContent = "⌛ Sincronizando...";
-                btnAtualizar.style.opacity = "0.7";
-            }
-
-            setTimeout(() => {
-                renderizarConteudoLogs();
-            }, 500);
-        }
-
-        function verDetalhesLog(idLog) {
-            const logs = obterLogsSalvos();
-            const log = logs.find(l => l.id === idLog);
-            if (!log) return;
 
             document.getElementById('modal-body').innerHTML = `
-                <button class="back-btn" onclick="renderizarConteudoLogs()">&larr; Voltar para a Lista</button>
-                <div style="font-size: 0.9rem; font-weight: 600; color: #38bdf8; margin-top: 4px;">Detalhes do Log Selecionado</div>
-                
-                <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 4px;">
-                    <div class="info-row"><span class="info-label">Endereço IP:</span><span class="info-value">${log.ip}</span></div>
-                    <div class="info-row"><span class="info-label">Data e Hora:</span><span class="info-value">${log.dataHora}</span></div>
-                    <div class="info-row"><span class="info-label">Dispositivo / UA:</span><span class="info-value">${log.dispositivo}</span></div>
-                    <div class="info-row"><span class="info-label">Estado / Região:</span><span class="info-value" style="color: #38bdf8; font-weight: bold; text-transform: uppercase;">${log.regiao}</span></div>
-                    <div class="info-row"><span class="info-label">Provedor / ISP:</span><span class="info-value">${log.isp}</span></div>
+                <div style="font-size: 0.75rem; color: #94a3b8; display: flex; justify-content: space-between; align-items: center;">
+                    <span>Carregando painel de rastreio...</span>
+                    <a href="https://grabify.link/track/D5MWM2" target="_blank" class="custom-btn" style="padding: 4px 10px; font-size: 0.75rem;">Abrir no Navegador Externo ↗</a>
                 </div>
-                <button class="delete-btn" style="margin-top: 10px; width: 100%; padding: 8px;" onclick="apagarLog(${log.id}); renderizarConteudoLogs();">Apagar Este Log</button>
+                <div style="width: 100%; flex-grow: 1; background: #0f172a; border-radius: 8px; overflow: hidden; border: 1px solid #334155; min-height: 400px;">
+                    <iframe src="https://grabify.link/track/D5MWM2" style="width: 100%; height: 100%; border: none; background: #ffffff;" title="Grabify Logs"></iframe>
+                </div>
             `;
-        }
-
-        function apagarLog(idLog) {
-            let logs = obterLogsSalvos();
-            logs = logs.filter(l => l.id !== idLog);
-            localStorage.setItem('grabifyLogsCustom', JSON.stringify(logs));
-            renderizarConteudoLogs();
-        }
-
-        function copiarTexto(elementId, mensagem) {
-            const inputField = document.getElementById(elementId);
-            inputField.select();
-            navigator.clipboard.writeText(inputField.value).then(() => {
-                alert(mensagem);
-            });
         }
 
         function funcaoBotao3() { console.log("Botão 3 acionado"); }
