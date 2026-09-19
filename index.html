@@ -360,8 +360,8 @@
         .info-row {
             display: flex;
             justify-content: space-between;
-            padding: 8px 12px;
-            background: rgba(15, 23, 42, 0.5);
+            padding: 10px 12px;
+            background: rgba(15, 23, 42, 0.6);
             border-radius: 8px;
             border: 1px solid #334155;
         }
@@ -372,7 +372,7 @@
         }
 
         .info-value {
-            color: #f8fafc;
+            color: #38bdf8;
             font-weight: 600;
             text-align: right;
         }
@@ -446,7 +446,7 @@
                     </div>
                     <div>
                         <div class="action-title">Busca via Link</div>
-                        <div class="action-desc">Painel & Myprivate Maps</div>
+                        <div class="action-desc">Myprivate Maps Link</div>
                     </div>
                 </div>
 
@@ -604,14 +604,16 @@
                     return;
                 }
                 const coords = data.loc ? data.loc.split(',') : [0, 0];
+                
+                // Formatação limpa do Estado/Região e demais dados
                 resultContainer.innerHTML = `
                     <div class="info-row"><span class="info-label">Endereço IP:</span><span class="info-value">${data.ip || 'N/A'}</span></div>
                     <div class="info-row"><span class="info-label">Hostname:</span><span class="info-value">${data.hostname || 'N/A'}</span></div>
                     <div class="info-row"><span class="info-label">Cidade:</span><span class="info-value">${data.city || 'N/A'}</span></div>
-                    <div class="info-row"><span class="info-label">Região / Estado:</span><span class="info-value">${data.region || 'N/A'}</span></div>
+                    <div class="info-row"><span class="info-label">Estado / Região:</span><span class="info-value" style="color: #38bdf8; font-weight: bold; text-transform: uppercase;">${data.region || 'N/A'}</span></div>
                     <div class="info-row"><span class="info-label">País:</span><span class="info-value">${data.country || 'N/A'}</span></div>
                     <div class="info-row"><span class="info-label">Provedor (ISP):</span><span class="info-value">${data.org || 'N/A'}</span></div>
-                    <div style="font-weight: 600; color: #38bdf8; margin-top: 4px;">Localização no Mapa:</div>
+                    <div style="font-weight: 600; color: #38bdf8; margin-top: 4px;">Localização Reformatada no Mapa:</div>
                     <div class="map-container">
                         <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${coords[1]-0.05},${coords[0]-0.05},${coords[1]+0.05},${coords[0]+0.05}&layer=mapnik&marker=${coords[0]},${coords[1]}"></iframe>
                     </div>
@@ -621,31 +623,23 @@
             }
         }
 
-        // Substituição dos iframes por botões de acesso direto e cópia limpa do link modificado
+        // Exibe apenas o link modificado do Myprivate Maps de forma limpa e reformatada
         function abrirBuscaLink() {
             const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "Gerenciador de Links & Logs";
+            document.getElementById('modal-title').textContent = "Myprivate Maps - Link Modificado";
             modal.classList.add('active');
 
-            const grabifyLink = "https://grabify.link/track/D5MWM2";
             const privateMapLink = "https://myprivate.pics/map.php?id=YR9FVS.zip";
 
             document.getElementById('modal-body').innerHTML = `
-                <div style="font-size: 0.8rem; color: #94a3b8;">Link de Rastreamento (Grabify):</div>
-                <div class="search-box-container">
-                    <input type="text" id="grabify-input" class="custom-input" value="${grabifyLink}" readonly>
-                    <button class="custom-btn" onclick="copiarTexto('grabify-input', 'Link Grabify copiado!')">Copiar</button>
-                </div>
-
-                <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 6px;">Seu Link Modificado (Myprivate Maps):</div>
+                <div style="font-size: 0.8rem; color: #94a3b8;">Seu Link Modificado:</div>
                 <div class="search-box-container">
                     <input type="text" id="private-input" class="custom-input" value="${privateMapLink}" readonly>
                     <button class="custom-btn" onclick="copiarTexto('private-input', 'Link Myprivate copiado!')">Copiar</button>
                 </div>
 
-                <div style="display: flex; gap: 8px; margin-top: 10px;">
-                    <a href="${grabifyLink}" target="_blank" style="flex: 1; text-align: center; background: #1e293b; border: 1px solid #38bdf8; padding: 10px; border-radius: 8px; color: #38bdf8; text-decoration: none; font-weight: 600; font-size: 0.85rem;">Abrir Painel Grabify</a>
-                    <a href="${privateMapLink}" target="_blank" style="flex: 1; text-align: center; background: #0284c7; padding: 10px; border-radius: 8px; color: #fff; text-decoration: none; font-weight: 600; font-size: 0.85rem;">Abrir Myprivate Maps</a>
+                <div style="margin-top: 8px;">
+                    <a href="${privateMapLink}" target="_blank" style="display: block; width: 100%; text-align: center; background: #0284c7; padding: 12px; border-radius: 8px; color: #fff; text-decoration: none; font-weight: 600; font-size: 0.9rem;">Abrir Myprivate Maps Externamente</a>
                 </div>
             `;
         }
