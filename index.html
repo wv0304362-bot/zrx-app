@@ -41,6 +41,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
         }
 
         .banner-container img, 
@@ -50,6 +51,7 @@
             object-fit: cover;
             position: absolute;
             inset: 0;
+            z-index: 1;
         }
 
         .banner-overlay {
@@ -57,6 +59,7 @@
             inset: 0;
             background: linear-gradient(to bottom, rgba(15, 23, 42, 0.2), rgba(15, 23, 42, 0.95));
             pointer-events: none;
+            z-index: 2;
         }
 
         /* Botão de + Grande no Banner */
@@ -76,6 +79,10 @@
             transition: all 0.2s ease;
         }
 
+        .banner-upload-btn.hidden {
+            display: none;
+        }
+
         .banner-upload-btn:active {
             transform: scale(0.92);
             background: rgba(56, 189, 248, 0.3);
@@ -91,7 +98,7 @@
             padding: 16px;
             margin-top: -35px;
             position: relative;
-            z-index: 2;
+            z-index: 4;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
@@ -122,15 +129,25 @@
             width: 100%;
             height: 100%;
             border-radius: 14px;
-            background: #0284c7;
+            background: #1e293b;
             overflow: hidden;
             border: 2px solid #38bdf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .profile-avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        /* Placeholder inicial para o avatar vazio */
+        .profile-avatar svg {
+            width: 28px;
+            height: 28px;
+            fill: #64748b;
         }
 
         /* Botão + pequeno na foto de perfil */
@@ -173,7 +190,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* Ícone de Lápis desenhado para editar nome */
+        /* Ícone de Lápis vetorizado */
         .edit-icon {
             width: 14px;
             height: 14px;
@@ -269,11 +286,11 @@
 
     <div class="app-container">
         
-        <!-- Topo: Banner com botão + grande centralizado -->
-        <div class="banner-container" id="banner-container">
+        <!-- Topo: Banner com botão + centralizado (clicar no banner também abre o seletor) -->
+        <div class="banner-container" id="banner-container" onclick="document.getElementById('banner-file-input').click()">
             <div class="banner-overlay"></div>
             <!-- Botão de + Grande para alterar imagem/vídeo do banner -->
-            <div class="banner-upload-btn" onclick="document.getElementById('banner-file-input').click()">
+            <div class="banner-upload-btn" id="banner-upload-btn">
                 <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
             </div>
             <input type="file" id="banner-file-input" class="hidden-input" accept="image/*,video/*" onchange="carregarBanner(event)">
@@ -284,8 +301,9 @@
             <!-- Bloco do Perfil Centralizado -->
             <div class="profile-card">
                 <div class="profile-avatar-container">
-                    <div class="profile-avatar" id="avatar-container">
-                        <img id="profile-avatar-img" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200&auto=format&fit=crop" alt="Avatar">
+                    <div class="profile-avatar" id="profile-avatar">
+                        <!-- Ícone genérico inicial caso não tenha foto -->
+                        <svg id="avatar-placeholder-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                     </div>
                     <!-- Botão + na foto de perfil -->
                     <div class="avatar-upload-overlay" onclick="document.getElementById('avatar-file-input').click()">
@@ -297,15 +315,14 @@
                 <div class="profile-info">
                     <!-- Área do nome com opção de clique para editar -->
                     <div class="name-wrapper" onclick="editarNome()">
-                        <h2 id="user-name">SEU NOME</h2>
-                        <!-- Ícone de Lápis vetorizado -->
+                        <h2 id="user-name">DEFINIR NOME</h2>
                         <svg class="edit-icon" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
                     </div>
-                    <span id="user-role" class="profile-badge">ROLE: DEVELOPER</span>
+                    <span id="user-role" class="profile-badge">ROLE: USER</span>
                 </div>
             </div>
 
-            <!-- Grade de Botões 2x2 (Símbolos vetorizados sem emojis) -->
+            <!-- Grade de Botões 2x2 -->
             <div class="grid-2x2">
                 
                 <!-- Botão 1: Raio -->
@@ -363,23 +380,56 @@
     </div>
 
     <script>
+        // Carrega dados salvos ao iniciar o app
+        window.onload = function() {
+            const savedName = localStorage.getItem('userName');
+            if (savedName) {
+                document.getElementById('user-name').textContent = savedName;
+            }
+
+            const savedAvatar = localStorage.getItem('userAvatar');
+            if (savedAvatar) {
+                aplicarAvatar(savedAvatar);
+            }
+
+            const savedBanner = localStorage.getItem('userBanner');
+            const savedBannerType = localStorage.getItem('userBannerType');
+            if (savedBanner) {
+                aplicarBanner(savedBanner, savedBannerType === 'video');
+            }
+        };
+
         // Função para carregar imagem ou vídeo no banner
         function carregarBanner(event) {
+            event.stopPropagation(); // Evita conflito com o clique do container
             const file = event.target.files[0];
             if (!file) return;
 
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const fileURL = e.target.result;
+                const isVideo = file.type.startsWith('video');
+                
+                // Salva no localStorage
+                localStorage.setItem('userBanner', fileURL);
+                localStorage.setItem('userBannerType', isVideo ? 'video' : 'image');
+
+                aplicarBanner(fileURL, isVideo);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function aplicarBanner(url, isVideo) {
             const bannerContainer = document.getElementById('banner-container');
+            const uploadBtn = document.getElementById('banner-upload-btn');
             
             // Remove mídia anterior se existir
             const oldMedia = bannerContainer.querySelector('img, video');
             if (oldMedia) oldMedia.remove();
 
-            const fileURL = URL.createObjectURL(file);
-            const isVideo = file.type.startsWith('video');
-
             if (isVideo) {
                 const video = document.createElement('video');
-                video.src = fileURL;
+                video.src = url;
                 video.autoplay = true;
                 video.muted = true;
                 video.loop = true;
@@ -387,25 +437,42 @@
                 bannerContainer.insertBefore(video, bannerContainer.firstChild);
             } else {
                 const img = document.createElement('img');
-                img.src = fileURL;
+                img.src = url;
                 bannerContainer.insertBefore(img, bannerContainer.firstChild);
             }
+
+            // Esconde o botão de mais após a mídia ser inserida
+            uploadBtn.classList.add('hidden');
         }
 
         // Função para carregar foto de perfil
         function carregarAvatar(event) {
+            event.stopPropagation();
             const file = event.target.files[0];
             if (!file) return;
 
-            const avatarImg = document.getElementById('profile-avatar-img');
-            avatarImg.src = URL.createObjectURL(file);
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const fileURL = e.target.result;
+                localStorage.setItem('userAvatar', fileURL);
+                aplicarAvatar(fileURL);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function aplicarAvatar(url) {
+            const avatarContainer = document.getElementById('profile-avatar');
+            avatarContainer.innerHTML = `<img src="${url}" alt="Avatar">`;
         }
 
         // Função para editar o nome do perfil
         function editarNome() {
-            const novoNome = prompt("Digite o novo nome do perfil:", document.getElementById('user-name').textContent);
+            const atual = document.getElementById('user-name').textContent;
+            const novoNome = prompt("Digite o novo nome do perfil:", atual === "DEFINIR NOME" ? "" : atual);
             if (novoNome && novoNome.trim() !== "") {
-                document.getElementById('user-name').textContent = novoNome.trim();
+                const nomeFinal = novoNome.trim();
+                document.getElementById('user-name').textContent = nomeFinal;
+                localStorage.setItem('userName', nomeFinal);
             }
         }
 
