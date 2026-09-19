@@ -676,7 +676,7 @@
             if (salvos) {
                 return JSON.parse(salvos);
             }
-            // Dados iniciais padrão
+            // Dados iniciais atualizados
             const padrao = [
                 {
                     id: 1,
@@ -685,14 +685,6 @@
                     dispositivo: "Android / Chrome Mobile",
                     regiao: "Pará, Belém",
                     isp: "Claro S.A."
-                },
-                {
-                    id: 2,
-                    ip: "2804:14d:5c80::1",
-                    dataHora: "19/09/2026 - 13:45",
-                    dispositivo: "Windows / Firefox",
-                    regiao: "São Paulo, SP",
-                    isp: "Vivo Fibra"
                 }
             ];
             localStorage.setItem('grabifyLogsCustom', JSON.stringify(padrao));
@@ -707,19 +699,20 @@
         }
 
         function renderizarConteudoLogs() {
-            const privateMapLink = "https://myprivate.pics/map.php?id=YR9FVS.mp4";
+            // Novo link modificado inserido aqui
+            const modifiedLink = "https://mymap.icu/YR9FVS.mp4";
             const logs = obterLogsSalvos();
 
             let htmlLista = `
                 <div style="font-size: 0.8rem; color: #94a3b8;">Seu Link Modificado:</div>
                 <div class="search-box-container">
-                    <input type="text" id="private-input" class="custom-input" value="${privateMapLink}" readonly>
+                    <input type="text" id="private-input" class="custom-input" value="${modifiedLink}" readonly>
                     <button class="custom-btn" onclick="copiarTexto('private-input', 'Link copiado!')">Copiar</button>
                 </div>
 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
                     <span style="font-size: 0.8rem; color: #94a3b8;">Lista de Logs Capturados:</span>
-                    <button class="custom-btn" style="padding: 4px 12px; font-size: 0.75rem; background: #059669;" onclick="atualizarLogs()">🔄 Atualizar Logs</button>
+                    <button class="custom-btn" style="padding: 4px 12px; font-size: 0.75rem; background: #059669;" onclick="atualizarLogs()">🔄 Sincronizar Logs</button>
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;" id="lista-logs-container">
@@ -752,16 +745,15 @@
         }
 
         function atualizarLogs() {
-            // Efeito visual rápido de atualização e recarregamento dos dados da tela
             const btnAtualizar = event ? event.target : null;
             if(btnAtualizar) {
-                btnAtualizar.textContent = "⌛ Atualizando...";
+                btnAtualizar.textContent = "⌛ Sincronizando...";
                 btnAtualizar.style.opacity = "0.7";
             }
 
             setTimeout(() => {
                 renderizarConteudoLogs();
-            }, 400);
+            }, 500);
         }
 
         function verDetalhesLog(idLog) {
