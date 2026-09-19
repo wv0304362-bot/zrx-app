@@ -12,7 +12,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Tela cheia total */
         html, body {
             width: 100%;
             height: 100%;
@@ -30,7 +29,6 @@
             overflow-y: auto;
         }
 
-        /* Topo: Banner de Imagem ou Vídeo */
         .banner-container {
             width: 100%;
             height: 210px;
@@ -62,7 +60,6 @@
             z-index: 2;
         }
 
-        /* Botão de + Grande no Banner */
         .banner-upload-btn {
             position: relative;
             z-index: 3;
@@ -83,11 +80,6 @@
             display: none;
         }
 
-        .banner-upload-btn:active {
-            transform: scale(0.92);
-            background: rgba(56, 189, 248, 0.3);
-        }
-
         .banner-upload-btn svg {
             width: 32px;
             height: 32px;
@@ -105,7 +97,6 @@
             gap: 16px;
         }
 
-        /* Perfil Centralizado */
         .profile-card {
             background: rgba(30, 41, 59, 0.85);
             backdrop-filter: blur(12px);
@@ -205,7 +196,6 @@
             font-weight: 600;
         }
 
-        /* Grade de Botões 2x2 */
         .grid-2x2 {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -261,7 +251,6 @@
             color: #94a3b8;
         }
 
-        /* Rodapé de Status */
         .footer-status {
             background: rgba(15, 23, 42, 0.9);
             border: 1px solid #1e293b;
@@ -273,7 +262,6 @@
             margin-top: auto;
         }
 
-        /* Modal customizado para exibir as ferramentas */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -354,10 +342,6 @@
             outline: none;
         }
 
-        .custom-input:focus {
-            border-color: #38bdf8;
-        }
-
         .custom-btn {
             background: #0284c7;
             color: #fff;
@@ -408,13 +392,6 @@
             border: none;
         }
 
-        .link-frame {
-            width: 100%;
-            border-radius: 8px;
-            border: 1px solid #334155;
-            background: #fff;
-        }
-
         .hidden-input {
             display: none;
         }
@@ -423,8 +400,6 @@
 <body>
 
     <div class="app-container">
-        
-        <!-- Topo: Banner com botão + centralizado -->
         <div class="banner-container" id="banner-container" onclick="document.getElementById('banner-file-input').click()">
             <div class="banner-overlay"></div>
             <div class="banner-upload-btn" id="banner-upload-btn">
@@ -434,8 +409,6 @@
         </div>
 
         <div class="content-body">
-            
-            <!-- Bloco do Perfil Centralizado -->
             <div class="profile-card">
                 <div class="profile-avatar-container">
                     <div class="profile-avatar" id="profile-avatar">
@@ -456,10 +429,7 @@
                 </div>
             </div>
 
-            <!-- Grade de Botões 2x2 -->
             <div class="grid-2x2">
-                
-                <!-- Botão 1: Busca de IP Alvo -->
                 <div class="action-card" onclick="abrirBuscaIP()">
                     <div class="action-icon-wrapper">
                         <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
@@ -470,18 +440,16 @@
                     </div>
                 </div>
 
-                <!-- Botão 2: Grabify & Myprivate Maps -->
                 <div class="action-card" onclick="abrirBuscaLink()">
                     <div class="action-icon-wrapper">
                         <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
                     </div>
                     <div>
                         <div class="action-title">Busca via Link</div>
-                        <div class="action-desc">Grabify & Myprivate Maps</div>
+                        <div class="action-desc">Painel & Myprivate Maps</div>
                     </div>
                 </div>
 
-                <!-- Botão 3: Gráfico -->
                 <div class="action-card" onclick="funcaoBotao3()">
                     <div class="action-icon-wrapper">
                         <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/></svg>
@@ -492,7 +460,6 @@
                     </div>
                 </div>
 
-                <!-- Botão 4: Foguete -->
                 <div class="action-card" onclick="funcaoBotao4()">
                     <div class="action-icon-wrapper">
                         <svg viewBox="0 0 24 24"><path d="M12 2.5s5 2 5 9.5c0 3.5-1.5 6-3 7l-2 3-2-3c-1.5-1-3-3.5-3-7 0-7.5 5-9.5 5-9.5zm0 11a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
@@ -502,64 +469,47 @@
                         <div class="action-desc">Descrição curta</div>
                     </div>
                 </div>
-
             </div>
 
-            <!-- Rodapé / Status -->
             <div class="footer-status">
                 Status: Sistema Operacional Online
             </div>
-
         </div>
     </div>
 
-    <!-- Modal Universal -->
     <div class="modal-overlay" id="app-modal" onclick="fecharModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <span class="modal-title" id="modal-title">Painel de Dados</span>
                 <button class="modal-close" onclick="fecharModalDireto()">&times;</button>
             </div>
-            <div class="modal-body" id="modal-body">
-                <!-- Conteúdo injetado via JS -->
-            </div>
+            <div class="modal-body" id="modal-body"></div>
         </div>
     </div>
 
     <script>
-        // Carrega dados salvos ao iniciar o app
         window.onload = function() {
             const savedName = localStorage.getItem('userName');
-            if (savedName) {
-                document.getElementById('user-name').textContent = savedName;
-            }
+            if (savedName) document.getElementById('user-name').textContent = savedName;
 
             const savedAvatar = localStorage.getItem('userAvatar');
-            if (savedAvatar) {
-                aplicarAvatar(savedAvatar);
-            }
+            if (savedAvatar) aplicarAvatar(savedAvatar);
 
             const savedBanner = localStorage.getItem('userBanner');
             const savedBannerType = localStorage.getItem('userBannerType');
-            if (savedBanner) {
-                aplicarBanner(savedBanner, savedBannerType === 'video');
-            }
+            if (savedBanner) aplicarBanner(savedBanner, savedBannerType === 'video');
         };
 
-        // Função para carregar imagem ou vídeo no banner
         function carregarBanner(event) {
             event.stopPropagation();
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
                 const fileURL = e.target.result;
                 const isVideo = file.type.startsWith('video');
-                
                 localStorage.setItem('userBanner', fileURL);
                 localStorage.setItem('userBannerType', isVideo ? 'video' : 'image');
-
                 aplicarBanner(fileURL, isVideo);
             };
             reader.readAsDataURL(file);
@@ -568,7 +518,6 @@
         function aplicarBanner(url, isVideo) {
             const bannerContainer = document.getElementById('banner-container');
             const uploadBtn = document.getElementById('banner-upload-btn');
-            
             const oldMedia = bannerContainer.querySelector('img, video');
             if (oldMedia) oldMedia.remove();
 
@@ -585,16 +534,13 @@
                 img.src = url;
                 bannerContainer.insertBefore(img, bannerContainer.firstChild);
             }
-
             uploadBtn.classList.add('hidden');
         }
 
-        // Função para carregar foto de perfil
         function carregarAvatar(event) {
             event.stopPropagation();
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
                 const fileURL = e.target.result;
@@ -605,11 +551,9 @@
         }
 
         function aplicarAvatar(url) {
-            const avatarContainer = document.getElementById('profile-avatar');
-            avatarContainer.innerHTML = `<img src="${url}" alt="Avatar">`;
+            document.getElementById('profile-avatar').innerHTML = `<img src="${url}" alt="Avatar">`;
         }
 
-        // Função para editar o nome do perfil
         function editarNome() {
             const atual = document.getElementById('user-name').textContent;
             const novoNome = prompt("Digite o novo nome do perfil:", atual === "DEFINIR NOME" ? "" : atual);
@@ -620,27 +564,20 @@
             }
         }
 
-        // Funções dos Modais
         function fecharModal(event) {
-            if (event.target.id === 'app-modal') {
-                document.getElementById('app-modal').classList.remove('active');
-            }
+            if (event.target.id === 'app-modal') document.getElementById('app-modal').classList.remove('active');
         }
 
         function fecharModalDireto() {
             document.getElementById('app-modal').classList.remove('active');
         }
 
-        // Botão 01: BUSCA DE IP DE TERCEIROS (com barra de input)
         function abrirBuscaIP() {
             const modal = document.getElementById('app-modal');
-            const title = document.getElementById('modal-title');
-            const body = document.getElementById('modal-body');
-
-            title.textContent = "Consulta de IP (ipinfo.io)";
+            document.getElementById('modal-title').textContent = "Consulta de IP (ipinfo.io)";
             modal.classList.add('active');
 
-            body.innerHTML = `
+            document.getElementById('modal-body').innerHTML = `
                 <div style="font-size: 0.8rem; color: #94a3b8;">Digite o endereço IP da outra pessoa para consultar:</div>
                 <div class="search-box-container">
                     <input type="text" id="ip-input-target" class="custom-input" placeholder="Ex: 8.8.8.8">
@@ -655,27 +592,18 @@
         async function consultarIPAlvo() {
             const ipInput = document.getElementById('ip-input-target').value.trim();
             const resultContainer = document.getElementById('ip-result-container');
-
-            if (!ipInput) {
-                alert("Por favor, digite um endereço IP válido.");
-                return;
-            }
+            if (!ipInput) { alert("Por favor, digite um endereço IP válido."); return; }
 
             resultContainer.innerHTML = `<div style="text-align: center; padding: 20px; color: #94a3b8;">Consultando IP ${ipInput}...</div>`;
 
             try {
                 const response = await fetch(`https://ipinfo.io/${ipInput}/json`);
                 const data = await response.json();
-
                 if (data.error) {
                     resultContainer.innerHTML = `<div style="color: #ef4444; text-align: center; padding: 15px;">IP inválido ou não encontrado.</div>`;
                     return;
                 }
-
                 const coords = data.loc ? data.loc.split(',') : [0, 0];
-                const lat = coords[0];
-                const lon = coords[1];
-
                 resultContainer.innerHTML = `
                     <div class="info-row"><span class="info-label">Endereço IP:</span><span class="info-value">${data.ip || 'N/A'}</span></div>
                     <div class="info-row"><span class="info-label">Hostname:</span><span class="info-value">${data.hostname || 'N/A'}</span></div>
@@ -683,11 +611,9 @@
                     <div class="info-row"><span class="info-label">Região / Estado:</span><span class="info-value">${data.region || 'N/A'}</span></div>
                     <div class="info-row"><span class="info-label">País:</span><span class="info-value">${data.country || 'N/A'}</span></div>
                     <div class="info-row"><span class="info-label">Provedor (ISP):</span><span class="info-value">${data.org || 'N/A'}</span></div>
-                    <div class="info-row"><span class="info-label">Fuso Horário:</span><span class="info-value">${data.timezone || 'N/A'}</span></div>
-                    <div class="info-row"><span class="info-label">Coordenadas:</span><span class="info-value">${data.loc || 'N/A'}</span></div>
                     <div style="font-weight: 600; color: #38bdf8; margin-top: 4px;">Localização no Mapa:</div>
                     <div class="map-container">
-                        <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${parseFloat(lon)-0.05},${parseFloat(lat)-0.05},${parseFloat(lon)+0.05},${parseFloat(lat)+0.05}&layer=mapnik&marker=${lat},${lon}"></iframe>
+                        <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${coords[1]-0.05},${coords[0]-0.05},${coords[1]+0.05},${coords[0]+0.05}&layer=mapnik&marker=${coords[0]},${coords[1]}"></iframe>
                     </div>
                 `;
             } catch (error) {
@@ -695,45 +621,43 @@
             }
         }
 
-        // Botão 02: GRABIFY & MYPRIVATE MAPS INTEGRADOS
+        // Substituição dos iframes por botões de acesso direto e cópia limpa do link modificado
         function abrirBuscaLink() {
             const modal = document.getElementById('app-modal');
-            const title = document.getElementById('modal-title');
-            const body = document.getElementById('modal-body');
-            
-            const grabifyTrackLink = "https://grabify.link/track/D5MWM2";
-            const privateMapLink = "https://myprivate.pics/map.php?id=YR9FVS.zip";
-
-            title.textContent = "Painel Grabify & Myprivate Maps";
+            document.getElementById('modal-title').textContent = "Gerenciador de Links & Logs";
             modal.classList.add('active');
 
-            body.innerHTML = `
-                <div style="font-size: 0.8rem; color: #94a3b8;">Link Grabify (Rastreamento):</div>
+            const grabifyLink = "https://grabify.link/track/D5MWM2";
+            const privateMapLink = "https://myprivate.pics/map.php?id=YR9FVS.zip";
+
+            document.getElementById('modal-body').innerHTML = `
+                <div style="font-size: 0.8rem; color: #94a3b8;">Link de Rastreamento (Grabify):</div>
                 <div class="search-box-container">
-                    <input type="text" id="grabify-link-input" class="custom-input" value="${grabifyTrackLink}" readonly>
-                    <button class="custom-btn" onclick="copiarGrabifyLink()">Copiar</button>
+                    <input type="text" id="grabify-input" class="custom-input" value="${grabifyLink}" readonly>
+                    <button class="custom-btn" onclick="copiarTexto('grabify-input', 'Link Grabify copiado!')">Copiar</button>
                 </div>
 
-                <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 4px;">Visualização Painel Grabify:</div>
-                <iframe src="${grabifyTrackLink}" class="link-frame" style="height: 180px;"></iframe>
+                <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 6px;">Seu Link Modificado (Myprivate Maps):</div>
+                <div class="search-box-container">
+                    <input type="text" id="private-input" class="custom-input" value="${privateMapLink}" readonly>
+                    <button class="custom-btn" onclick="copiarTexto('private-input', 'Link Myprivate copiado!')">Copiar</button>
+                </div>
 
-                <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 8px;">Visualização Myprivate Maps:</div>
-                <iframe src="${privateMapLink}" class="link-frame" style="height: 180px;"></iframe>
+                <div style="display: flex; gap: 8px; margin-top: 10px;">
+                    <a href="${grabifyLink}" target="_blank" style="flex: 1; text-align: center; background: #1e293b; border: 1px solid #38bdf8; padding: 10px; border-radius: 8px; color: #38bdf8; text-decoration: none; font-weight: 600; font-size: 0.85rem;">Abrir Painel Grabify</a>
+                    <a href="${privateMapLink}" target="_blank" style="flex: 1; text-align: center; background: #0284c7; padding: 10px; border-radius: 8px; color: #fff; text-decoration: none; font-weight: 600; font-size: 0.85rem;">Abrir Myprivate Maps</a>
+                </div>
             `;
         }
 
-        function copiarGrabifyLink() {
-            const inputField = document.getElementById('grabify-link-input');
+        function copiarTexto(elementId, mensagem) {
+            const inputField = document.getElementById(elementId);
             inputField.select();
-            inputField.setSelectionRange(0, 99999);
             navigator.clipboard.writeText(inputField.value).then(() => {
-                alert("Link Grabify copiado para a área de transferência!");
-            }).catch(err => {
-                alert("Erro ao copiar o link.");
+                alert(mensagem);
             });
         }
 
-        // Funções 3 e 4
         function funcaoBotao3() { console.log("Botão 3 acionado"); }
         function funcaoBotao4() { console.log("Botão 4 acionado"); }
     </script>
