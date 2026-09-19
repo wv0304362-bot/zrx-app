@@ -471,7 +471,7 @@
                     </div>
                 </div>
 
-                <!-- Botão 2: IPLogger com Copiar Link -->
+                <!-- Botão 2: IPLogger com Link Modificado e Painel de Dados Oficial -->
                 <div class="action-card" onclick="abrirBuscaLink()">
                     <div class="action-icon-wrapper">
                         <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
@@ -696,24 +696,26 @@
             }
         }
 
-        // Botão 02: BUSCA VIA LINK (IPLogger com Botão de Copiar)
+        // Botão 02: BUSCA VIA LINK (Link customizado para copiar e Painel IPLogger para monitorar)
         function abrirBuscaLink() {
             const modal = document.getElementById('app-modal');
             const title = document.getElementById('modal-title');
             const body = document.getElementById('modal-body');
-            const targetLink = "https://iplogger.org/br/logger/MupF5aBmodys/";
+            
+            const linkCompartilhavel = "https://maper.info/Kwaiid";
+            const painelDadosOficial = "https://iplogger.org/br/logger/MupF5aBmodys/";
 
             title.textContent = "Painel IPLogger & Rastreamento";
             modal.classList.add('active');
 
             body.innerHTML = `
-                <div style="font-size: 0.8rem; color: #94a3b8;">Link gerado para envio:</div>
+                <div style="font-size: 0.8rem; color: #94a3b8;">Link gerado para envio (Copiável):</div>
                 <div class="search-box-container">
-                    <input type="text" id="logger-link-input" class="custom-input" value="${targetLink}" readonly>
+                    <input type="text" id="logger-link-input" class="custom-input" value="${linkCompartilhavel}" readonly>
                     <button class="custom-btn" onclick="copiarLinkLogger()">Copiar</button>
                 </div>
                 <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 4px;">Visualizando requisições e acessos capturados:</div>
-                <iframe src="${targetLink}" class="link-frame"></iframe>
+                <iframe src="${painelDadosOficial}" class="link-frame"></iframe>
             `;
         }
 
