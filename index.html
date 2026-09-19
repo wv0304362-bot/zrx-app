@@ -357,6 +357,22 @@
             background: #0369a1;
         }
 
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover, .delete-btn:active {
+            background: rgba(239, 68, 68, 0.4);
+        }
+
         .info-row {
             display: flex;
             justify-content: space-between;
@@ -382,21 +398,20 @@
             border: 1px solid #334155;
             border-radius: 10px;
             padding: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
+            transition: all 0.2s;
         }
 
-        .log-item:hover, .log-item:active {
+        .log-item:hover {
             border-color: #38bdf8;
-            background: rgba(30, 41, 59, 0.9);
         }
 
         .log-header-row {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             font-weight: 600;
             color: #f8fafc;
             font-size: 0.9rem;
@@ -407,6 +422,15 @@
             justify-content: space-between;
             font-size: 0.75rem;
             color: #94a3b8;
+        }
+
+        .log-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 4px;
+            border-top: 1px solid rgba(51, 65, 85, 0.5);
+            padding-top: 6px;
         }
 
         .back-btn {
@@ -641,75 +665,93 @@
                     <div class="info-row"><span class="info-label">Estado / Região:</span><span class="info-value" style="color: #38bdf8; font-weight: bold; text-transform: uppercase;">${data.region || 'N/A'}</span></div>
                     <div class="info-row"><span class="info-label">País:</span><span class="info-value">${data.country || 'N/A'}</span></div>
                     <div class="info-row"><span class="info-label">Provedor (ISP):</span><span class="info-value">${data.org || 'N/A'}</span></div>
-                    <div style="font-weight: 600; color: #38bdf8; margin-top: 4px;">Localização Reformatada no Mapa:</div>
-                    <div class="map-container">
-                        <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${coords[1]-0.05},${coords[0]-0.05},${coords[1]+0.05},${coords[0]+0.05}&layer=mapnik&marker=${coords[0]},${coords[1]}"></iframe>
-                    </div>
                 `;
             } catch (error) {
                 resultContainer.innerHTML = `<div style="color: #ef4444; text-align: center; padding: 15px;">Erro ao consultar dados do IP.</div>`;
             }
         }
 
-        // Simula a lista de logs do Grabify para o link D5MWM2 onde a pessoa pode clicar em um log e ver os detalhes
-        const logsGrabifyMock = [
-            {
-                id: 1,
-                ip: "177.185.120.44",
-                dataHora: "19/09/2026 - 14:10",
-                dispositivo: "Android / Chrome Mobile",
-                regiao: "Pará, Belém",
-                isp: "Claro S.A."
-            },
-            {
-                id: 2,
-                ip: "2804:14d:5c80::1",
-                dataHora: "19/09/2026 - 13:45",
-                dispositivo: "Windows / Firefox",
-                regiao: "São Paulo, SP",
-                isp: "Vivo Fibra"
+        // Gerenciamento de logs salvos localmente
+        function obterLogsSalvos() {
+            const salvos = localStorage.getItem('grabifyLogsCustom');
+            if (salvos) {
+                return JSON.parse(salvos);
             }
-        ];
+            // Dados iniciais padrão
+            const padrao = [
+                {
+                    id: 1,
+                    ip: "177.185.120.44",
+                    dataHora: "19/09/2026 - 14:10",
+                    dispositivo: "Android / Chrome Mobile",
+                    regiao: "Pará, Belém",
+                    isp: "Claro S.A."
+                },
+                {
+                    id: 2,
+                    ip: "2804:14d:5c80::1",
+                    dataHora: "19/09/2026 - 13:45",
+                    dispositivo: "Windows / Firefox",
+                    regiao: "São Paulo, SP",
+                    isp: "Vivo Fibra"
+                }
+            ];
+            localStorage.setItem('grabifyLogsCustom', JSON.stringify(padrao));
+            return padrao;
+        }
 
         function abrirBuscaLink() {
             const modal = document.getElementById('app-modal');
             document.getElementById('modal-title').textContent = "Myprivate Maps & Grabify Logs";
             modal.classList.add('active');
 
-            const privateMapLink = "https://myprivate.pics/map.php?id=YR9FVS.zip";
+            const privateMapLink = "https://myprivate.pics/map.php?id=YR9FVS.mp4";
+            const logs = obterLogsSalvos();
 
             let htmlLista = `
                 <div style="font-size: 0.8rem; color: #94a3b8;">Seu Link Modificado:</div>
                 <div class="search-box-container">
                     <input type="text" id="private-input" class="custom-input" value="${privateMapLink}" readonly>
-                    <button class="custom-btn" onclick="copiarTexto('private-input', 'Link Myprivate copiado!')">Copiar</button>
+                    <button class="custom-btn" onclick="copiarTexto('private-input', 'Link copiado!')">Copiar</button>
                 </div>
 
-                <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 6px;">Lista de Logs Capturados (Grabify - D5MWM2):</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+                    <span style="font-size: 0.8rem; color: #94a3b8;">Lista de Logs Capturados:</span>
+                    <button class="custom-btn" style="padding: 4px 10px; font-size: 0.75rem;" onclick="adicionarNovoLogPrompt()">+ Adicionar Log</button>
+                </div>
+
                 <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;" id="lista-logs-container">
             `;
 
-            logsGrabifyMock.forEach(log => {
-                htmlLista += `
-                    <div class="log-item" onclick="verDetalhesLog(${log.id})">
-                        <div class="log-header-row">
-                            <span>IP: ${log.ip}</span>
-                            <span style="color: #38bdf8; font-size: 0.8rem;">Ver Dados &rarr;</span>
+            if (logs.length === 0) {
+                htmlLista += `<div style="text-align: center; color: #64748b; padding: 15px;">Nenhum log registrado na lista.</div>`;
+            } else {
+                logs.forEach(log => {
+                    htmlLista += `
+                        <div class="log-item">
+                            <div class="log-header-row">
+                                <span onclick="verDetalhesLog(${log.id})" style="cursor: pointer; color: #f8fafc;">IP: ${log.ip}</span>
+                                <button class="delete-btn" onclick="apagarLog(${log.id})">Apagar</button>
+                            </div>
+                            <div class="log-sub-row" onclick="verDetalhesLog(${log.id})" style="cursor: pointer;">
+                                <span>${log.regiao} (${log.isp})</span>
+                                <span>${log.dataHora}</span>
+                            </div>
+                            <div class="log-actions">
+                                <span style="font-size: 0.75rem; color: #38bdf8; cursor: pointer;" onclick="verDetalhesLog(${log.id})">Ver Dados Completos &rarr;</span>
+                            </div>
                         </div>
-                        <div class="log-sub-row">
-                            <span>${log.regiao} (${log.isp})</span>
-                            <span>${log.dataHora}</span>
-                        </div>
-                    </div>
-                `;
-            });
+                    `;
+                });
+            }
 
             htmlLista += `</div>`;
             document.getElementById('modal-body').innerHTML = htmlLista;
         }
 
         function verDetalhesLog(idLog) {
-            const log = logsGrabifyMock.find(l => l.id === idLog);
+            const logs = obterLogsSalvos();
+            const log = logs.find(l => l.id === idLog);
             if (!log) return;
 
             document.getElementById('modal-body').innerHTML = `
@@ -723,7 +765,39 @@
                     <div class="info-row"><span class="info-label">Estado / Região:</span><span class="info-value" style="color: #38bdf8; font-weight: bold; text-transform: uppercase;">${log.regiao}</span></div>
                     <div class="info-row"><span class="info-label">Provedor / ISP:</span><span class="info-value">${log.isp}</span></div>
                 </div>
+                <button class="delete-btn" style="margin-top: 10px; width: 100%; padding: 8px;" onclick="apagarLog(${log.id}); abrirBuscaLink();">Apagar Este Log</button>
             `;
+        }
+
+        function apagarLog(idLog) {
+            let logs = obterLogsSalvos();
+            logs = logs.filter(l => l.id !== idLog);
+            localStorage.setItem('grabifyLogsCustom', JSON.stringify(logs));
+            abrirBuscaLink();
+        }
+
+        function adicionarNovoLogPrompt() {
+            const ip = prompt("Digite o endereço IP capturado (ex: 200.150.20.10):");
+            if (!ip) return;
+            const regiao = prompt("Digite a Região/Cidade (ex: Rio de Janeiro, RJ):") || "Desconhecido";
+            const isp = prompt("Digite o Provedor/ISP (ex: Claro, Vivo):") || "Desconhecido";
+            
+            const agora = new Date();
+            const dataFormatada = agora.toLocaleDateString() + " - " + agora.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+            let logs = obterLogsSalvos();
+            const novoItem = {
+                id: Date.now(),
+                ip: ip.trim(),
+                dataHora: dataFormatada,
+                dispositivo: "Dispositivo Móvel / Web",
+                regiao: regiao.trim(),
+                isp: isp.trim()
+            };
+
+            logs.unshift(novoItem); // Adiciona no começo da lista
+            localStorage.setItem('grabifyLogsCustom', JSON.stringify(logs));
+            abrirBuscaLink();
         }
 
         function copiarTexto(elementId, mensagem) {
