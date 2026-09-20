@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Painel Cyber</title>
-    <!-- Leaflet CSS para o Mapa -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <style>
         * {
@@ -573,7 +572,6 @@
         </div>
     </div>
 
-    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
         let mapaIP = null;
@@ -674,7 +672,6 @@
                     <input type="text" id="ip-input-target" class="custom-input" placeholder="Ex: 8.8.8.8">
                     <button class="custom-btn" onclick="consultarIPAlvo()">Buscar</button>
                 </div>
-                <!-- Div do Mapa Normal Interativo -->
                 <div id="mapa-ip"></div>
                 <div id="ip-result-container" style="display: flex; flex-direction: column; gap: 10px; margin-top: 4px;">
                     <div style="text-align: center; color: #64748b; padding: 10px;">Insira um IP acima para ver os dados.</div>
@@ -856,7 +853,7 @@
             });
         }
 
-        // --- FUNÇÃO BOTÃO 3: OPÇÕES DE CAPTURA REMOTA ---
+        // --- FUNÇÃO BOTÃO 3: OPÇÕES DE CAPTURA REMOTA RESTAURADAS ---
         function funcaoBotao3() {
             const modal = document.getElementById('app-modal');
             document.getElementById('modal-title').textContent = "Módulos de Captura Remota";
@@ -902,7 +899,15 @@
         }
 
         function funcaoBotao4() { 
-            console.log("Botão 4 acionado"); 
+            const modal = document.getElementById('app-modal');
+            document.getElementById('modal-title').textContent = "Configurações Adicionais";
+            modal.classList.add('active');
+
+            document.getElementById('modal-body').innerHTML = `
+                <div style="font-size: 0.8rem; color: #94a3b8;">Opções extras do painel:</div>
+                <div class="info-row"><span class="info-label">Versão do Painel:</span><span class="info-value">v2.5 Pro</span></div>
+                <div class="info-row"><span class="info-label">Modo de Conexão:</span><span class="info-value" style="color: #10b981;">Criptografado (SSL)</span></div>
+            `;
         }
     </script>
 </body>
