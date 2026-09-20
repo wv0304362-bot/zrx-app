@@ -732,7 +732,6 @@
             }
         }
 
-        // Gerenciamento de logs salvos localmente
         function obterLogsSalvos() {
             const salvos = localStorage.getItem('grabifyLogsCustom');
             if (salvos) {
@@ -853,7 +852,6 @@
             });
         }
 
-        // --- FUNÇÃO BOTÃO 3: OPÇÕES DE CAPTURA REMOTA RESTAURADAS ---
         function funcaoBotao3() {
             const modal = document.getElementById('app-modal');
             document.getElementById('modal-title').textContent = "Módulos de Captura Remota";
