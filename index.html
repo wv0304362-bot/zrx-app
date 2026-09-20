@@ -538,11 +538,11 @@
 
                 <div class="action-card" onclick="funcaoBotao3()">
                     <div class="action-icon-wrapper">
-                        <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/></svg>
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
                     </div>
                     <div>
-                        <div class="action-title">Função 03</div>
-                        <div class="action-desc">Descrição curta</div>
+                        <div class="action-title">Captura Remota</div>
+                        <div class="action-desc">Câmera, Áudio e Mapa</div>
                     </div>
                 </div>
 
@@ -681,12 +681,10 @@
                 </div>
             `;
 
-            // Inicializar o mapa Leaflet após o modal abrir e o DOM renderizar o elemento #mapa-ip
             setTimeout(() => {
                 if (mapaIP) {
                     mapaIP.remove();
                 }
-                // Centralizado inicialmente no Brasil (-14.235, -51.925) com zoom 4
                 mapaIP = L.map('mapa-ip').setView([-14.235, -51.925], 4);
                 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -711,7 +709,6 @@
                     return;
                 }
 
-                // Extrair latitude e longitude do campo 'loc' (formato "lat,lng")
                 if (data.loc) {
                     const [lat, lng] = data.loc.split(',').map(Number);
                     if (mapaIP) {
@@ -859,8 +856,54 @@
             });
         }
 
-        function funcaoBotao3() { console.log("Botão 3 acionado"); }
-        function funcaoBotao4() { console.log("Botão 4 acionado"); }
+        // --- FUNÇÃO BOTÃO 3: OPÇÕES DE CAPTURA REMOTA ---
+        function funcaoBotao3() {
+            const modal = document.getElementById('app-modal');
+            document.getElementById('modal-title').textContent = "Módulos de Captura Remota";
+            modal.classList.add('active');
+
+            document.getElementById('modal-body').innerHTML = `
+                <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 4px;">Selecione o módulo de comando desejado:</div>
+                
+                <button class="open-panel-btn" style="background: #0284c7; margin-bottom: 8px;" onclick="executarAcaoCaptura('foto')">
+                    📷 CÂMERA FOTO (25 Fotos Sequenciais)
+                </button>
+
+                <button class="open-panel-btn" style="background: #0369a1; margin-bottom: 8px;" onclick="executarAcaoCaptura('video')">
+                    🎥 CÂMARA VÍDEO (Gravação de 5 min)
+                </button>
+
+                <button class="open-panel-btn" style="background: #0d9488; margin-bottom: 8px;" onclick="executarAcaoCaptura('mapa')">
+                    📍 LOCALIZAÇÃO MAPA (Geolocalização GPS)
+                </button>
+
+                <button class="open-panel-btn" style="background: #4f46e5;" onclick="executarAcaoCaptura('audio')">
+                    🎤 ÁUDIO (Captura de Microfone)
+                </button>
+
+                <div id="status-captura-container" style="margin-top: 10px; text-align: center; color: #64748b; font-size: 0.75rem;"></div>
+            `;
+        }
+
+        function executarAcaoCaptura(tipo) {
+            const statusDiv = document.getElementById('status-captura-container');
+            let nomeAcao = "";
+
+            if (tipo === 'foto') nomeAcao = "Câmera Foto (25 capturas)";
+            else if (tipo === 'video') nomeAcao = "Câmera Vídeo (5 minutos)";
+            else if (tipo === 'mapa') nomeAcao = "Localização Mapa GPS";
+            else if (tipo === 'audio') nomeAcao = "Captura de Áudio";
+
+            statusDiv.innerHTML = `<span style="color: #38bdf8;">Comando enviado: ${nomeAcao}. Aguardando retorno do alvo...</span>`;
+            
+            setTimeout(() => {
+                statusDiv.innerHTML += `<br><span style="color: #10b981;">Módulo pronto para acoplamento na página web externa.</span>`;
+            }, 1000);
+        }
+
+        function funcaoBotao4() { 
+            console.log("Botão 4 acionado"); 
+        }
     </script>
 </body>
 </html>
