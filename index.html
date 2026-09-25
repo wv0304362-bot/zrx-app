@@ -37,6 +37,22 @@
         .theme-carmesim { --primary: #fb7185; --primary-dark: #e11d48; --border-color: rgba(251, 113, 133, 0.3); }
         .theme-amarelo { --primary: #facc15; --primary-dark: #ca8a04; --border-color: rgba(250, 204, 21, 0.3); }
         .theme-verde { --primary: #4ade80; --primary-dark: #16a34a; --border-color: rgba(74, 222, 128, 0.3); }
+        .theme-dark-azul { 
+            --bg-main: #020617; 
+            --bg-container: #090d16; 
+            --card-bg: rgba(15, 23, 42, 0.95);
+            --primary: #3b82f6; 
+            --primary-dark: #1d4ed8; 
+            --border-color: rgba(59, 130, 246, 0.4); 
+        }
+        .theme-deck-escuro { 
+            --bg-main: #111827; 
+            --bg-container: #1f2937; 
+            --card-bg: rgba(31, 41, 55, 0.95);
+            --primary: #6366f1; 
+            --primary-dark: #4f46e5; 
+            --border-color: rgba(99, 102, 241, 0.4); 
+        }
         
         .theme-light {
             --bg-main: #f1f5f9;
@@ -232,7 +248,7 @@
             align-items: center;
         }
 
-        /* Perfil Centralizado conforme pedido */
+        /* Perfil Centralizado */
         .profile-card-centered {
             background: var(--card-bg);
             backdrop-filter: blur(12px);
@@ -285,7 +301,7 @@
             word-break: break-word;
         }
 
-        /* Três Balãozinhos de Ação */
+        /* Balãozinhos de Ação */
         .profile-action-balloons {
             display: flex;
             gap: 14px;
@@ -306,6 +322,40 @@
         }
         .balloon-btn:active { transform: scale(0.90); }
         .balloon-btn svg { width: 20px; height: 20px; fill: var(--primary); }
+
+        /* Local de Mídia / Retângulo com Símbolo de Mais */
+        .media-section-box {
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .media-section-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .media-upload-rect {
+            width: 100%;
+            height: 120px;
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            gap: 6px;
+            transition: border-color 0.2s;
+        }
+        .media-upload-rect:hover { border-color: var(--primary); }
+        .media-upload-rect svg { width: 32px; height: 32px; fill: var(--primary); }
+        .media-upload-rect span { font-size: 0.75rem; color: var(--text-sub); }
 
         .grid-2x2 {
             display: grid;
@@ -610,15 +660,26 @@
                         <div class="balloon-btn" title="Trocar Foto de Perfil" onclick="document.getElementById('avatar-file-input').click()">
                             <svg viewBox="0 0 24 24"><path d="M12 9c1.65 0 3 1.35 3 3s-1.35 3-3 3-3-1.35-3-3 1.35-3 3-3m0-2c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 4h4l2-3h8l2 3h4c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H2c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/></svg>
                         </div>
-                        <!-- 2. Lápis (Editar Perfil: Nome e Bio) -->
+                        <!-- 2. Lápis (Editar Perfil: Vai para a aba Perfil) -->
                         <div class="balloon-btn" title="Editar Perfil" onclick="mudarAba('profile')">
                             <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
                         </div>
-                        <!-- 3. Engrenagem (Configurações, Suporte, Temas, Claro/Escuro) -->
+                        <!-- 3. Engrenagem (Configurações, Suporte, Temas) -->
                         <div class="balloon-btn" title="Configurações e Ajustes" onclick="abrirModalConfiguracoes()">
                             <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
                         </div>
                     </div>
+                </div>
+
+                <!-- LOCAL DE MÍDIA (POSTAGEM DE VÍDEOS COM SÍMBOLO DE MAIS) -->
+                <div class="media-section-box">
+                    <span class="media-section-title">Publicações de Mídia</span>
+                    <div class="media-upload-rect" onclick="document.getElementById('home-media-file').click()">
+                        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        <span>Toque para postar um vídeo ou foto</span>
+                    </div>
+                    <input type="file" id="home-media-file" class="hidden-input" accept="image/*,video/*" onchange="postarMidiaHome(event)">
+                    <div id="home-posts-container" style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;"></div>
                 </div>
 
                 <div class="grid-2x2">
@@ -663,7 +724,7 @@
                     </div>
                 </div>
 
-                <!-- PAINEL DO DONO (CONTROLE DE BAN & CENTRAL DE DENÚNCIAS) -->
+                <!-- PAINEL DO DONO -->
                 <div id="owner-management-panel" style="display: none; width: 100%; margin-top: 6px;">
                     <div style="background: rgba(220, 38, 38, 0.15); border: 1px solid #ef4444; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
                         <span style="font-size: 0.85rem; font-weight: bold; color: #f87171;">Painel de Dono & Central</span>
@@ -736,13 +797,21 @@
             </div>
         </div>
 
-        <!-- ================= SECTION 3: PERFIL (EDIÇÃO) ================= -->
+        <!-- ================= SECTION 3: PERFIL (COMPLETO NA ABA PERFIL) ================= -->
         <div id="section-profile" class="view-section">
             <div class="chat-header">
-                <span class="chat-title">Configurações de Perfil</span>
+                <span class="chat-title">Gerenciamento de Perfil</span>
             </div>
             <div style="padding: 20px; display: flex; flex-direction: column; gap: 16px;">
-                <div class="info-row"><span class="info-label">Dica:</span><span class="info-value">Você também pode usar o balão de lápis na Home.</span></div>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                    <div style="width: 85px; height: 85px; border-radius: 50%; background: var(--bg-main); border: 3px solid var(--primary); overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer;" onclick="document.getElementById('avatar-file-input').click()">
+                        <div id="profile-page-avatar-preview" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <svg style="width: 36px; height: 36px; fill: var(--text-sub);" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                        </div>
+                    </div>
+                    <span style="font-size: 0.75rem; color: var(--primary); cursor: pointer;" onclick="document.getElementById('avatar-file-input').click()">Alterar Foto de Perfil</span>
+                </div>
+
                 <div style="display: flex; flex-direction: column; gap: 6px;">
                     <label style="font-size: 0.8rem; color: var(--text-sub); font-weight: 600;">Seu Nome de Exibição:</label>
                     <input type="text" id="profile-edit-name" class="custom-input" placeholder="Seu nome">
@@ -756,6 +825,14 @@
                     <textarea id="profile-edit-bio" class="custom-input" rows="3" placeholder="Escreva algo sobre você..."></textarea>
                 </div>
                 <button class="custom-btn" onclick="salvarPerfilUsuario()">Salvar Alterações</button>
+
+                <!-- SEÇÃO DE VÍDEOS POSTADOS NO PERFIL -->
+                <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+                    <span style="font-size: 0.85rem; font-weight: bold; color: var(--primary);">Meus Vídeos e Mídias no Perfil</span>
+                    <div id="profile-videos-container" style="display: flex; flex-direction: column; gap: 8px;">
+                        <div style="font-size: 0.75rem; color: var(--text-sub); text-align: center; padding: 10px;">Nenhum vídeo postado ainda.</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -797,7 +874,6 @@
 
         let mapaIP = null;
         let marcadorIP = null;
-        let mapaDetalhe = null;
         let currentTargetId = localStorage.getItem('currentTargetId') || "alvo01";
         let tempGroupPhotoBase64 = "";
         let currentActiveGroupId = null;
@@ -810,6 +886,7 @@
             carregarDadosInterface();
             escutarMensagensChat();
             carregarContatosEGrupos();
+            carregarMidiasHome();
         };
 
         function aplicarTemaSalvo() {
@@ -998,7 +1075,70 @@
             } catch (e) { console.error(e); }
         }
 
-        // --- MODAL DE CONFIGURAÇÕES (BOTÃO 3 - ENGRENAGEM) ---
+        // --- POSTAGEM DE MÍDIA NA HOME E EXIBIÇÃO NO PERFIL ---
+        function postarMidiaHome(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                let mediaUrl = e.target.result;
+                let isVideo = file.type.startsWith('video');
+                let myTag = localStorage.getItem('userTagId') || "@anon";
+                let cleanKey = myTag.replace('@', '').replace(/\s+/g, '_');
+
+                let novaMidia = {
+                    url: mediaUrl, type: isVideo ? 'video' : 'image', timestamp: Date.now()
+                };
+
+                try {
+                    await fetch(`${FIREBASE_DB_URL}/posts_usuario/${cleanKey}.json`, {
+                        method: 'POST',
+                        body: JSON.stringify(novaMidia)
+                    });
+                    alert("Mídia postada com sucesso no perfil!");
+                    carregarMidiasHome();
+                } catch(err) {
+                    alert("Erro ao postar mídia.");
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function carregarMidiasHome() {
+            let myTag = localStorage.getItem('userTagId') || "@anon";
+            let cleanKey = myTag.replace('@', '').replace(/\s+/g, '_');
+            const homeContainer = document.getElementById('home-posts-container');
+            const profileContainer = document.getElementById('profile-videos-container');
+            if (!homeContainer || !profileContainer) return;
+
+            try {
+                let res = await fetch(`${FIREBASE_DB_URL}/posts_usuario/${cleanKey}.json`);
+                let dados = await res.json();
+                if (!dados) {
+                    homeContainer.innerHTML = `<div style="font-size: 0.75rem; color: var(--text-sub); text-align: center;">Nenhuma mídia publicada.</div>`;
+                    profileContainer.innerHTML = `<div style="font-size: 0.75rem; color: var(--text-sub); text-align: center;">Nenhum vídeo postado ainda.</div>`;
+                    return;
+                }
+
+                let htmlHome = "";
+                let htmlProfile = "";
+                Object.keys(dados).forEach(k => {
+                    let p = dados[k];
+                    if (p.type === 'video') {
+                        htmlHome += `<video src="${p.url}" style="width:150px; height:120px; border-radius:8px; object-fit:cover;" controls></video>`;
+                        htmlProfile += `<video src="${p.url}" style="width:100%; max-height:200px; border-radius:8px; object-fit:cover;" controls></video>`;
+                    } else {
+                        htmlHome += `<img src="${p.url}" style="width:150px; height:120px; border-radius:8px; object-fit:cover;">`;
+                        htmlProfile += `<img src="${p.url}" style="width:100%; max-height:200px; border-radius:8px; object-fit:cover;">`;
+                    }
+                });
+
+                homeContainer.innerHTML = `<div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px;">${htmlHome}</div>`;
+                profileContainer.innerHTML = htmlProfile;
+            } catch(e) {}
+        }
+
+        // --- MODAL DE CONFIGURAÇÕES (ENGRENAGEM) ---
         function abrirModalConfiguracoes() {
             const modal = document.getElementById('app-modal');
             document.getElementById('modal-title').textContent = "Configurações e Ajustes";
@@ -1013,9 +1153,11 @@
                     💬 Suporte no Discord (Entrar)
                 </a>
 
-                <!-- 2. Temas de Cores Pronto -->
+                <!-- 2. Temas de Cores Prontos -->
                 <div style="font-size: 0.8rem; font-weight: bold; color: var(--primary); margin-top: 6px;">Temas de Cores Prontos:</div>
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
+                    <button class="custom-btn" style="background: #3b82f6; font-size: 0.75rem;" onclick="mudarTemaCor('dark azul', true)">🔵 Dark Azul</button>
+                    <button class="custom-btn" style="background: #4f46e5; font-size: 0.75rem;" onclick="mudarTemaCor('deck escuro', true)">⬛ Deck Escuro</button>
                     <button class="custom-btn" style="background: #a855f7; font-size: 0.75rem;" onclick="mudarTemaCor('roxo neon', true)">💜 Roxo Neon</button>
                     <button class="custom-btn" style="background: #e11d48; font-size: 0.75rem;" onclick="mudarTemaCor('dark carmesim', true)">❤️ Dark Carmesim</button>
                     <button class="custom-btn" style="background: #ca8a04; font-size: 0.75rem;" onclick="mudarTemaCor('dark amarelo', true)">💛 Dark Amarelo</button>
@@ -1041,9 +1183,11 @@
 
         function mudarTemaCor(tema, salvar = true) {
             const body = document.getElementById('app-body');
-            body.classList.remove('theme-roxo', 'theme-carmesim', 'theme-amarelo', 'theme-verde');
+            body.classList.remove('theme-roxo', 'theme-carmesim', 'theme-amarelo', 'theme-verde', 'theme-dark-azul', 'theme-deck-escuro');
             
-            if (tema.includes('roxo')) body.classList.add('theme-roxo');
+            if (tema.includes('dark azul')) body.classList.add('theme-dark-azul');
+            else if (tema.includes('deck escuro')) body.classList.add('theme-deck-escuro');
+            else if (tema.includes('roxo')) body.classList.add('theme-roxo');
             else if (tema.includes('carmesim')) body.classList.add('theme-carmesim');
             else if (tema.includes('amarelo')) body.classList.add('theme-amarelo');
             else if (tema.includes('verde')) body.classList.add('theme-verde');
@@ -1261,7 +1405,7 @@
             } catch(e) {}
         }
 
-        // --- CRIAR E GERENCIAR GRUPOS ---
+        // --- GRUPOS ---
         function abrirCriarGrupoModal() {
             const modal = document.getElementById('app-modal');
             document.getElementById('modal-title').textContent = "Criar Novo Grupo";
@@ -1503,7 +1647,7 @@
             abrirConfiguracoesGrupo();
         }
 
-        // --- MÍDIA NO CHAT (FOTOS E VÍDEOS) ---
+        // --- MÍDIA NO CHAT ---
         function enviarMidiaChat(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1698,6 +1842,10 @@
 
         function aplicarAvatar(url) {
             document.getElementById('profile-avatar').innerHTML = `<img src="${url}" alt="Avatar">`;
+            const profilePreview = document.getElementById('profile-page-avatar-preview');
+            if (profilePreview) {
+                profilePreview.innerHTML = `<img src="${url}" alt="Avatar" style="width:100%; height:100%; object-fit:cover;">`;
+            }
         }
 
         function fecharModal(event) { if (event.target.id === 'app-modal') document.getElementById('app-modal').classList.remove('active'); }
