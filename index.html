@@ -264,7 +264,7 @@
         .action-title { font-size: 0.9rem; font-weight: 600; color: var(--text-main); margin-bottom: 2px; }
         .action-desc { font-size: 0.72rem; color: var(--text-sub); }
 
-        /* --- TELA DE PERFIL (EXATAMENTE COMO PEDIDO NO BOTÃO INFERIOR) --- */
+        /* --- TELA DE PERFIL --- */
         .profile-view-wrapper {
             padding: 16px;
             display: flex;
@@ -326,7 +326,6 @@
             word-break: break-word;
         }
 
-        /* Três Balãozinhos de Ação */
         .profile-action-balloons {
             display: flex;
             gap: 14px;
@@ -348,7 +347,6 @@
         .balloon-btn:active { transform: scale(0.90); }
         .balloon-btn svg { width: 20px; height: 20px; fill: var(--primary); }
 
-        /* Bloco de Publicações de Mídia Logo Abaixo */
         .media-posts-section {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -753,7 +751,7 @@
             </div>
         </div>
 
-        <!-- ================= SECTION 3: PERFIL (EXATAMENTE COMO PEDIDO) ================= -->
+        <!-- ================= SECTION 3: PERFIL ================= -->
         <div id="section-profile" class="view-section">
             <div class="chat-header">
                 <span class="chat-title">Meu Perfil</span>
@@ -772,22 +770,18 @@
 
                     <!-- TRÊS BALÃOZINHOS DE AÇÃO -->
                     <div class="profile-action-balloons">
-                        <!-- 1. Câmera (Trocar Foto) -->
                         <div class="balloon-btn" title="Trocar Foto de Perfil" onclick="document.getElementById('avatar-file-input').click()">
                             <svg viewBox="0 0 24 24"><path d="M12 9c1.65 0 3 1.35 3 3s-1.35 3-3 3-3-1.35-3-3 1.35-3 3-3m0-2c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 4h4l2-3h8l2 3h4c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H2c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/></svg>
                         </div>
-                        <!-- 2. Lápis (Editar Perfil: Nome e Bio) -->
                         <div class="balloon-btn" title="Editar Perfil" onclick="abrirModalEditarPerfil()">
                             <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
                         </div>
-                        <!-- 3. Engrenagem (Configurações, Suporte, Temas, Claro/Escuro) -->
                         <div class="balloon-btn" title="Configurações e Ajustes" onclick="abrirModalConfiguracoes()">
                             <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
                         </div>
                     </div>
                 </div>
 
-                <!-- BLOCO DE PUBLICAÇÕES DE MÍDIA LOGO ABAIXO -->
                 <div class="media-posts-section">
                     <span class="media-posts-title">Publicações de Mídia</span>
                     <div class="media-upload-box" onclick="alert('Funcionalidade de postar vídeo/foto no perfil.')">
@@ -799,7 +793,7 @@
             </div>
         </div>
 
-        <!-- ================= DOCK NAVIGATION BAR (FIXA EMBAIXO) ================= -->
+        <!-- ================= DOCK NAVIGATION BAR ================= -->
         <nav class="cyber-dock">
             <button class="dock-item" id="dock-btn-chat" onclick="mudarAba('chat')">
                 <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
@@ -1073,7 +1067,6 @@
             } catch (e) { console.error(e); }
         }
 
-        // --- MODAL DE CONFIGURAÇÕES (BOTÃO 3 - ENGRENAGEM) ---
         function abrirModalConfiguracoes() {
             const modal = document.getElementById('app-modal');
             document.getElementById('modal-title').textContent = "Configurações e Ajustes";
@@ -1083,12 +1076,10 @@
             let modoAtual = localStorage.getItem('userDarkMode') || 'escuro';
 
             document.getElementById('modal-body').innerHTML = `
-                <!-- 1. Suporte -->
                 <a href="https://discord.gg/TuWFudyT" target="_blank" style="background: #5865F2; color: #fff; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 600; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;">
                     💬 Suporte no Discord (Entrar)
                 </a>
 
-                <!-- 2. Temas de Cores Pronto -->
                 <div style="font-size: 0.8rem; font-weight: bold; color: var(--primary); margin-top: 6px;">Temas de Cores Prontos:</div>
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
                     <button class="custom-btn" style="background: #a855f7; font-size: 0.75rem;" onclick="mudarTemaCor('roxo neon', true)">💜 Roxo Neon</button>
@@ -1105,7 +1096,6 @@
                     </div>
                 </div>
 
-                <!-- 3. Telas Claro e Escuro -->
                 <div style="font-size: 0.8rem; font-weight: bold; color: var(--primary); margin-top: 8px;">Modo de Tela:</div>
                 <div style="display: flex; gap: 8px;">
                     <button class="custom-btn" style="flex: 1; background: ${modoAtual === 'claro' ? '#0284c7' : '#334155'}; font-size: 0.75rem;" onclick="alternarModoTela('claro')">☀️ Claro</button>
@@ -1146,7 +1136,6 @@
             fecharModalDireto();
         }
 
-        // --- VISUALIZAR PERFIL DE OUTROS E DENUNCIAR ---
         async function verPerfilOutroUsuario(tagIdLimpo) {
             const modal = document.getElementById('app-modal');
             document.getElementById('modal-title').textContent = "Perfil do Usuário";
@@ -1221,7 +1210,6 @@
             }
         }
 
-        // --- CENTRAL DE DENÚNCIAS (PARA O DONO) ---
         async function abrirCentralDenuncias() {
             const modal = document.getElementById('app-modal');
             document.getElementById('modal-title').textContent = "Central de Denúncias";
@@ -1265,7 +1253,6 @@
             } catch(e) {}
         }
 
-        // --- PAINEL DO DONO (CONTROLE DE BAN) ---
         async function abrirPainelGerenciamentoDono() {
             const modal = document.getElementById('app-modal');
             document.getElementById('modal-title').textContent = "Controle de Banimento (Dono)";
@@ -1336,7 +1323,6 @@
             } catch(e) {}
         }
 
-        // --- CRIAR E GERENCIAR GRUPOS ---
         function abrirCriarGrupoModal() {
             const modal = document.getElementById('app-modal');
             document.getElementById('modal-title').textContent = "Criar Novo Grupo";
@@ -1578,7 +1564,6 @@
             abrirConfiguracoesGrupo();
         }
 
-        // --- MÍDIA NO CHAT (FOTOS E VÍDEOS) ---
         function enviarMidiaChat(event) {
             const file = event.target.files[0];
             if (!file) return;
