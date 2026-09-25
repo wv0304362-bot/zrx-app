@@ -16,43 +16,15 @@
         html, body {
             width: 100%;
             height: 100%;
-            background-color: var(--bg-main, #090d16);
-            color: var(--text-main, #f8fafc);
+            background-color: #090d16;
+            color: #f8fafc;
             overflow: hidden;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        :root {
-            --bg-main: #090d16;
-            --bg-container: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.85);
-            --primary: #38bdf8;
-            --primary-dark: #0284c7;
-            --border-color: rgba(56, 189, 248, 0.3);
-            --text-main: #f8fafc;
-            --text-sub: #94a3b8;
-        }
-
-        .theme-roxo { --primary: #c084fc; --primary-dark: #9333ea; --border-color: rgba(192, 132, 252, 0.3); }
-        .theme-carmesim { --primary: #fb7185; --primary-dark: #e11d48; --border-color: rgba(251, 113, 133, 0.3); }
-        .theme-amarelo { --primary: #facc15; --primary-dark: #ca8a04; --border-color: rgba(250, 204, 21, 0.3); }
-        .theme-verde { --primary: #4ade80; --primary-dark: #16a34a; --border-color: rgba(74, 222, 128, 0.3); }
-        
-        .theme-light {
-            --bg-main: #f1f5f9;
-            --bg-container: #ffffff;
-            --card-bg: rgba(241, 245, 249, 0.95);
-            --primary: #0284c7;
-            --primary-dark: #0369a1;
-            --border-color: rgba(2, 132, 199, 0.3);
-            --text-main: #0f172a;
-            --text-sub: #475569;
         }
 
         .app-container {
             width: 100%;
             height: 100vh;
-            background: var(--bg-container);
+            background: #0f172a;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -99,9 +71,9 @@
             left: 0;
             width: 100%;
             height: 75px;
-            background: var(--bg-container);
+            background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(16px);
-            border-top: 1px solid var(--border-color);
+            border-top: 1px solid rgba(56, 189, 248, 0.2);
             display: flex;
             align-items: center;
             justify-content: space-around;
@@ -117,7 +89,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            color: var(--text-sub);
+            color: #64748b;
             transition: all 0.2s ease;
             gap: 4px;
         }
@@ -125,7 +97,7 @@
         .dock-item svg {
             width: 24px;
             height: 24px;
-            fill: var(--text-sub);
+            fill: #64748b;
             transition: fill 0.2s;
         }
 
@@ -136,27 +108,27 @@
         }
 
         .dock-item.active {
-            color: var(--primary);
+            color: #38bdf8;
         }
 
         .dock-item.active svg {
-            fill: var(--primary);
+            fill: #38bdf8;
         }
 
-        /* Botão Central Brilhante */
+        /* Botão Central Brilhante (Casinha) */
         .dock-center-btn {
             position: relative;
             top: -15px;
             width: 58px;
             height: 58px;
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            background: linear-gradient(135deg, #0284c7, #38bdf8);
             border-radius: 50%;
-            border: 3px solid var(--bg-container);
+            border: 3px solid #0f172a;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 0 20px var(--border-color), inset 0 0 10px rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.4);
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
@@ -206,7 +178,7 @@
             position: relative;
             z-index: 3;
             background: rgba(15, 23, 42, 0.7);
-            border: 2px dashed var(--primary);
+            border: 2px dashed #38bdf8;
             border-radius: 50%;
             width: 64px;
             height: 64px;
@@ -218,39 +190,110 @@
         }
 
         .banner-upload-btn.hidden { display: none; }
-        .banner-upload-btn svg { width: 32px; height: 32px; fill: var(--primary); }
+        .banner-upload-btn svg { width: 32px; height: 32px; fill: #38bdf8; }
 
         .content-body {
             padding: 16px;
-            margin-top: -50px;
+            margin-top: -35px;
             position: relative;
             z-index: 4;
             display: flex;
             flex-direction: column;
             gap: 16px;
             padding-bottom: 30px;
+        }
+
+        .profile-card {
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
             align-items: center;
+            gap: 14px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .profile-avatar-container {
+            position: relative;
+            width: 65px;
+            height: 65px;
+            flex-shrink: 0;
+        }
+
+        .profile-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 14px;
+            background: #1e293b;
+            overflow: hidden;
+            border: 2px solid #38bdf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-avatar svg { width: 28px; height: 28px; fill: #64748b; }
+
+        .avatar-upload-overlay {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            background: #0284c7;
+            border: 2px solid #0f172a;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .avatar-upload-overlay svg { width: 14px; height: 14px; fill: #ffffff; }
+
+        .profile-info { flex-grow: 1; }
+        .name-wrapper { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+        .profile-info h2 { font-size: 1.05rem; color: #f8fafc; }
+        
+        .profile-tag-id {
+            font-size: 0.8rem;
+            color: #38bdf8;
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .profile-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            background: rgba(2, 132, 199, 0.25);
+            color: #38bdf8;
+            padding: 3px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(2, 132, 199, 0.4);
+            font-weight: 600;
         }
 
         .grid-2x2 {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
-            width: 100%;
         }
 
         .action-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid #334155;
             border-radius: 16px;
-            padding: 16px 12px;
+            padding: 18px 14px;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
-        .action-card:active { transform: scale(0.96); border-color: var(--primary); }
+        .action-card:active { transform: scale(0.96); border-color: #38bdf8; }
 
         .action-icon-wrapper {
             width: 36px; height: 36px;
@@ -258,147 +301,34 @@
             border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
             margin-bottom: 12px;
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(56, 189, 248, 0.2);
         }
-        .action-icon-wrapper svg { width: 20px; height: 20px; fill: var(--primary); }
-        .action-title { font-size: 0.9rem; font-weight: 600; color: var(--text-main); margin-bottom: 2px; }
-        .action-desc { font-size: 0.72rem; color: var(--text-sub); }
-
-        /* --- TELA DE PERFIL --- */
-        .profile-view-wrapper {
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            width: 100%;
-        }
-
-        .profile-card-centered {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 20px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .profile-avatar-centered {
-            width: 85px;
-            height: 85px;
-            border-radius: 50%;
-            background: #1e293b;
-            overflow: hidden;
-            border: 3px solid var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 15px var(--border-color);
-            cursor: pointer;
-        }
-        .profile-avatar-centered img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-avatar-centered svg { width: 36px; height: 36px; fill: var(--text-sub); }
-
-        .profile-name-text {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
-        .profile-tag-text {
-            font-size: 0.85rem;
-            color: var(--primary);
-            font-weight: 600;
-            margin-top: -6px;
-        }
-
-        .profile-bio-text {
-            font-size: 0.78rem;
-            color: var(--text-sub);
-            max-width: 90%;
-            line-height: 1.35;
-            word-break: break-word;
-        }
-
-        .profile-action-balloons {
-            display: flex;
-            gap: 14px;
-            margin-top: 4px;
-        }
-
-        .balloon-btn {
-            width: 44px;
-            height: 44px;
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid var(--border-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .balloon-btn:active { transform: scale(0.90); }
-        .balloon-btn svg { width: 20px; height: 20px; fill: var(--primary); }
-
-        .media-posts-section {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 16px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .media-posts-title {
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .media-upload-box {
-            border: 2px dashed var(--border-color);
-            background: var(--bg-main);
-            border-radius: 14px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            transition: border-color 0.2s;
-        }
-        .media-upload-box:hover { border-color: var(--primary); }
-        .media-upload-box svg { width: 28px; height: 28px; fill: var(--primary); }
-        .media-upload-box span { font-size: 0.78rem; color: var(--text-sub); }
+        .action-icon-wrapper svg { width: 20px; height: 20px; fill: #38bdf8; }
+        .action-title { font-size: 0.9rem; font-weight: 600; color: #e2e8f0; margin-bottom: 2px; }
+        .action-desc { font-size: 0.75rem; color: #94a3b8; }
 
         /* --- TELA DE CHAT & COMUNICAÇÃO --- */
         .chat-header {
             padding: 12px 16px;
-            background: var(--bg-container);
-            border-bottom: 1px solid var(--border-color);
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-shrink: 0;
             gap: 8px;
         }
-        .chat-title { font-size: 0.95rem; font-weight: 700; color: var(--primary); }
+        .chat-title { font-size: 0.95rem; font-weight: 700; color: #38bdf8; }
         
+        .chat-actions-top {
+            display: flex;
+            gap: 6px;
+        }
+
         .chat-sub-tabs {
             display: flex;
-            background: var(--bg-main);
-            border-bottom: 1px solid var(--border-color);
+            background: #0f172a;
+            border-bottom: 1px solid #334155;
             flex-shrink: 0;
         }
         .sub-tab-btn {
@@ -406,16 +336,16 @@
             padding: 8px;
             background: none;
             border: none;
-            color: var(--text-sub);
+            color: #94a3b8;
             font-size: 0.75rem;
             font-weight: 600;
             cursor: pointer;
             border-bottom: 2px solid transparent;
         }
         .sub-tab-btn.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-            background: var(--card-bg);
+            color: #38bdf8;
+            border-bottom-color: #38bdf8;
+            background: rgba(30, 41, 59, 0.4);
         }
 
         .chat-messages {
@@ -428,8 +358,8 @@
         }
 
         .chat-message-item {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid #334155;
             border-radius: 12px;
             padding: 10px 12px;
             max-width: 85%;
@@ -445,50 +375,47 @@
         }
 
         .chat-msg-avatar {
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
-            background: var(--bg-main);
+            background: #0f172a;
             overflow: hidden;
-            border: 1px solid var(--primary);
+            border: 1px solid #38bdf8;
             flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
         }
         .chat-msg-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .chat-msg-avatar svg { width: 14px; height: 14px; fill: var(--text-sub); }
+        .chat-msg-avatar svg { width: 14px; height: 14px; fill: #64748b; }
 
         .chat-msg-userinfo {
             display: flex;
             flex-direction: column;
-            cursor: pointer;
         }
 
-        .chat-msg-name { font-size: 0.8rem; font-weight: bold; color: var(--text-main); }
-        .chat-msg-id { font-size: 0.65rem; color: var(--primary); }
+        .chat-msg-name { font-size: 0.8rem; font-weight: bold; color: #f8fafc; }
+        .chat-msg-id { font-size: 0.65rem; color: #38bdf8; }
 
         .chat-msg-text {
             font-size: 0.85rem;
-            color: var(--text-sub);
+            color: #cbd5e1;
             word-break: break-word;
             margin-top: 4px;
-            padding-left: 36px;
+            padding-left: 34px;
         }
 
-        .chat-msg-image, .chat-msg-video {
+        .chat-msg-image {
             margin-top: 6px;
-            padding-left: 36px;
-            max-width: 230px;
+            padding-left: 34px;
+            max-width: 220px;
             border-radius: 8px;
-            cursor: pointer;
         }
 
         .chat-input-bar {
             padding: 10px 12px;
-            background: var(--bg-container);
-            border-top: 1px solid var(--border-color);
+            background: #1e293b;
+            border-top: 1px solid #334155;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -506,11 +433,12 @@
             justify-content: center;
             border-radius: 8px;
             background: rgba(56, 189, 248, 0.1);
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(56, 189, 248, 0.2);
             flex-shrink: 0;
         }
-        .chat-attach-btn svg { width: 20px; height: 20px; fill: var(--primary); }
+        .chat-attach-btn svg { width: 20px; height: 20px; fill: #38bdf8; }
 
+        /* Lista de Contatos e Grupos */
         .contacts-list-container {
             flex: 1;
             padding: 16px;
@@ -520,8 +448,8 @@
             gap: 10px;
         }
         .contact-item-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid #334155;
             border-radius: 12px;
             padding: 12px;
             display: flex;
@@ -530,7 +458,25 @@
             gap: 10px;
         }
 
-        /* --- MODAIS --- */
+        /* --- TELA DE PERFIL --- */
+        .profile-edit-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .input-group label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        /* --- MODAIS COMUNS --- */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -544,8 +490,8 @@
         }
         .modal-overlay.active { display: flex; }
         .modal-content {
-            background: var(--bg-container);
-            border: 1px solid var(--primary);
+            background: #1e293b;
+            border: 1px solid #38bdf8;
             border-radius: 16px;
             width: 100%;
             max-width: 450px;
@@ -557,14 +503,14 @@
         }
         .modal-header {
             padding: 16px;
-            background: var(--bg-main);
-            border-bottom: 1px solid var(--border-color);
+            background: #0f172a;
+            border-bottom: 1px solid #334155;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-        .modal-title { font-size: 1rem; font-weight: 600; color: var(--primary); }
-        .modal-close { background: none; border: none; color: var(--text-sub); font-size: 1.2rem; cursor: pointer; }
+        .modal-title { font-size: 1rem; font-weight: 600; color: #38bdf8; }
+        .modal-close { background: none; border: none; color: #94a3b8; font-size: 1.2rem; cursor: pointer; }
         .modal-body {
             padding: 16px;
             overflow-y: auto;
@@ -572,23 +518,23 @@
             flex-direction: column;
             gap: 12px;
             font-size: 0.85rem;
-            color: var(--text-sub);
+            color: #cbd5e1;
         }
 
         .custom-input {
             width: 100%;
-            background: var(--bg-main);
-            border: 1px solid var(--border-color);
+            background: #0f172a;
+            border: 1px solid #334155;
             border-radius: 8px;
             padding: 10px 12px;
-            color: var(--text-main);
+            color: #f8fafc;
             font-size: 0.9rem;
             outline: none;
         }
-        .custom-input:focus { border-color: var(--primary); }
+        .custom-input:focus { border-color: #38bdf8; }
 
         .custom-btn {
-            background: var(--primary-dark);
+            background: #0284c7;
             color: #fff;
             border: none;
             border-radius: 8px;
@@ -597,26 +543,26 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        .custom-btn:active { opacity: 0.8; }
+        .custom-btn:active { background: #0369a1; }
 
         .hidden-input { display: none; }
         .info-row {
             display: flex; justify-content: space-between; padding: 10px 12px;
-            background: var(--bg-main); border-radius: 8px; border: 1px solid var(--border-color);
+            background: rgba(15, 23, 42, 0.6); border-radius: 8px; border: 1px solid #334155;
         }
-        .info-label { color: var(--text-sub); font-weight: 500; }
-        .info-value { color: var(--primary); font-weight: 600; text-align: right; }
-        #mapa-ip, #mapa-log-detalhe { width: 100%; height: 200px; border-radius: 10px; border: 1px solid var(--border-color); z-index: 1; margin-top: 6px; }
+        .info-label { color: #94a3b8; font-weight: 500; }
+        .info-value { color: #38bdf8; font-weight: 600; text-align: right; }
+        #mapa-ip, #mapa-log-detalhe { width: 100%; height: 200px; border-radius: 10px; border: 1px solid #334155; z-index: 1; margin-top: 6px; }
     </style>
 </head>
-<body id="app-body">
+<body>
 
     <!-- TELA DE BLOQUEIO DE BANIMENTO -->
     <div id="ban-screen">
         <div style="max-width: 400px; background: #1e293b; border: 1px solid #ef4444; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
             <div style="font-size: 2.5rem;">🚫</div>
             <h2 style="color: #ef4444; font-size: 1.2rem;">Acesso Negado (Banido)</h2>
-            <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.4;">Você foi banido deste aplicativo pelo Administrador. Caso acredite que seja um erro ou queira recorrer, entre em contato com o nosso suporte oficial.</p>
+            <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.4;">Você foi banido deste aplicativo pelo Administrador. Caso acredite que isso seja um erro ou queira recorrer, entre em contato com o nosso suporte oficial.</p>
             <a href="https://discord.gg/TuWFudyT" target="_blank" style="background: #5865F2; color: #fff; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
                 💬 Suporte no Discord
             </a>
@@ -636,7 +582,27 @@
             </div>
 
             <div class="content-body">
-                <div class="grid-2x2" style="width: 100%;">
+                <div class="profile-card">
+                    <div class="profile-avatar-container">
+                        <div class="profile-avatar" id="profile-avatar">
+                            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                        </div>
+                        <div class="avatar-upload-overlay" onclick="document.getElementById('avatar-file-input').click()">
+                            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        </div>
+                        <input type="file" id="avatar-file-input" class="hidden-input" accept="image/*" onchange="carregarAvatar(event)">
+                    </div>
+
+                    <div class="profile-info">
+                        <div class="name-wrapper">
+                            <h2 id="user-name">DEFINIR NOME</h2>
+                        </div>
+                        <span id="user-tag-id" class="profile-tag-id">@seu_id</span>
+                        <span id="user-role-badge" class="profile-badge">ROLE: USER</span>
+                    </div>
+                </div>
+
+                <div class="grid-2x2">
                     <div class="action-card" onclick="abrirBuscaIP()">
                         <div class="action-icon-wrapper">
                             <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
@@ -678,15 +644,9 @@
                     </div>
                 </div>
 
-                <!-- PAINEL DO DONO (CONTROLE DE BAN & CENTRAL DE DENÚNCIAS) -->
-                <div id="owner-management-panel" style="display: none; width: 100%; margin-top: 6px;">
-                    <div style="background: rgba(220, 38, 38, 0.15); border: 1px solid #ef4444; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
-                        <span style="font-size: 0.85rem; font-weight: bold; color: #f87171;">Painel de Dono & Central</span>
-                        <div style="display: flex; gap: 8px;">
-                            <button class="custom-btn" style="flex: 1; background: #dc2626; font-size: 0.75rem;" onclick="abrirPainelGerenciamentoDono()">Controle de Ban</button>
-                            <button class="custom-btn" style="flex: 1; background: #0284c7; font-size: 0.75rem;" onclick="abrirCentralDenuncias()">Central (Denúncias)</button>
-                        </div>
-                    </div>
+                <!-- Botão de Gerenciamento do Dono (Aparece apenas para @ZRX LOTUX) -->
+                <div id="owner-management-panel" style="display: none; margin-top: 10px;">
+                    <button class="custom-btn" style="width: 100%; background: #dc2626;" onclick="abrirPainelGerenciamentoDono()">⚙️ Painel de Banimento (Dono)</button>
                 </div>
             </div>
         </div>
@@ -695,56 +655,56 @@
         <div id="section-chat" class="view-section">
             <div class="chat-header">
                 <span class="chat-title" id="chat-header-title">Comunicação</span>
-                <div style="display: flex; gap: 6px;">
+                <div class="chat-actions-top">
                     <button class="custom-btn" style="padding: 4px 8px; font-size: 0.7rem;" onclick="abrirCriarGrupoModal()">+ Grupo</button>
                     <button class="custom-btn" style="padding: 4px 8px; font-size: 0.7rem;" onclick="abrirBuscaPerfilPorId()">+ Contato</button>
                 </div>
             </div>
             
+            <!-- Sub-abas -->
             <div class="chat-sub-tabs" id="chat-sub-tabs-bar">
                 <button class="sub-tab-btn active" id="sub-tab-contacts" onclick="mudarSubAbaChat('contacts')">Grupos & Contatos</button>
                 <button class="sub-tab-btn" id="sub-tab-global" onclick="mudarSubAbaChat('global')">Chat Global</button>
             </div>
 
+            <!-- Visão 1: Contatos & Grupos -->
             <div id="view-contacts-container" class="contacts-list-container">
                 <div id="lista-grupos-contatos" style="display: flex; flex-direction: column; gap: 8px;">
-                    <div style="text-align: center; color: var(--text-sub); font-size: 0.8rem; margin-top: 15px;">Nenhum usuário ou grupo adicionado.</div>
+                    <div style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 15px;">Nenhum usuário ou grupo adicionado.</div>
                 </div>
             </div>
 
+            <!-- Visão 2: Chat Global -->
             <div id="view-global-container" style="display: none; flex: 1; flex-direction: column; height: 100%;">
                 <div class="chat-messages" id="chat-messages-container">
-                    <div style="text-align: center; color: var(--text-sub); font-size: 0.8rem; margin-top: 20px;">Carregando mensagens...</div>
+                    <div style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 20px;">Carregando mensagens...</div>
                 </div>
                 <div class="chat-input-bar">
-                    <label class="chat-attach-btn" title="Enviar Foto/Vídeo">
+                    <label class="chat-attach-btn" title="Enviar Foto">
                         <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-                        <input type="file" id="chat-image-input" class="hidden-input" accept="image/*,video/*" onchange="enviarMidiaChat(event)">
+                        <input type="file" id="chat-image-input" class="hidden-input" accept="image/*" onchange="enviarImagemChat(event)">
                     </label>
                     <input type="text" id="chat-input-text" class="custom-input" placeholder="Digite sua mensagem..." onkeypress="if(event.key === 'Enter') enviarMensagemChat()">
                     <button class="custom-btn" onclick="enviarMensagemChat()">Enviar</button>
                 </div>
             </div>
 
+            <!-- Visão 3: Chat Específico do Grupo -->
             <div id="view-group-chat-container" style="display: none; flex: 1; flex-direction: column; height: 100%;">
-                <div style="background: var(--card-bg); padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
+                <div style="background: rgba(30,41,59,0.8); padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155;">
                     <button class="custom-btn" style="padding: 4px 8px; font-size: 0.7rem; background: #334155;" onclick="voltarParaListaGrupos()">&larr; Voltar</button>
                     <div style="display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="abrirConfiguracoesGrupo()">
-                        <div id="group-header-avatar" style="width: 28px; height: 28px; border-radius: 50%; background: var(--bg-main); border: 1px solid var(--primary); overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                            <svg style="width: 14px; height: 14px; fill: var(--primary);" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                        <div id="group-header-avatar" style="width: 28px; height: 28px; border-radius: 50%; background: #0f172a; border: 1px solid #38bdf8; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                            <svg style="width: 14px; height: 14px; fill: #38bdf8;" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                         </div>
-                        <span id="group-chat-title-name" style="font-size: 0.85rem; font-weight: bold; color: var(--primary);">Grupo</span>
+                        <span id="group-chat-title-name" style="font-size: 0.85rem; font-weight: bold; color: #38bdf8;">Grupo</span>
                     </div>
-                    <button class="custom-btn" style="padding: 4px 8px; font-size: 0.7rem;" onclick="abrirConfiguracoesGrupo()">⚙️ Ajustes</button>
+                    <button class="custom-btn" style="padding: 4px 8px; font-size: 0.7rem; background: #0284c7;" onclick="abrirConfiguracoesGrupo()">⚙️ Ajustes</button>
                 </div>
                 <div class="chat-messages" id="group-chat-messages-container">
-                    <div style="text-align: center; color: var(--text-sub); font-size: 0.8rem; margin-top: 20px;">Carregando mensagens...</div>
+                    <div style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 20px;">Carregando mensagens do grupo...</div>
                 </div>
                 <div class="chat-input-bar">
-                    <label class="chat-attach-btn" title="Enviar Foto/Vídeo no Grupo">
-                        <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-                        <input type="file" id="group-media-input" class="hidden-input" accept="image/*,video/*" onchange="enviarMidiaGrupoChat(event)">
-                    </label>
                     <input type="text" id="group-chat-input-text" class="custom-input" placeholder="Mensagem para o grupo..." onkeypress="if(event.key === 'Enter') enviarMensagemGrupoChat()">
                     <button class="custom-btn" onclick="enviarMensagemGrupoChat()">Enviar</button>
                 </div>
@@ -754,46 +714,26 @@
         <!-- ================= SECTION 3: PERFIL ================= -->
         <div id="section-profile" class="view-section">
             <div class="chat-header">
-                <span class="chat-title">Meu Perfil</span>
+                <span class="chat-title">Configurações de Perfil</span>
             </div>
-            <div class="profile-view-wrapper">
-                <!-- CARTÃO DE PERFIL CENTRALIZADO -->
-                <div class="profile-card-centered">
-                    <div class="profile-avatar-centered" id="profile-avatar" onclick="document.getElementById('avatar-file-input').click()">
-                        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                    </div>
-                    <input type="file" id="avatar-file-input" class="hidden-input" accept="image/*" onchange="carregarAvatar(event)">
-
-                    <h2 id="user-name" class="profile-name-text">DEFINIR NOME</h2>
-                    <span id="user-tag-id" class="profile-tag-text">@seu_id</span>
-                    <span id="user-bio" class="profile-bio-text">Sem biografia definida.</span>
-
-                    <!-- TRÊS BALÃOZINHOS DE AÇÃO -->
-                    <div class="profile-action-balloons">
-                        <div class="balloon-btn" title="Trocar Foto de Perfil" onclick="document.getElementById('avatar-file-input').click()">
-                            <svg viewBox="0 0 24 24"><path d="M12 9c1.65 0 3 1.35 3 3s-1.35 3-3 3-3-1.35-3-3 1.35-3 3-3m0-2c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 4h4l2-3h8l2 3h4c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H2c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/></svg>
-                        </div>
-                        <div class="balloon-btn" title="Editar Perfil" onclick="abrirModalEditarPerfil()">
-                            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                        </div>
-                        <div class="balloon-btn" title="Configurações e Ajustes" onclick="abrirModalConfiguracoes()">
-                            <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                        </div>
-                    </div>
+            <div class="profile-edit-body">
+                <div class="input-group">
+                    <label>Seu Nome de Exibição:</label>
+                    <input type="text" id="profile-edit-name" class="custom-input" placeholder="Seu nome">
                 </div>
-
-                <div class="media-posts-section">
-                    <span class="media-posts-title">Publicações de Mídia</span>
-                    <div class="media-upload-box" onclick="alert('Funcionalidade de postar vídeo/foto no perfil.')">
-                        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                        <span>Toque para postar um vídeo ou foto</span>
-                    </div>
-                    <div style="font-size: 0.75rem; color: var(--text-sub); text-align: center;">Nenhuma mídia publicada.</div>
+                <div class="input-group">
+                    <label>Seu ID Único (Obrigatório começar com @):</label>
+                    <input type="text" id="profile-edit-tag" class="custom-input" placeholder="@exemplo">
                 </div>
+                <div class="input-group">
+                    <label>Sua Biografia:</label>
+                    <textarea id="profile-edit-bio" class="custom-input" rows="3" placeholder="Escreva algo sobre você..."></textarea>
+                </div>
+                <button class="custom-btn" onclick="salvarPerfilUsuario()">Salvar Alterações</button>
             </div>
         </div>
 
-        <!-- ================= DOCK NAVIGATION BAR ================= -->
+        <!-- ================= DOCK NAVIGATION BAR (FIXA EMBAIXO) ================= -->
         <nav class="cyber-dock">
             <button class="dock-item" id="dock-btn-chat" onclick="mudarAba('chat')">
                 <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
@@ -823,6 +763,7 @@
         </div>
     </div>
 
+    <!-- SCRIPT DO LEAFLET E LÓGICA DO PAINEL / FIREBASE -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
         const FIREBASE_DB_URL = "https://linkapi1-zrx-default-rtdb.firebaseio.com";
@@ -831,13 +772,13 @@
 
         let mapaIP = null;
         let marcadorIP = null;
+        let mapaDetalhe = null;
         let currentTargetId = localStorage.getItem('currentTargetId') || "alvo01";
         let tempGroupPhotoBase64 = "";
         let currentActiveGroupId = null;
         let currentActiveGroupName = "";
 
         window.onload = async function() {
-            aplicarTemaSalvo();
             await verificarBanimentoAtual();
             verificarInstalacaoPerfil();
             carregarDadosInterface();
@@ -845,21 +786,10 @@
             carregarContatosEGrupos();
         };
 
-        function aplicarTemaSalvo() {
-            let tema = localStorage.getItem('userTheme') || 'roxo neon';
-            mudarTemaCor(tema, false);
-            let modo = localStorage.getItem('userDarkMode') || 'escuro';
-            if (modo === 'claro') {
-                document.getElementById('app-body').classList.add('theme-light');
-            } else {
-                document.getElementById('app-body').classList.remove('theme-light');
-            }
-        }
-
         async function verificarBanimentoAtual() {
             let myTag = localStorage.getItem('userTagId');
             if (!myTag) return;
-            let cleanKey = myTag.replace('@', '').replace(/\s+/g, '_');
+            let cleanKey = myTag.replace('@', '');
             try {
                 let res = await fetch(`${FIREBASE_DB_URL}/banidos/${cleanKey}.json`);
                 let banido = await res.json();
@@ -872,6 +802,7 @@
         function verificarInstalacaoPerfil() {
             let nome = localStorage.getItem('userName');
             let tagId = localStorage.getItem('userTagId');
+
             if (!nome || !tagId || !tagId.startsWith('@')) {
                 abrirModalInstalacao();
             }
@@ -883,18 +814,18 @@
             modal.classList.add('active');
 
             document.getElementById('modal-body').innerHTML = `
-                <div style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 4px;">Bem-vindo! Defina suas credenciais para continuar:</div>
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label style="font-size: 0.8rem; color: var(--text-sub);">Seu Nome:</label>
+                <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Bem-vindo! Para usar o chat e o painel, defina suas credenciais:</div>
+                <div class="input-group">
+                    <label>Seu Nome:</label>
                     <input type="text" id="setup-name" class="custom-input" placeholder="Ex: CyberUser">
                 </div>
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label style="font-size: 0.8rem; color: var(--text-sub);">Seu ID (Obrigatório começar com @):</label>
+                <div class="input-group">
+                    <label>Seu ID (Obrigatório começar com @):</label>
                     <input type="text" id="setup-tag" class="custom-input" placeholder="Ex: @usuario01" value="@">
                 </div>
-                <div id="setup-senha-container" style="display:none; flex-direction: column; gap: 6px;">
-                    <label style="font-size: 0.8rem; color: var(--primary);">Senha de Segurança do Dono:</label>
-                    <input type="password" id="setup-senha-dono" class="custom-input" placeholder="Digite a senha de administrador">
+                <div id="setup-senha-container" style="display:none;" class="input-group">
+                    <label style="color: #38bdf8;">Senha de Segurança do Dono (@ZRX LOTUX):</label>
+                    <input type="password" id="setup-senha-dono" class="custom-input" placeholder="Digite a senha ZRX WCT">
                 </div>
                 <button class="custom-btn" style="margin-top: 8px;" onclick="salvarInstalacaoInicial()">Concluir Configuração</button>
             `;
@@ -914,12 +845,21 @@
             const nome = document.getElementById('setup-name').value.trim();
             let tagId = document.getElementById('setup-tag').value.trim();
 
-            if (!nome) { alert("Digite um nome válido."); return; }
-            if (!tagId.startsWith('@') || tagId.length < 2) { alert("O ID deve começar com @."); return; }
+            if (!nome) {
+                alert("Por favor, digite um nome válido.");
+                return;
+            }
+            if (!tagId.startsWith('@') || tagId.length < 2) {
+                alert("O ID deve começar obrigatoriamente com o caractere @ (Ex: @hacker).");
+                return;
+            }
 
             if (tagId.toUpperCase() === ID_DONO_OFICIAL) {
                 let senhaDigitada = document.getElementById('setup-senha-dono').value;
-                if (senhaDigitada !== SENHA_DONO) { alert("Senha incorreta para assumir o ID de Administrador!"); return; }
+                if (senhaDigitada !== SENHA_DONO) {
+                    alert("Senha incorreta para assumir o ID de Administrador/Dono (@ZRX LOTUX)!");
+                    return;
+                }
             }
 
             localStorage.setItem('userName', nome);
@@ -928,22 +868,32 @@
 
             fecharModalDireto();
             carregarDadosInterface();
+            alert("Perfil configurado com sucesso!");
             location.reload();
         }
 
         function carregarDadosInterface() {
             const savedName = localStorage.getItem('userName') || "DEFINIR NOME";
             const savedTag = localStorage.getItem('userTagId') || "@seu_id";
-            const savedBio = localStorage.getItem('userBio') || "Sem biografia definida.";
             
             document.getElementById('user-name').textContent = savedName;
             document.getElementById('user-tag-id').textContent = savedTag;
-            document.getElementById('user-bio').textContent = savedBio;
+            
+            document.getElementById('profile-edit-name').value = savedName === "DEFINIR NOME" ? "" : savedName;
+            document.getElementById('profile-edit-tag').value = savedTag;
+            document.getElementById('profile-edit-bio').value = localStorage.getItem('userBio') || "";
 
+            const badge = document.getElementById('user-role-badge');
             const ownerPanel = document.getElementById('owner-management-panel');
+
             if (savedTag.toUpperCase() === ID_DONO_OFICIAL) {
+                badge.textContent = "ROLE: DONO (ADMIN)";
+                badge.style.background = "rgba(220, 38, 38, 0.25)";
+                badge.style.color = "#f87171";
+                badge.style.borderColor = "#ef4444";
                 if (ownerPanel) ownerPanel.style.display = 'block';
             } else {
+                badge.textContent = "ROLE: USER";
                 if (ownerPanel) ownerPanel.style.display = 'none';
             }
 
@@ -993,57 +943,26 @@
             }
         }
 
-        function abrirModalEditarPerfil() {
-            const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "Editar Perfil";
-            modal.classList.add('active');
-
-            let savedName = localStorage.getItem('userName') === "DEFINIR NOME" ? "" : (localStorage.getItem('userName') || "");
-            let savedTag = localStorage.getItem('userTagId') || "@";
-            let savedBio = localStorage.getItem('userBio') || "";
-
-            document.getElementById('modal-body').innerHTML = `
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label style="font-size: 0.8rem; color: var(--text-sub); font-weight: 600;">Seu Nome de Exibição:</label>
-                    <input type="text" id="profile-edit-name" class="custom-input" placeholder="Seu nome" value="${savedName}">
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label style="font-size: 0.8rem; color: var(--text-sub); font-weight: 600;">Seu ID Único (@):</label>
-                    <input type="text" id="profile-edit-tag" class="custom-input" placeholder="@exemplo" value="${savedTag}">
-                </div>
-                <div id="modal-senha-container" style="display:none; flex-direction: column; gap: 6px;">
-                    <label style="font-size: 0.8rem; color: var(--primary);">Senha de Segurança do Dono:</label>
-                    <input type="password" id="modal-senha-dono" class="custom-input" placeholder="Digite a senha de administrador">
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label style="font-size: 0.8rem; color: var(--text-sub); font-weight: 600;">Sua Biografia:</label>
-                    <textarea id="profile-edit-bio" class="custom-input" rows="3" placeholder="Escreva algo sobre você...">${savedBio}</textarea>
-                </div>
-                <button class="custom-btn" style="margin-top: 8px;" onclick="salvarPerfilUsuarioModal()">Salvar Alterações</button>
-            `;
-
-            document.getElementById('profile-edit-tag').addEventListener('input', (e) => {
-                let val = e.target.value.trim().toUpperCase();
-                let pwdBox = document.getElementById('modal-senha-container');
-                if (val === ID_DONO_OFICIAL) {
-                    pwdBox.style.display = 'flex';
-                } else {
-                    pwdBox.style.display = 'none';
-                }
-            });
-        }
-
-        async function salvarPerfilUsuarioModal() {
+        async function salvarPerfilUsuario() {
             const novoNome = document.getElementById('profile-edit-name').value.trim();
             let novaTag = document.getElementById('profile-edit-tag').value.trim();
             const novaBio = document.getElementById('profile-edit-bio').value.trim();
 
-            if (!novoNome || !novaTag) { alert("Preencha o nome e o ID."); return; }
-            if (!novaTag.startsWith('@')) { alert("O ID precisa começar com @."); return; }
+            if (!novoNome || !novaTag) {
+                alert("Preencha o nome e o ID.");
+                return;
+            }
+            if (!novaTag.startsWith('@')) {
+                alert("O ID precisa começar obrigatoriamente com @.");
+                return;
+            }
 
             if (novaTag.toUpperCase() === ID_DONO_OFICIAL) {
-                let senhaDigitada = document.getElementById('modal-senha-dono') ? document.getElementById('modal-senha-dono').value : "";
-                if (senhaDigitada !== SENHA_DONO) { alert("Senha incorreta!"); return; }
+                let senhaDigitada = prompt("Insira a senha de segurança (ZRX WCT) para usar o ID de Administrador:");
+                if (senhaDigitada !== SENHA_DONO) {
+                    alert("Senha incorreta! Acesso negado ao ID protegido.");
+                    return;
+                }
             }
 
             localStorage.setItem('userName', novoNome);
@@ -1051,9 +970,10 @@
             localStorage.setItem('userBio', novaBio);
 
             await sincronizarPerfilFirebase(novoNome, novaTag, novaBio);
+
             carregarDadosInterface();
-            fecharModalDireto();
             alert("Perfil atualizado com sucesso!");
+            location.reload();
         }
 
         async function sincronizarPerfilFirebase(nome, tagId, bio) {
@@ -1064,209 +984,27 @@
                     method: 'PUT',
                     body: JSON.stringify({ nome, tagId, bio, avatar, timestamp: Date.now() })
                 });
-            } catch (e) { console.error(e); }
-        }
-
-        function abrirModalConfiguracoes() {
-            const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "Configurações e Ajustes";
-            modal.classList.add('active');
-
-            let temaAtual = localStorage.getItem('userTheme') || 'roxo neon';
-            let modoAtual = localStorage.getItem('userDarkMode') || 'escuro';
-
-            document.getElementById('modal-body').innerHTML = `
-                <a href="https://discord.gg/TuWFudyT" target="_blank" style="background: #5865F2; color: #fff; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 600; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    💬 Suporte no Discord (Entrar)
-                </a>
-
-                <div style="font-size: 0.8rem; font-weight: bold; color: var(--primary); margin-top: 6px;">Temas de Cores Prontos:</div>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
-                    <button class="custom-btn" style="background: #a855f7; font-size: 0.75rem;" onclick="mudarTemaCor('roxo neon', true)">💜 Roxo Neon</button>
-                    <button class="custom-btn" style="background: #e11d48; font-size: 0.75rem;" onclick="mudarTemaCor('dark carmesim', true)">❤️ Dark Carmesim</button>
-                    <button class="custom-btn" style="background: #ca8a04; font-size: 0.75rem;" onclick="mudarTemaCor('dark amarelo', true)">💛 Dark Amarelo</button>
-                    <button class="custom-btn" style="background: #16a34a; font-size: 0.75rem;" onclick="mudarTemaCor('dark verde', true)">💚 Dark Verde</button>
-                </div>
-
-                <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 4px;">
-                    <label style="font-size: 0.75rem; color: var(--text-sub);">Ou editar cor personalizada (Hex):</label>
-                    <div style="display: flex; gap: 6px;">
-                        <input type="text" id="custom-hex-input" class="custom-input" placeholder="#38bdf8">
-                        <button class="custom-btn" onclick="aplicarCorCustomizada()">Aplicar</button>
-                    </div>
-                </div>
-
-                <div style="font-size: 0.8rem; font-weight: bold; color: var(--primary); margin-top: 8px;">Modo de Tela:</div>
-                <div style="display: flex; gap: 8px;">
-                    <button class="custom-btn" style="flex: 1; background: ${modoAtual === 'claro' ? '#0284c7' : '#334155'}; font-size: 0.75rem;" onclick="alternarModoTela('claro')">☀️ Claro</button>
-                    <button class="custom-btn" style="flex: 1; background: ${modoAtual === 'escuro' ? '#0284c7' : '#334155'}; font-size: 0.75rem;" onclick="alternarModoTela('escuro')">🌙 Escuro</button>
-                </div>
-            `;
-        }
-
-        function mudarTemaCor(tema, salvar = true) {
-            const body = document.getElementById('app-body');
-            body.classList.remove('theme-roxo', 'theme-carmesim', 'theme-amarelo', 'theme-verde');
-            
-            if (tema.includes('roxo')) body.classList.add('theme-roxo');
-            else if (tema.includes('carmesim')) body.classList.add('theme-carmesim');
-            else if (tema.includes('amarelo')) body.classList.add('theme-amarelo');
-            else if (tema.includes('verde')) body.classList.add('theme-verde');
-
-            if (salvar) {
-                localStorage.setItem('userTheme', tema);
-                alert("Tema aplicado com sucesso!");
-                fecharModalDireto();
+            } catch (e) {
+                console.error("Erro ao sincronizar perfil:", e);
             }
         }
 
-        function aplicarCorCustomizada() {
-            let hex = document.getElementById('custom-hex-input').value.trim();
-            if (!hex.startsWith('#')) { alert("Insira um código Hex válido (ex: #38bdf8)"); return; }
-            document.documentElement.style.setProperty('--primary', hex);
-            document.documentElement.style.setProperty('--primary-dark', hex);
-            localStorage.setItem('userTheme', hex);
-            alert("Cor aplicada!");
-            fecharModalDireto();
-        }
-
-        function alternarModoTela(modo) {
-            localStorage.setItem('userDarkMode', modo);
-            aplicarTemaSalvo();
-            fecharModalDireto();
-        }
-
-        async function verPerfilOutroUsuario(tagIdLimpo) {
-            const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "Perfil do Usuário";
-            modal.classList.add('active');
-
-            document.getElementById('modal-body').innerHTML = `<div style="text-align: center; color: var(--text-sub); padding: 15px;">Carregando perfil...</div>`;
-
-            try {
-                let res = await fetch(`${FIREBASE_DB_URL}/perfis/${tagIdLimpo}.json`);
-                let p = await res.json();
-
-                if (!p) {
-                    document.getElementById('modal-body').innerHTML = `<div style="color: #ef4444; text-align: center;">Perfil não encontrado.</div>`;
-                    return;
-                }
-
-                let avatarHtml = p.avatar ? `<img src="${p.avatar}" style="width:100%; height:100%; object-fit:cover;">` : `<svg style="width:32px; height:32px; fill:var(--text-sub);" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
-
-                document.getElementById('modal-body').innerHTML = `
-                    <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px;">
-                        <div style="width: 75px; height: 75px; border-radius: 50%; background: var(--bg-main); border: 2px solid var(--primary); overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                            ${avatarHtml}
-                        </div>
-                        <h3 style="color: var(--text-main); font-size: 1.1rem;">${p.nome}</h3>
-                        <span style="color: var(--primary); font-size: 0.85rem; font-weight: bold;">${p.tagId}</span>
-                        <p style="color: var(--text-sub); font-size: 0.8rem; background: var(--bg-main); padding: 8px; border-radius: 8px; width: 100%; border: 1px solid var(--border-color);">${p.bio || 'Sem biografia.'}</p>
-                    </div>
-                    <button class="custom-btn" style="background: #dc2626; margin-top: 10px;" onclick="abrirModalDenuncia('${p.tagId}')">🚨 Denunciar Usuário</button>
-                `;
-            } catch(e) {
-                document.getElementById('modal-body').innerHTML = `<div style="color: #ef4444; text-align: center;">Erro ao carregar perfil.</div>`;
-            }
-        }
-
-        function abrirModalDenuncia(tagIdAlvo) {
-            const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "Denunciar Usuário";
-            modal.classList.add('active');
-
-            document.getElementById('modal-body').innerHTML = `
-                <div style="font-size: 0.8rem; color: var(--text-sub);">Você está denunciando o ID: <b style="color: var(--primary);">${tagIdAlvo}</b></div>
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label style="font-size: 0.75rem; color: var(--text-sub);">Motivo da Denúncia:</label>
-                    <textarea id="denuncia-motivo-input" class="custom-input" rows="3" placeholder="Descreva o motivo..."></textarea>
-                </div>
-                <button class="custom-btn" style="background: #dc2626;" onclick="enviarDenunciaFirebase('${tagIdAlvo}')">Enviar Denúncia</button>
-            `;
-        }
-
-        async function enviarDenunciaFirebase(tagIdAlvo) {
-            let motivo = document.getElementById('denuncia-motivo-input').value.trim();
-            if (!motivo) { alert("Escreva o motivo da denúncia."); return; }
-
-            let denunciante = localStorage.getItem('userTagId') || "@anonimo";
-
-            let novaDenuncia = {
-                alvo: tagIdAlvo,
-                denunciante: denunciante,
-                motivo: motivo,
-                timestamp: Date.now()
-            };
-
-            try {
-                await fetch(`${FIREBASE_DB_URL}/denuncias.json`, {
-                    method: 'POST',
-                    body: JSON.stringify(novaDenuncia)
-                });
-                alert("Denúncia enviada com sucesso à Central do Administrador!");
-                fecharModalDireto();
-            } catch(e) {
-                alert("Erro ao enviar denúncia.");
-            }
-        }
-
-        async function abrirCentralDenuncias() {
-            const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "Central de Denúncias";
-            modal.classList.add('active');
-
-            document.getElementById('modal-body').innerHTML = `<div style="text-align: center; color: var(--text-sub); padding: 15px;">Carregando denúncias...</div>`;
-
-            try {
-                let res = await fetch(`${FIREBASE_DB_URL}/denuncias.json`);
-                let dados = await res.json();
-
-                if (!dados) {
-                    document.getElementById('modal-body').innerHTML = `<div style="text-align: center; color: var(--text-sub); padding: 15px;">Nenhuma denúncia registrada.</div>`;
-                    return;
-                }
-
-                let html = `<div style="font-size: 0.8rem; color: var(--primary); margin-bottom: 6px;">Lista de Denúncias Recebidas:</div>`;
-                Object.keys(dados).forEach(key => {
-                    let d = dados[key];
-                    html += `
-                        <div class="info-row" style="margin-bottom: 6px; flex-direction: column; gap: 4px; border-color: #ef4444;">
-                            <div style="display: flex; justify-content: space-between;">
-                                <b style="color: #f87171;">Alvo: ${d.alvo}</b>
-                                <span style="font-size: 0.65rem; color: var(--text-sub);">Por: ${d.denunciante}</span>
-                            </div>
-                            <div style="font-size: 0.78rem; color: var(--text-main);">Motivo: ${d.motivo}</div>
-                            <button class="custom-btn" style="background: #dc2626; padding: 2px 6px; font-size: 0.7rem; align-self: flex-end;" onclick="deletarDenuncia('${key}')">Remover Denúncia</button>
-                        </div>
-                    `;
-                });
-                document.getElementById('modal-body').innerHTML = html;
-            } catch(e) {
-                document.getElementById('modal-body').innerHTML = `<div style="color: #ef4444; text-align: center;">Erro ao carregar denúncias.</div>`;
-            }
-        }
-
-        async function deletarDenuncia(key) {
-            try {
-                await fetch(`${FIREBASE_DB_URL}/denuncias/${key}.json`, { method: 'DELETE' });
-                abrirCentralDenuncias();
-            } catch(e) {}
-        }
-
+        // --- PAINEL DO DONO PARA GERENCIAR BANIMENTOS ---
         async function abrirPainelGerenciamentoDono() {
             const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "Controle de Banimento (Dono)";
+            document.getElementById('modal-title').textContent = "Gerenciamento de Banimentos (Dono)";
             modal.classList.add('active');
 
-            document.getElementById('modal-body').innerHTML = `<div style="text-align: center; color: var(--text-sub); padding: 10px;">Carregando listas...</div>`;
+            document.getElementById('modal-body').innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 10px;">Carregando listas...</div>`;
 
             try {
                 let resPerf = await fetch(`${FIREBASE_DB_URL}/perfis.json`);
                 let perfis = await resPerf.json();
+
                 let resBan = await fetch(`${FIREBASE_DB_URL}/banidos.json`);
                 let banidos = await resBan.json() || {};
 
-                let html = `<div style="font-size: 0.8rem; color: #ef4444; margin-bottom: 6px;">Usuários Banidos:</div>`;
+                let html = `<div style="font-size: 0.8rem; color: #38bdf8; margin-bottom: 6px;">Usuários Banidos:</div>`;
                 let temBanidos = false;
 
                 Object.keys(banidos).forEach(key => {
@@ -1274,15 +1012,22 @@
                         temBanidos = true;
                         html += `
                             <div class="info-row" style="margin-bottom: 6px; align-items: center; border-color: #ef4444;">
-                                <div><b style="color: #ef4444;">@${key}</b></div>
+                                <div>
+                                    <b style="color: #ef4444;">@${key}</b><br>
+                                    <span style="font-size: 0.7rem; color: #94a3b8;">Status: Banido</span>
+                                </div>
                                 <button class="custom-btn" style="background: #16a34a; padding: 4px 10px; font-size: 0.75rem;" onclick="desbanirUsuario('${key}')">Desbanir</button>
                             </div>
                         `;
                     }
                 });
-                if (!temBanidos) html += `<div style="color: var(--text-sub); font-size: 0.75rem; text-align: center; margin-bottom: 8px;">Nenhum usuário banido.</div>`;
 
-                html += `<div style="font-size: 0.8rem; color: var(--primary); margin: 12px 0 6px 0;">Usuários Cadastrados:</div>`;
+                if (!temBanidos) {
+                    html += `<div style="color: #64748b; font-size: 0.8rem; margin-bottom: 12px; text-align: center;">Nenhum usuário banido no momento.</div>`;
+                }
+
+                html += `<div style="font-size: 0.8rem; color: #38bdf8; margin: 12px 0 6px 0;">Usuários Cadastrados para Banimento:</div>`;
+                
                 if (perfis) {
                     Object.keys(perfis).forEach(key => {
                         let p = perfis[key];
@@ -1290,8 +1035,8 @@
                             html += `
                                 <div class="info-row" style="margin-bottom: 6px; align-items: center;">
                                     <div>
-                                        <b style="color: var(--text-main);">${p.nome || 'Sem Nome'}</b><br>
-                                        <span style="font-size: 0.75rem; color: var(--primary);">${p.tagId}</span>
+                                        <b style="color: #f8fafc;">${p.nome || 'Sem Nome'}</b><br>
+                                        <span style="font-size: 0.75rem; color: #38bdf8;">${p.tagId}</span>
                                     </div>
                                     <button class="custom-btn" style="background: #dc2626; padding: 4px 10px; font-size: 0.75rem;" onclick="banirUsuario('${key}')">Banir</button>
                                 </div>
@@ -1299,30 +1044,41 @@
                         }
                     });
                 }
+
                 document.getElementById('modal-body').innerHTML = html;
             } catch(e) {
-                document.getElementById('modal-body').innerHTML = `<div style="color: #ef4444; text-align: center;">Erro ao carregar painel.</div>`;
+                document.getElementById('modal-body').innerHTML = `<div style="color: #ef4444; text-align: center;">Erro ao carregar painel do dono.</div>`;
             }
         }
 
         async function banirUsuario(userKey) {
-            if (!confirm("Deseja realmente banir este usuário?")) return;
+            if (!confirm("Deseja realmente banir este usuário do aplicativo?")) return;
             try {
-                await fetch(`${FIREBASE_DB_URL}/banidos/${userKey}.json`, { method: 'PUT', body: JSON.stringify(true) });
+                await fetch(`${FIREBASE_DB_URL}/banidos/${userKey}.json`, {
+                    method: 'PUT',
+                    body: JSON.stringify(true)
+                });
                 alert("Usuário banido com sucesso!");
                 abrirPainelGerenciamentoDono();
-            } catch(e) {}
+            } catch(e) {
+                alert("Erro ao banir usuário.");
+            }
         }
 
         async function desbanirUsuario(userKey) {
-            if (!confirm("Deseja liberar este usuário?")) return;
+            if (!confirm("Deseja liberar (desbanir) este usuário?")) return;
             try {
-                await fetch(`${FIREBASE_DB_URL}/banidos/${userKey}.json`, { method: 'DELETE' });
-                alert("Usuário desbanido!");
+                await fetch(`${FIREBASE_DB_URL}/banidos/${userKey}.json`, {
+                    method: 'DELETE'
+                });
+                alert("Usuário desbanido com sucesso!");
                 abrirPainelGerenciamentoDono();
-            } catch(e) {}
+            } catch(e) {
+                alert("Erro ao desbanir usuário.");
+            }
         }
 
+        // --- CRIAR GRUPO COM FOTO E NOME ---
         function abrirCriarGrupoModal() {
             const modal = document.getElementById('app-modal');
             document.getElementById('modal-title').textContent = "Criar Novo Grupo";
@@ -1330,21 +1086,23 @@
             tempGroupPhotoBase64 = "";
 
             document.getElementById('modal-body').innerHTML = `
+                <div style="font-size: 0.8rem; color: #94a3b8;">Insira a foto e os dados do grupo:</div>
+                
                 <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                    <div style="position: relative; width: 75px; height: 75px; border-radius: 50%; background: var(--bg-main); border: 2px dashed var(--primary); display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden;" onclick="document.getElementById('group-photo-input').click()">
-                        <div id="group-photo-preview" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-sub);">
-                            <svg style="width: 28px; height: 28px; fill: var(--primary);" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    <div style="position: relative; width: 75px; height: 75px; border-radius: 50%; background: #0f172a; border: 2px dashed #38bdf8; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden;" onclick="document.getElementById('group-photo-input').click()">
+                        <div id="group-photo-preview" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #64748b;">
+                            <svg style="width: 28px; height: 28px; fill: #38bdf8;" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
                         </div>
                     </div>
                     <input type="file" id="group-photo-input" class="hidden-input" accept="image/*" onchange="processarFotoGrupo(event)">
                 </div>
 
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label style="font-size: 0.75rem; color: var(--text-sub);">Nome do Grupo:</label>
+                <div class="input-group">
+                    <label>Nome do Grupo:</label>
                     <input type="text" id="group-name-input" class="custom-input" placeholder="Ex: Operações Cyber">
                 </div>
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label style="font-size: 0.75rem; color: var(--text-sub);">Descrição:</label>
+                <div class="input-group">
+                    <label>Descrição:</label>
                     <input type="text" id="group-desc-input" class="custom-input" placeholder="Ex: Canal seguro">
                 </div>
                 <button class="custom-btn" style="margin-top: 8px;" onclick="executarCriarGrupo()">Criar Grupo</button>
@@ -1368,23 +1126,38 @@
             let criador = localStorage.getItem('userName') || "Admin";
             let meuTag = localStorage.getItem('userTagId') || "@admin";
 
-            if (!nomeGrupo) { alert("Insira o nome do grupo."); return; }
+            if (!nomeGrupo) {
+                alert("Insira o nome do grupo.");
+                return;
+            }
 
             let membrosIniciais = {};
             membrosIniciais[meuTag.replace('@', '').replace(/\s+/g, '_')] = {
-                nome: criador, tagId: meuTag, avatar: localStorage.getItem('userAvatar') || ""
+                nome: criador,
+                tagId: meuTag,
+                avatar: localStorage.getItem('userAvatar') || ""
             };
 
             let novoGrupo = {
-                nome: nomeGrupo, descricao: descGrupo || "Sem descrição", foto: tempGroupPhotoBase64, criador: criador, membros: membrosIniciais, timestamp: Date.now()
+                nome: nomeGrupo,
+                descricao: descGrupo || "Sem descrição",
+                foto: tempGroupPhotoBase64,
+                criador: criador,
+                membros: membrosIniciais,
+                timestamp: Date.now()
             };
 
             try {
-                await fetch(`${FIREBASE_DB_URL}/grupos.json`, { method: 'POST', body: JSON.stringify(novoGrupo) });
+                await fetch(`${FIREBASE_DB_URL}/grupos.json`, {
+                    method: 'POST',
+                    body: JSON.stringify(novoGrupo)
+                });
                 fecharModalDireto();
                 alert("Grupo criado com sucesso!");
                 carregarContatosEGrupos();
-            } catch (e) { alert("Erro ao criar grupo."); }
+            } catch (e) {
+                alert("Erro ao criar grupo.");
+            }
         }
 
         async function carregarContatosEGrupos() {
@@ -1399,29 +1172,36 @@
                 if (grupos) {
                     Object.keys(grupos).forEach(key => {
                         let g = grupos[key];
-                        let fotoHtml = g.foto ? `<img src="${g.foto}" style="width:100%; height:100%; object-fit:cover;">` : `<svg style="width: 16px; height: 16px; fill: var(--primary);" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
+                        let fotoHtml = g.foto ? `<img src="${g.foto}" style="width:100%; height:100%; object-fit:cover;">` : `<svg style="width: 16px; height: 16px; fill: #38bdf8;" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
                         
                         html += `
                             <div class="contact-item-card" style="cursor: pointer;" onclick="abrirChatDoGrupo('${key}', '${g.nome.replace(/'/g, "\\'")}')">
                                 <div style="display: flex; align-items: center; gap: 10px;">
-                                    <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg-main); border: 1px solid var(--primary); overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #0f172a; border: 1px solid #38bdf8; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                                         ${fotoHtml}
                                     </div>
                                     <div>
-                                        <b style="color: var(--primary);">${g.nome}</b><br>
-                                        <span style="font-size: 0.75rem; color: var(--text-sub);">${g.descricao}</span>
+                                        <b style="color: #38bdf8;">${g.nome}</b><br>
+                                        <span style="font-size: 0.75rem; color: #94a3b8;">${g.descricao}</span>
                                     </div>
                                 </div>
-                                <span style="font-size: 0.7rem; color: var(--primary); background: rgba(56,189,248,0.1); padding: 4px 8px; border-radius: 6px;">Abrir Chat</span>
+                                <span style="font-size: 0.7rem; color: #38bdf8; background: rgba(56,189,248,0.1); padding: 4px 8px; border-radius: 6px;">Abrir Chat</span>
                             </div>
                         `;
                     });
                 }
-                if (!html) container.innerHTML = `<div style="text-align: center; color: var(--text-sub); font-size: 0.8rem; margin-top: 20px;">Nenhum grupo criado ainda.</div>`;
-                else container.innerHTML = html;
-            } catch (e) {}
+
+                if (!html) {
+                    container.innerHTML = `<div style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 20px;">Nenhum grupo criado ainda.</div>`;
+                } else {
+                    container.innerHTML = html;
+                }
+            } catch (e) {
+                container.innerHTML = `<div style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 20px;">Erro ao carregar grupos.</div>`;
+            }
         }
 
+        // --- SISTEMA DE CHAT DO GRUPO ESPECÍFICO ---
         async function abrirChatDoGrupo(groupId, groupName) {
             currentActiveGroupId = groupId;
             currentActiveGroupName = groupName;
@@ -1431,14 +1211,18 @@
             document.getElementById('chat-sub-tabs-bar').style.display = 'none';
             document.getElementById('group-chat-title-name').textContent = groupName;
 
+            // Carrega foto do grupo no cabeçalho do chat
             try {
                 let res = await fetch(`${FIREBASE_DB_URL}/grupos/${groupId}.json`);
                 let gData = await res.json();
                 let avatarHeaderBox = document.getElementById('group-header-avatar');
                 if (gData && gData.foto) {
                     avatarHeaderBox.innerHTML = `<img src="${gData.foto}" style="width:100%; height:100%; object-fit:cover;">`;
+                } else {
+                    avatarHeaderBox.innerHTML = `<svg style="width: 14px; height: 14px; fill: #38bdf8;" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
                 }
             } catch(e) {}
+
             carregarMensagensGrupo(groupId);
         }
 
@@ -1449,15 +1233,24 @@
             document.getElementById('chat-sub-tabs-bar').style.display = 'flex';
         }
 
+        // --- CONFIGURAÇÕES E PARTICIPANTES DO GRUPO (ESTILO WHATSAPP) ---
         async function abrirConfiguracoesGrupo() {
             if (!currentActiveGroupId) return;
             const modal = document.getElementById('app-modal');
             document.getElementById('modal-title').textContent = "Dados do Grupo";
             modal.classList.add('active');
 
+            document.getElementById('modal-body').innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 15px;">Carregando dados do grupo...</div>`;
+
             try {
                 let res = await fetch(`${FIREBASE_DB_URL}/grupos/${currentActiveGroupId}.json`);
                 let grupo = await res.json();
+
+                if (!grupo) {
+                    document.getElementById('modal-body').innerHTML = `<div style="color: #ef4444; text-align: center;">Erro ao carregar grupo.</div>`;
+                    return;
+                }
+
                 let membros = grupo.membros || {};
                 let qtdMembros = Object.keys(membros).length;
                 let fotoGrupo = grupo.foto || "";
@@ -1470,8 +1263,13 @@
                     membrosHtml += `
                         <div class="info-row" style="margin-bottom: 6px; align-items: center;">
                             <div style="display: flex; align-items: center; gap: 8px;">
-                                <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--bg-main); border: 1px solid var(--primary); overflow: hidden; display: flex; align-items: center; justify-content: center;">${avatarTag}</div>
-                                <div><b style="color: var(--text-main); font-size: 0.8rem;">${m.nome}</b><br><span style="font-size: 0.65rem; color: var(--primary);">${m.tagId}</span></div>
+                                <div style="width: 28px; height: 28px; border-radius: 50%; background: #0f172a; border: 1px solid #38bdf8; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                                    ${avatarTag}
+                                </div>
+                                <div>
+                                    <b style="color: #f8fafc; font-size: 0.8rem;">${m.nome}</b><br>
+                                    <span style="font-size: 0.65rem; color: #38bdf8;">${m.tagId}</span>
+                                </div>
                             </div>
                             <button class="custom-btn" style="background: #dc2626; padding: 3px 8px; font-size: 0.7rem;" onclick="removerMembroGrupo('${mKey}')">Remover</button>
                         </div>
@@ -1479,29 +1277,47 @@
                 });
 
                 document.getElementById('modal-body').innerHTML = `
-                    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">
-                        <div style="position: relative; width: 90px; height: 90px; border-radius: 50%; background: var(--bg-main); border: 2px solid var(--primary); overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer;" onclick="document.getElementById('edit-group-photo-file').click()">
+                    <!-- Foto, Nome e Descrição estilo WhatsApp -->
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid #334155;">
+                        <div style="position: relative; width: 90px; height: 90px; border-radius: 50%; background: #0f172a; border: 2px solid #38bdf8; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer;" onclick="document.getElementById('edit-group-photo-file').click()">
                             <div id="modal-group-photo-box" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-                                ${fotoGrupo ? `<img src="${fotoGrupo}" style="width:100%; height:100%; object-fit:cover;">` : `<svg style="width: 32px; height: 32px; fill: var(--primary);" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`}
+                                ${fotoGrupo ? `<img src="${fotoGrupo}" style="width:100%; height:100%; object-fit:cover;">` : `<svg style="width: 32px; height: 32px; fill: #38bdf8;" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`}
+                            </div>
+                            <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
+                                <span style="font-size: 0.65rem; color: #fff; font-weight: bold;">Alterar Foto</span>
                             </div>
                         </div>
                         <input type="file" id="edit-group-photo-file" class="hidden-input" accept="image/*" onchange="atualizarFotoGrupoSalvar(event)">
-                        
+
                         <div style="width: 100%; display: flex; flex-direction: column; gap: 6px;">
-                            <label style="font-size: 0.75rem; color: var(--text-sub);">Nome do Grupo:</label>
+                            <label style="font-size: 0.75rem; color: #94a3b8;">Nome do Grupo:</label>
                             <input type="text" id="edit-group-name-input" class="custom-input" value="${grupo.nome}">
                         </div>
+
                         <div style="width: 100%; display: flex; flex-direction: column; gap: 6px;">
-                            <label style="font-size: 0.75rem; color: var(--text-sub);">Descrição:</label>
+                            <label style="font-size: 0.75rem; color: #94a3b8;">Descrição do Grupo:</label>
                             <input type="text" id="edit-group-desc-input" class="custom-input" value="${grupo.descricao || ''}">
                         </div>
-                        <button class="custom-btn" style="width: 100%; padding: 8px; font-size: 0.8rem;" onclick="salvarAlteracoesGrupo()">Salvar Alterações</button>
+
+                        <button class="custom-btn" style="width: 100%; padding: 8px; font-size: 0.8rem;" onclick="salvarAlteracoesGrupo()">Salvar Alterações do Grupo</button>
                     </div>
+
+                    <!-- Quantidade e Adição de Participantes -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(30,41,59,0.8); padding: 10px; border-radius: 8px; border: 1px solid #334155; margin-top: 4px;">
+                        <span style="font-size: 0.85rem; font-weight: bold; color: #38bdf8;">Participantes:</span>
+                        <span style="font-size: 0.95rem; font-weight: bold; color: #f8fafc; background: #0284c7; padding: 2px 8px; border-radius: 6px;">${qtdMembros}</span>
+                    </div>
+
                     <button class="custom-btn" style="background: #16a34a; margin-top: 4px;" onclick="abrirAdicionarPessoasGrupo()">+ Adicionar Participante</button>
-                    <div style="font-size: 0.8rem; color: var(--primary); font-weight: bold; margin-top: 8px;">Participantes (${qtdMembros}):</div>
-                    <div style="max-height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;">${membrosHtml}</div>
+
+                    <div style="font-size: 0.8rem; color: #38bdf8; font-weight: bold; margin-top: 8px;">Lista de Membros:</div>
+                    <div style="max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;">
+                        ${membrosHtml}
+                    </div>
                 `;
-            } catch(e) {}
+            } catch (e) {
+                document.getElementById('modal-body').innerHTML = `<div style="color: #ef4444; text-align: center;">Erro ao buscar informações do grupo.</div>`;
+            }
         }
 
         async function atualizarFotoGrupoSalvar(event) {
@@ -1510,10 +1326,17 @@
             const reader = new FileReader();
             reader.onload = async function(e) {
                 let base64Img = e.target.result;
-                await fetch(`${FIREBASE_DB_URL}/grupos/${currentActiveGroupId}/foto.json`, { method: 'PUT', body: JSON.stringify(base64Img) });
-                document.getElementById('modal-group-photo-box').innerHTML = `<img src="${base64Img}" style="width:100%; height:100%; object-fit:cover;">`;
-                alert("Foto atualizada!");
-                carregarContatosEGrupos();
+                try {
+                    await fetch(`${FIREBASE_DB_URL}/grupos/${currentActiveGroupId}/foto.json`, {
+                        method: 'PUT',
+                        body: JSON.stringify(base64Img)
+                    });
+                    document.getElementById('modal-group-photo-box').innerHTML = `<img src="${base64Img}" style="width:100%; height:100%; object-fit:cover;">`;
+                    alert("Foto do grupo atualizada com sucesso!");
+                    carregarContatosEGrupos();
+                } catch(err) {
+                    alert("Erro ao atualizar foto.");
+                }
             };
             reader.readAsDataURL(file);
         }
@@ -1521,21 +1344,40 @@
         async function salvarAlteracoesGrupo() {
             let novoNome = document.getElementById('edit-group-name-input').value.trim();
             let novaDesc = document.getElementById('edit-group-desc-input').value.trim();
-            if (!novoNome) return;
 
-            await fetch(`${FIREBASE_DB_URL}/grupos/${currentActiveGroupId}/nome.json`, { method: 'PUT', body: JSON.stringify(novoNome) });
-            await fetch(`${FIREBASE_DB_URL}/grupos/${currentActiveGroupId}/descricao.json`, { method: 'PUT', body: JSON.stringify(novaDesc) });
-            currentActiveGroupName = novoNome;
-            document.getElementById('group-chat-title-name').textContent = novoNome;
-            alert("Alterações salvas!");
-            carregarContatosEGrupos();
-            fecharModalDireto();
+            if (!novoNome) {
+                alert("O nome do grupo não pode ficar vazio.");
+                return;
+            }
+
+            try {
+                await fetch(`${FIREBASE_DB_URL}/grupos/${currentActiveGroupId}/nome.json`, {
+                    method: 'PUT',
+                    body: JSON.stringify(novoNome)
+                });
+                await fetch(`${FIREBASE_DB_URL}/grupos/${currentActiveGroupId}/descricao.json`, {
+                    method: 'PUT',
+                    body: JSON.stringify(novaDesc)
+                });
+
+                currentActiveGroupName = novoNome;
+                document.getElementById('group-chat-title-name').textContent = novoNome;
+                alert("Alterações salvas com sucesso!");
+                carregarContatosEGrupos();
+                fecharModalDireto();
+            } catch(e) {
+                alert("Erro ao salvar alterações.");
+            }
         }
 
-        function abrirAdicionarPessoasGrupo() {
-            document.getElementById('modal-body').innerHTML = `
-                <div style="font-size: 0.8rem; color: var(--text-sub);">Digite o ID do usuário:</div>
-                <input type="text" id="input-add-grupo-id" class="custom-input" placeholder="@exemplo">
+        async function abrirAdicionarPessoasGrupo() {
+            const modalBody = document.getElementById('modal-body');
+            modalBody.innerHTML = `
+                <div style="font-size: 0.8rem; color: #94a3b8;">Digite o ID do usuário para adicionar ao grupo:</div>
+                <div class="input-group">
+                    <label>ID do Usuário (Ex: @usuario):</label>
+                    <input type="text" id="input-add-grupo-id" class="custom-input" placeholder="@exemplo">
+                </div>
                 <div style="display: flex; gap: 8px; margin-top: 6px;">
                     <button class="custom-btn" style="background: #334155; flex: 1;" onclick="abrirConfiguracoesGrupo()">Voltar</button>
                     <button class="custom-btn" style="flex: 1;" onclick="executarAdicionarMembroGrupo()">Confirmar</button>
@@ -1545,83 +1387,227 @@
 
         async function executarAdicionarMembroGrupo() {
             let targetTag = document.getElementById('input-add-grupo-id').value.trim();
+            if (!targetTag.startsWith('@')) {
+                alert("O ID precisa começar com @.");
+                return;
+            }
+
             let cleanKey = targetTag.replace('@', '').replace(/\s+/g, '_');
-            let resUser = await fetch(`${FIREBASE_DB_URL}/perfis/${cleanKey}.json`);
-            let userData = await resUser.json();
-            if (!userData) { alert("Usuário não encontrado!"); return; }
 
-            await fetch(`${FIREBASE_DB_URL}/grupos/${currentActiveGroupId}/membros/${cleanKey}.json`, {
-                method: 'PUT',
-                body: JSON.stringify({ nome: userData.nome, tagId: userData.tagId, avatar: userData.avatar || "" })
-            });
-            alert("Membro adicionado!");
-            abrirConfiguracoesGrupo();
+            try {
+                let resUser = await fetch(`${FIREBASE_DB_URL}/perfis/${cleanKey}.json`);
+                let userData = await resUser.json();
+
+                if (!userData) {
+                    alert("Usuário não encontrado na base de dados global!");
+                    return;
+                }
+
+                await fetch(`${FIREBASE_DB_URL}/grupos/${currentActiveGroupId}/membros/${cleanKey}.json`, {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        nome: userData.nome || "Membro",
+                        tagId: userData.tagId || targetTag,
+                        avatar: userData.avatar || ""
+                    })
+                });
+
+                alert("Usuário adicionado ao grupo com sucesso!");
+                abrirConfiguracoesGrupo();
+            } catch (e) {
+                alert("Erro ao adicionar membro.");
+            }
         }
 
-        async function removerMembroGrupo(mKey) {
-            if (!confirm("Remover participante?")) return;
-            await fetch(`${FIREBASE_DB_URL}/grupos/${currentActiveGroupId}/membros/${mKey}.json`, { method: 'DELETE' });
-            abrirConfiguracoesGrupo();
+        async function removerMembroGrupo(membroKey) {
+            if (!confirm("Deseja realmente remover este participante do grupo?")) return;
+            try {
+                await fetch(`${FIREBASE_DB_URL}/grupos/${currentActiveGroupId}/membros/${membroKey}.json`, {
+                    method: 'DELETE'
+                });
+                alert("Participante removido com sucesso!");
+                abrirConfiguracoesGrupo();
+            } catch(e) {
+                alert("Erro ao remover membro.");
+            }
         }
 
-        function enviarMidiaChat(event) {
+        async function enviarMensagemGrupoChat() {
+            if (!currentActiveGroupId) return;
+            const input = document.getElementById('group-chat-input-text');
+            const texto = input.value.trim();
+            if (!texto) return;
+
+            let nome = localStorage.getItem('userName') || "Anônimo";
+            let tagId = localStorage.getItem('userTagId') || "@user";
+            let avatar = localStorage.getItem('userAvatar') || "";
+
+            let novaMsg = {
+                nome, tagId, avatar, texto, timestamp: Date.now()
+            };
+
+            try {
+                await fetch(`${FIREBASE_DB_URL}/chat_grupos/${currentActiveGroupId}.json`, {
+                    method: 'POST',
+                    body: JSON.stringify(novaMsg)
+                });
+                input.value = "";
+                carregarMensagensGrupo(currentActiveGroupId);
+            } catch(e) {
+                alert("Erro ao enviar mensagem no grupo.");
+            }
+        }
+
+        async function carregarMensagensGrupo(groupId) {
+            const container = document.getElementById('group-chat-messages-container');
+            if (!container) return;
+
+            try {
+                let res = await fetch(`${FIREBASE_DB_URL}/chat_grupos/${groupId}.json`);
+                let dados = await res.json();
+
+                if (!dados) {
+                    container.innerHTML = `<div style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 20px;">Nenhuma mensagem neste grupo.</div>`;
+                    return;
+                }
+
+                let html = "";
+                Object.keys(dados).forEach(k => {
+                    let msg = dados[k];
+                    html += `
+                        <div class="chat-message-item">
+                            <div class="chat-msg-header">
+                                <div class="chat-msg-avatar">
+                                    ${msg.avatar ? `<img src="${msg.avatar}">` : `<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`}
+                                </div>
+                                <div class="chat-msg-userinfo">
+                                    <span class="chat-msg-name">${msg.nome}</span>
+                                    <span class="chat-msg-id">${msg.tagId}</span>
+                                </div>
+                            </div>
+                            <div class="chat-msg-text">${msg.texto}</div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+                container.scrollTop = container.scrollHeight;
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        function abrirBuscaPerfilPorId() {
+            const modal = document.getElementById('app-modal');
+            document.getElementById('modal-title').textContent = "Adicionar Contato por @ID";
+            modal.classList.add('active');
+
+            document.getElementById('modal-body').innerHTML = `
+                <div style="font-size: 0.8rem; color: #94a3b8;">Digite o ID do usuário (com ou sem @):</div>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="search-id-input" class="custom-input" placeholder="@usuario">
+                    <button class="custom-btn" onclick="executarAdicionarContato()">Adicionar</button>
+                </div>
+                <div id="perfil-search-result" style="margin-top: 8px;"></div>
+            `;
+        }
+
+        async function executarAdicionarContato() {
+            let queryId = document.getElementById('search-id-input').value.trim().replace('@', '').replace(/\s+/g, '_');
+            const resultBox = document.getElementById('perfil-search-result');
+            if (!queryId) return;
+
+            resultBox.innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 10px;">Buscando contato...</div>`;
+
+            try {
+                let response = await fetch(`${FIREBASE_DB_URL}/perfis/${queryId}.json`);
+                let perfil = await response.json();
+
+                if (!perfil) {
+                    resultBox.innerHTML = `<div style="color: #ef4444; text-align: center; padding: 10px;">Usuário não encontrado.</div>`;
+                    return;
+                }
+
+                let savedContatos = JSON.parse(localStorage.getItem('userContatos') || "{}");
+                savedContatos[queryId] = perfil;
+                localStorage.setItem('userContatos', JSON.stringify(savedContatos));
+
+                resultBox.innerHTML = `<div style="color: #38bdf8; text-align: center; padding: 10px;">Contato adicionado com sucesso!</div>`;
+                setTimeout(() => {
+                    fecharModalDireto();
+                    carregarContatosEGrupos();
+                }, 1000);
+            } catch (e) {
+                resultBox.innerHTML = `<div style="color: #ef4444; text-align: center; padding: 10px;">Erro ao adicionar contato.</div>`;
+            }
+        }
+
+        async function enviarMensagemChat() {
+            const input = document.getElementById('chat-input-text');
+            const texto = input.value.trim();
+            if (!texto) return;
+
+            let nome = localStorage.getItem('userName') || "Anônimo";
+            let tagId = localStorage.getItem('userTagId') || "@user";
+            let avatar = localStorage.getItem('userAvatar') || "";
+
+            let novaMsg = {
+                nome: nome,
+                tagId: tagId,
+                avatar: avatar,
+                texto: texto,
+                timestamp: Date.now()
+            };
+
+            try {
+                await fetch(`${FIREBASE_DB_URL}/chat_global.json`, {
+                    method: 'POST',
+                    body: JSON.stringify(novaMsg)
+                });
+                input.value = "";
+                atualizarMensagensChat();
+            } catch (e) {
+                alert("Erro ao enviar mensagem.");
+            }
+        }
+
+        function enviarImagemChat(event) {
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
             reader.onload = async function(e) {
-                let mediaDataUrl = e.target.result;
-                let isVideo = file.type.startsWith('video');
+                let imgDataUrl = e.target.result;
+                let nome = localStorage.getItem('userName') || "Anônimo";
+                let tagId = localStorage.getItem('userTagId') || "@user";
+                let avatar = localStorage.getItem('userAvatar') || "";
+
                 let novaMsg = {
-                    nome: localStorage.getItem('userName'), tagId: localStorage.getItem('userTagId'), avatar: localStorage.getItem('userAvatar') || "",
-                    [isVideo ? 'video' : 'imagem']: mediaDataUrl, texto: isVideo ? "📹 [Vídeo]" : "📷 [Foto]", timestamp: Date.now()
+                    nome: nome,
+                    tagId: tagId,
+                    avatar: avatar,
+                    imagem: imgDataUrl,
+                    texto: "📷 [Foto enviada]",
+                    timestamp: Date.now()
                 };
-                await fetch(`${FIREBASE_DB_URL}/chat_global.json`, { method: 'POST', body: JSON.stringify(novaMsg) });
-                atualizarMensagensChat();
+
+                try {
+                    await fetch(`${FIREBASE_DB_URL}/chat_global.json`, {
+                        method: 'POST',
+                        body: JSON.stringify(novaMsg)
+                    });
+                    atualizarMensagensChat();
+                } catch (err) {
+                    alert("Erro ao enviar imagem.");
+                }
             };
             reader.readAsDataURL(file);
-        }
-
-        function enviarMidiaGrupoChat(event) {
-            const file = event.target.files[0];
-            if (!file || !currentActiveGroupId) return;
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                let mediaDataUrl = e.target.result;
-                let isVideo = file.type.startsWith('video');
-                let novaMsg = {
-                    nome: localStorage.getItem('userName'), tagId: localStorage.getItem('userTagId'), avatar: localStorage.getItem('userAvatar') || "",
-                    [isVideo ? 'video' : 'imagem']: mediaDataUrl, texto: isVideo ? "📹 [Vídeo]" : "📷 [Foto]", timestamp: Date.now()
-                };
-                await fetch(`${FIREBASE_DB_URL}/chat_grupos/${currentActiveGroupId}.json`, { method: 'POST', body: JSON.stringify(novaMsg) });
-                carregarMensagensGrupo(currentActiveGroupId);
-            };
-            reader.readAsDataURL(file);
-        }
-
-        async function enviarMensagemChat() {
-            let input = document.getElementById('chat-input-text');
-            let texto = input.value.trim();
-            if (!texto) return;
-            let novaMsg = { nome: localStorage.getItem('userName'), tagId: localStorage.getItem('userTagId'), avatar: localStorage.getItem('userAvatar') || "", texto, timestamp: Date.now() };
-            await fetch(`${FIREBASE_DB_URL}/chat_global.json`, { method: 'POST', body: JSON.stringify(novaMsg) });
-            input.value = "";
-            atualizarMensagensChat();
-        }
-
-        async function enviarMensagemGrupoChat() {
-            let input = document.getElementById('group-chat-input-text');
-            let texto = input.value.trim();
-            if (!texto || !currentActiveGroupId) return;
-            let novaMsg = { nome: localStorage.getItem('userName'), tagId: localStorage.getItem('userTagId'), avatar: localStorage.getItem('userAvatar') || "", texto, timestamp: Date.now() };
-            await fetch(`${FIREBASE_DB_URL}/chat_grupos/${currentActiveGroupId}.json`, { method: 'POST', body: JSON.stringify(novaMsg) });
-            input.value = "";
-            carregarMensagensGrupo(currentActiveGroupId);
         }
 
         function escutarMensagensChat() {
             setInterval(() => {
                 atualizarMensagensChat();
-                if (currentActiveGroupId) carregarMensagensGrupo(currentActiveGroupId);
+                if (currentActiveGroupId) {
+                    carregarMensagensGrupo(currentActiveGroupId);
+                }
             }, 3000);
             atualizarMensagensChat();
         }
@@ -1629,84 +1615,43 @@
         async function atualizarMensagensChat() {
             const container = document.getElementById('chat-messages-container');
             if (!container) return;
+
             try {
-                let res = await fetch(`${FIREBASE_DB_URL}/chat_global.json`);
-                let dados = await res.json();
-                if (!dados) return;
+                let response = await fetch(`${FIREBASE_DB_URL}/chat_global.json`);
+                let dados = await response.json();
+
+                if (!dados) {
+                    container.innerHTML = `<div style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 20px;">Nenhuma mensagem no chat ainda.</div>`;
+                    return;
+                }
 
                 let html = "";
-                Object.keys(dados).forEach(k => {
-                    let msg = dados[k];
-                    let tagLimpa = (msg.tagId || '').replace('@', '').replace(/\s+/g, '_');
-                    html += renderizarItemMensagem(msg, tagLimpa);
-                });
-                container.innerHTML = html;
-                container.scrollTop = container.scrollHeight;
-            } catch(e) {}
-        }
-
-        async function carregarMensagensGrupo(groupId) {
-            const container = document.getElementById('group-chat-messages-container');
-            if (!container) return;
-            try {
-                let res = await fetch(`${FIREBASE_DB_URL}/chat_grupos/${groupId}.json`);
-                let dados = await res.json();
-                if (!dados) { container.innerHTML = `<div style="text-align: center; color: var(--text-sub); font-size: 0.8rem; margin-top: 20px;">Sem mensagens.</div>`; return; }
-
-                let html = "";
-                Object.keys(dados).forEach(k => {
-                    let msg = dados[k];
-                    let tagLimpa = (msg.tagId || '').replace('@', '').replace(/\s+/g, '_');
-                    html += renderizarItemMensagem(msg, tagLimpa);
-                });
-                container.innerHTML = html;
-                container.scrollTop = container.scrollHeight;
-            } catch(e) {}
-        }
-
-        function renderizarItemMensagem(msg, tagLimpa) {
-            let avatarImg = msg.avatar ? `<img src="${msg.avatar}">` : `<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
-            return `
-                <div class="chat-message-item">
-                    <div class="chat-msg-header">
-                        <div class="chat-msg-avatar" onclick="verPerfilOutroUsuario('${tagLimpa}')">${avatarImg}</div>
-                        <div class="chat-msg-userinfo" onclick="verPerfilOutroUsuario('${tagLimpa}')">
-                            <span class="chat-msg-name">${msg.nome}</span>
-                            <span class="chat-msg-id">${msg.tagId}</span>
+                let chaves = Object.keys(dados);
+                
+                chaves.forEach(key => {
+                    let msg = dados[key];
+                    html += `
+                        <div class="chat-message-item">
+                            <div class="chat-msg-header">
+                                <div class="chat-msg-avatar">
+                                    ${msg.avatar ? `<img src="${msg.avatar}">` : `<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`}
+                                </div>
+                                <div class="chat-msg-userinfo">
+                                    <span class="chat-msg-name">${msg.nome || 'Usuário'}</span>
+                                    <span class="chat-msg-id">${msg.tagId || '@user'}</span>
+                                </div>
+                            </div>
+                            <div class="chat-msg-text">${msg.texto}</div>
+                            ${msg.imagem ? `<img src="${msg.imagem}" class="chat-msg-image">` : ''}
                         </div>
-                    </div>
-                    <div class="chat-msg-text">${msg.texto}</div>
-                    ${msg.imagem ? `<img src="${msg.imagem}" class="chat-msg-image" onclick="abrirMidiaZoom('${msg.imagem}', 'img')">` : ''}
-                    ${msg.video ? `<video src="${msg.video}" class="chat-msg-video" controls></video>` : ''}
-                </div>
-            `;
-        }
+                    `;
+                });
 
-        function abrirMidiaZoom(src, tipo) {
-            const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "Visualizar Mídia";
-            modal.classList.add('active');
-            document.getElementById('modal-body').innerHTML = `<img src="${src}" style="width: 100%; border-radius: 8px; object-fit: contain;">`;
-        }
-
-        function abrirBuscaPerfilPorId() {
-            const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "Buscar / Adicionar por @ID";
-            modal.classList.add('active');
-            document.getElementById('modal-body').innerHTML = `
-                <div style="font-size: 0.8rem; color: var(--text-sub);">Digite o ID do usuário:</div>
-                <div style="display: flex; gap: 8px;">
-                    <input type="text" id="search-id-input" class="custom-input" placeholder="@usuario">
-                    <button class="custom-btn" onclick="executarBuscarContato()">Ver</button>
-                </div>
-                <div id="perfil-search-result" style="margin-top: 8px;"></div>
-            `;
-        }
-
-        async function executarBuscarContato() {
-            let queryId = document.getElementById('search-id-input').value.trim().replace('@', '').replace(/\s+/g, '_');
-            if (!queryId) return;
-            verPerfilOutroUsuario(queryId);
+                container.innerHTML = html;
+                container.scrollTop = container.scrollHeight;
+            } catch (e) {
+                console.error("Erro ao puxar chat:", e);
+            }
         }
 
         function carregarBanner(event) {
@@ -1751,7 +1696,10 @@
                 const fileURL = e.target.result;
                 localStorage.setItem('userAvatar', fileURL);
                 aplicarAvatar(fileURL);
-                sincronizarPerfilFirebase(localStorage.getItem('userName'), localStorage.getItem('userTagId'), localStorage.getItem('userBio') || "");
+                let nome = localStorage.getItem('userName');
+                let tagId = localStorage.getItem('userTagId');
+                let bio = localStorage.getItem('userBio') || "";
+                if (tagId) sincronizarPerfilFirebase(nome, tagId, bio);
             };
             reader.readAsDataURL(file);
         }
@@ -1760,52 +1708,156 @@
             document.getElementById('profile-avatar').innerHTML = `<img src="${url}" alt="Avatar">`;
         }
 
-        function fecharModal(event) { if (event.target.id === 'app-modal') document.getElementById('app-modal').classList.remove('active'); }
-        function fecharModalDireto() { document.getElementById('app-modal').classList.remove('active'); }
+        function fecharModal(event) {
+            if (event.target.id === 'app-modal') document.getElementById('app-modal').classList.remove('active');
+        }
+
+        function fecharModalDireto() {
+            document.getElementById('app-modal').classList.remove('active');
+        }
 
         function abrirBuscaIP() {
             const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "Consulta de IP";
+            document.getElementById('modal-title').textContent = "Consulta de IP (ipinfo.io)";
             modal.classList.add('active');
+
             document.getElementById('modal-body').innerHTML = `
-                <input type="text" id="ip-input-target" class="custom-input" placeholder="Ex: 8.8.8.8">
-                <button class="custom-btn" onclick="consultarIPAlvo()">Buscar</button>
+                <div style="font-size: 0.8rem; color: #94a3b8;">Digite o endereço IP para consultar:</div>
+                <div class="search-box-container" style="display: flex; gap: 8px;">
+                    <input type="text" id="ip-input-target" class="custom-input" placeholder="Ex: 8.8.8.8">
+                    <button class="custom-btn" onclick="consultarIPAlvo()">Buscar</button>
+                </div>
                 <div id="mapa-ip"></div>
-                <div id="ip-result-container" style="margin-top: 6px;"></div>
+                <div id="ip-result-container" style="display: flex; flex-direction: column; gap: 10px; margin-top: 4px;">
+                    <div style="text-align: center; color: #64748b; padding: 10px;">Insira um IP acima para ver os dados.</div>
+                </div>
             `;
+
             setTimeout(() => {
                 if (mapaIP) mapaIP.remove();
                 mapaIP = L.map('mapa-ip').setView([-14.235, -51.925], 4);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapaIP);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapaIP);
             }, 100);
         }
 
         async function consultarIPAlvo() {
-            let ipInput = document.getElementById('ip-input-target').value.trim();
-            let res = await fetch(`https://ipinfo.io/${ipInput}/json`);
-            let data = await res.json();
-            if (data.loc) {
-                let [lat, lng] = data.loc.split(',').map(Number);
-                mapaIP.flyTo([lat, lng], 13);
-                if (marcadorIP) mapaIP.removeLayer(marcadorIP);
-                marcadorIP = L.marker([lat, lng]).addTo(mapaIP).bindPopup(data.ip).openPopup();
+            const ipInput = document.getElementById('ip-input-target').value.trim();
+            const resultContainer = document.getElementById('ip-result-container');
+            if (!ipInput) return;
+
+            try {
+                const response = await fetch(`https://ipinfo.io/${ipInput}/json`);
+                const data = await response.json();
+                if (data.loc) {
+                    const [lat, lng] = data.loc.split(',').map(Number);
+                    if (mapaIP) {
+                        mapaIP.flyTo([lat, lng], 13);
+                        if (marcadorIP) mapaIP.removeLayer(marcadorIP);
+                        marcadorIP = L.marker([lat, lng]).addTo(mapaIP).bindPopup(`<b>${data.ip}</b>`).openPopup();
+                    }
+                }
+                resultContainer.innerHTML = `
+                    <div class="info-row"><span class="info-label">IP:</span><span class="info-value">${data.ip || 'N/A'}</span></div>
+                    <div class="info-row"><span class="info-label">Cidade:</span><span class="info-value">${data.city || 'N/A'}</span></div>
+                    <div class="info-row"><span class="info-label">Região:</span><span class="info-value">${data.region || 'N/A'}</span></div>
+                    <div class="info-row"><span class="info-label">País:</span><span class="info-value">${data.country || 'N/A'}</span></div>
+                    <div class="info-row"><span class="info-label">Provedor:</span><span class="info-value">${data.org || 'N/A'}</span></div>
+                `;
+            } catch (e) {
+                resultContainer.innerHTML = `<div style="color: #ef4444; text-align: center;">Erro ao consultar IP.</div>`;
             }
-            document.getElementById('ip-result-container').innerHTML = `
-                <div class="info-row"><span class="info-label">IP:</span><span class="info-value">${data.ip}</span></div>
-                <div class="info-row"><span class="info-label">Cidade:</span><span class="info-value">${data.city}</span></div>
-                <div class="info-row"><span class="info-label">País:</span><span class="info-value">${data.country}</span></div>
-            `;
         }
 
-        function abrirCapturaRemota() {
+        async function abrirCapturaRemota() {
             const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "Captura Remota";
+            document.getElementById('modal-title').textContent = `PAINEL DE CAPTURAS REMOTAS`;
             modal.classList.add('active');
-            let link = `https://wv0304362-bot.github.io/linkApi1-/?id=${currentTargetId}`;
+
+            const linkGerado = `https://wv0304362-bot.github.io/linkApi1-/?id=${currentTargetId}`;
+
             document.getElementById('modal-body').innerHTML = `
-                <input type="text" class="custom-input" value="${link}" readonly>
-                <button class="custom-btn" onclick="navigator.clipboard.writeText('${link}'); alert('Copiado!');">Copiar Link</button>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <span style="font-size: 0.8rem; color: #94a3b8;">Link com ID Atual (${currentTargetId}):</span>
+                    <button class="custom-btn" style="padding: 2px 6px; font-size: 0.7rem; background: #334155;" onclick="alterarIdCaptura()">Editar ID</button>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="captura-link-input" class="custom-input" value="${linkGerado}" readonly>
+                    <button class="custom-btn" onclick="navigator.clipboard.writeText(document.getElementById('captura-link-input').value); alert('Copiado!');">Copiar</button>
+                </div>
+                <div style="font-size: 0.8rem; color: #38bdf8; font-weight: bold; margin-top: 6px;">Registros Salvos:</div>
+                <div id="lista-captura-container" style="max-height: 250px; overflow-y: auto;">Buscando...</div>
             `;
+
+            try {
+                let resposta = await fetch(`${FIREBASE_DB_URL}/capturas.json`);
+                let todosDados = await resposta.json();
+                const containerLista = document.getElementById('lista-captura-container');
+
+                if (!todosDados || Object.keys(todosDados).length === 0) {
+                    containerLista.innerHTML = `<div style="text-align: center; color: #64748b; padding: 10px;">Nenhum registro encontrado.</div>`;
+                    return;
+                }
+
+                let itensHTML = "";
+                for (let idKey in todosDados) {
+                    let d = todosDados[idKey];
+                    let paisCode = d.country ? d.country.toLowerCase() : '';
+                    let bandeiraEmoji = d.country ? String.fromCodePoint(...d.country.toUpperCase().split('').map(char => 127397 + char.charCodeAt())) : '🌐';
+                    
+                    itensHTML += `
+                        <div class="info-row" style="margin-bottom: 6px; align-items: center;">
+                            <div>
+                                <b style="color: #f8fafc;">${bandeiraEmoji} ${d.ip || 'IP Desconhecido'}</b><br>
+                                <span style="font-size: 0.7rem; color: #94a3b8;">ID: ${idKey} | ${d.city || 'Local Desconhecido'}</span>
+                            </div>
+                            <button class="custom-btn" style="padding: 4px 8px; font-size: 0.75rem;" onclick='verDetalhesFirebase(${JSON.stringify(d)}, "${idKey}")'>Ver Dados</button>
+                        </div>
+                    `;
+                }
+                containerLista.innerHTML = itensHTML;
+            } catch (e) {
+                document.getElementById('lista-captura-container').innerHTML = `Erro ao carregar capturas.`;
+            }
+        }
+
+        function alterarIdCaptura() {
+            let novoId = prompt("Digite o novo ID para o link de captura remota:", currentTargetId);
+            if (novoId && novoId.trim() !== "") {
+                currentTargetId = novoId.trim();
+                localStorage.setItem('currentTargetId', currentTargetId);
+                abrirCapturaRemota();
+            }
+        }
+
+        function verDetalhesFirebase(dados, idAlvo) {
+            let lat = dados.location ? dados.location.lat : -14.235;
+            let lon = dados.location ? dados.location.lon : -51.925;
+            let foto = dados.media ? dados.media.photo : "";
+            let audio = dados.media ? dados.media.audio : "";
+
+            document.getElementById('modal-body').innerHTML = `
+                <button class="custom-btn" style="background:#334155; margin-bottom:4px; width: fit-content;" onclick="abrirCapturaRemota()">&larr; Voltar à Lista</button>
+                <div class="info-row"><span class="info-label">IP:</span><span class="info-value">${dados.ip || 'N/A'}</span></div>
+                <div class="info-row"><span class="info-label">Localização:</span><span class="info-value">${dados.city || 'N/A'}, ${dados.region || ''} - ${dados.country || ''}</span></div>
+                <div class="info-row"><span class="info-label">Dispositivo:</span><span class="info-value">${dados.device || 'N/A'}</span></div>
+                <div id="mapa-log-detalhe"></div>
+                <div style="display: flex; gap: 8px; margin-top: 6px;">
+                    <div style="flex: 1; height: 140px; background: #0f172a; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid #334155;">
+                        ${foto ? `<img src="${foto}" style="width:100%; height:100%; object-fit:cover;">` : `<span style="color:#64748b; font-size:0.75rem;">Sem foto capturada</span>`}
+                    </div>
+                    <div style="flex: 1; height: 140px; background: #0f172a; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid #334155; padding: 8px;">
+                        <span style="color:#94a3b8; font-size:0.75rem; margin-bottom:6px;">Áudio Capturado</span>
+                        ${audio ? `<audio controls style="width:100%; height:30px;"><source src="${audio}" type="audio/webm"></audio>` : `<span style="color:#64748b; font-size:0.75rem;">Sem áudio</span>`}
+                    </div>
+                </div>
+            `;
+
+            setTimeout(() => {
+                if (mapaDetalhe) mapaDetalhe.remove();
+                mapaDetalhe = L.map('mapa-log-detalhe').setView([lat, lon], 14);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapaDetalhe);
+                L.marker([lat, lon]).addTo(mapaDetalhe).bindPopup(`<b>Alvo: ${idAlvo}</b>`).openPopup();
+            }, 100);
         }
 
         function abrirBuscaLink() {
@@ -1813,8 +1865,12 @@
             document.getElementById('modal-title').textContent = "Busca via Link";
             modal.classList.add('active');
             document.getElementById('modal-body').innerHTML = `
-                <input type="text" class="custom-input" value="https://mymap.icu/YR9FVS.mp4" readonly>
-                <button class="custom-btn" onclick="window.open('https://grabify.link/track/D5MWM2', '_blank')">Abrir Grabify</button>
+                <div style="font-size: 0.8rem; color: #94a3b8;">Link de Apoio:</div>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="private-input" class="custom-input" value="https://mymap.icu/YR9FVS.mp4" readonly>
+                    <button class="custom-btn" onclick="navigator.clipboard.writeText(document.getElementById('private-input').value); alert('Copiado!');">Copiar</button>
+                </div>
+                <button class="custom-btn" style="margin-top: 8px;" onclick="window.open('https://grabify.link/track/D5MWM2', '_blank')">Abrir Grabify</button>
             `;
         }
     </script>
