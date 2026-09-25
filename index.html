@@ -438,6 +438,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 10px;
         }
 
         /* --- TELA DE PERFIL --- */
@@ -715,6 +716,7 @@
         let marcadorIP = null;
         let mapaDetalhe = null;
         let currentTargetId = localStorage.getItem('currentTargetId') || "alvo01";
+        let tempGroupPhotoBase64 = "";
 
         window.onload = function() {
             verificarInstalacaoPerfil();
@@ -864,14 +866,25 @@
             }
         }
 
-        // --- CRIAR GRUPO ---
+        // --- CRIAR GRUPO COM FOTO E NOME ---
         function abrirCriarGrupoModal() {
             const modal = document.getElementById('app-modal');
             document.getElementById('modal-title').textContent = "Criar Novo Grupo";
             modal.classList.add('active');
+            tempGroupPhotoBase64 = "";
 
             document.getElementById('modal-body').innerHTML = `
-                <div style="font-size: 0.8rem; color: #94a3b8;">Informe os dados do grupo:</div>
+                <div style="font-size: 0.8rem; color: #94a3b8;">Insira a foto e os dados do grupo:</div>
+                
+                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <div style="position: relative; width: 75px; height: 75px; border-radius: 50%; background: #0f172a; border: 2px dashed #38bdf8; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden;" onclick="document.getElementById('group-photo-input').click()">
+                        <div id="group-photo-preview" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #64748b;">
+                            <svg style="width: 28px; height: 28px; fill: #38bdf8;" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        </div>
+                    </div>
+                    <input type="file" id="group-photo-input" class="hidden-input" accept="image/*" onchange="processarFotoGrupo(event)">
+                </div>
+
                 <div class="input-group">
                     <label>Nome do Grupo:</label>
                     <input type="text" id="group-name-input" class="custom-input" placeholder="Ex: Operações Cyber">
@@ -882,6 +895,17 @@
                 </div>
                 <button class="custom-btn" style="margin-top: 8px;" onclick="executarCriarGrupo()">Criar Grupo</button>
             `;
+        }
+
+        function processarFotoGrupo(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                tempGroupPhotoBase64 = e.target.result;
+                document.getElementById('group-photo-preview').innerHTML = `<img src="${tempGroupPhotoBase64}" style="width:100%; height:100%; object-fit:cover;">`;
+            };
+            reader.readAsDataURL(file);
         }
 
         async function executarCriarGrupo() {
@@ -897,6 +921,7 @@
             let novoGrupo = {
                 nome: nomeGrupo,
                 descricao: descGrupo || "Sem descrição",
+                foto: tempGroupPhotoBase64,
                 criador: criador,
                 timestamp: Date.now()
             };
@@ -926,11 +951,18 @@
                 if (grupos) {
                     Object.keys(grupos).forEach(key => {
                         let g = grupos[key];
+                        let fotoHtml = g.foto ? `<img src="${g.foto}" style="width:100%; height:100%; object-fit:cover;">` : `<svg style="width: 16px; height: 16px; fill: #38bdf8;" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
+                        
                         html += `
                             <div class="contact-item-card">
-                                <div>
-                                    <b style="color: #38bdf8;">👥 ${g.nome}</b><br>
-                                    <span style="font-size: 0.75rem; color: #94a3b8;">${g.descricao}</span>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #0f172a; border: 1px solid #38bdf8; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        ${fotoHtml}
+                                    </div>
+                                    <div>
+                                        <b style="color: #38bdf8;">${g.nome}</b><br>
+                                        <span style="font-size: 0.75rem; color: #94a3b8;">${g.descricao}</span>
+                                    </div>
                                 </div>
                                 <span style="font-size: 0.7rem; color: #64748b;">Grupo</span>
                             </div>
@@ -979,7 +1011,6 @@
                     return;
                 }
 
-                // Salvar contato localmente na lista do usuário
                 let savedContatos = JSON.parse(localStorage.getItem('userContatos') || "{}");
                 savedContatos[queryId] = perfil;
                 localStorage.setItem('userContatos', JSON.stringify(savedContatos));
