@@ -47,6 +47,58 @@
             display: flex;
         }
 
+        /* --- TELA DE BANIMENTO BLOQUEADA --- */
+        #ban-screen {
+            position: fixed;
+            inset: 0;
+            background: #090d16;
+            z-index: 99999;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            text-align: center;
+        }
+        #ban-screen.active {
+            display: flex;
+        }
+        .ban-card {
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid #ef4444;
+            border-radius: 20px;
+            padding: 30px 20px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+        .ban-icon-svg {
+            width: 64px;
+            height: 64px;
+            fill: #ef4444;
+            animation: pulse-ban 1.5s infinite;
+        }
+        @keyframes pulse-ban {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+        .ban-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #f87171;
+            line-height: 1.4;
+        }
+        .ban-desc {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
         /* --- BARRA DE NAVEGAÇÃO INFERIOR FIXA --- */
         .cyber-dock {
             position: absolute;
@@ -540,6 +592,19 @@
 </head>
 <body>
 
+    <!-- ================= TELA DE BLOQUEIO DE BANIMENTO ================= -->
+    <div id="ban-screen">
+        <div class="ban-card">
+            <!-- Símbolo de aviso desenhado em SVG -->
+            <svg class="ban-icon-svg" viewBox="0 0 24 24">
+                <path d="M12 2L1 21h22L12 2zm1 16h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+            </svg>
+            <div class="ban-title">Você violou as diretrizes da Comunidade, sua conta foi banida permanentemente by LOTUX</div>
+            <div class="ban-desc">O acesso a este aplicativo foi revogado devido a violações dos termos de uso.</div>
+            <a href="https://discord.gg/TuWFudyT" target="_blank" class="custom-btn" style="width: 100%; text-align: center; text-decoration: none; background: #5865F2; display: block;">Suporte (Discord)</a>
+        </div>
+    </div>
+
     <div class="app-container">
 
         <!-- ================= SECTION 1: HOME / PAINEL ================= -->
@@ -759,9 +824,7 @@
                 let res = await fetch(`${FIREBASE_DB_URL}/banidos/${cleanKey}.json`);
                 let banido = await res.json();
                 if (banido) {
-                    alert("Você foi banido deste aplicativo pelo Administrador.");
-                    localStorage.clear();
-                    location.reload();
+                    document.getElementById('ban-screen').classList.add('active');
                 }
             } catch(e) {}
         }
@@ -956,43 +1019,64 @@
             }
         }
 
-        // --- PAINEL DO DONO PARA BANIR USUÁRIOS ---
+        // --- PAINEL DO DONO PARA BANIR E LIBERAR USUÁRIOS ---
         async function abrirPainelGerenciamentoDono() {
             const modal = document.getElementById('app-modal');
             document.getElementById('modal-title').textContent = "Gerenciamento e Banimento (Dono)";
             modal.classList.add('active');
 
-            document.getElementById('modal-body').innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 10px;">Carregando lista de IDs cadastrados...</div>`;
+            document.getElementById('modal-body').innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 10px;">Carregando lista de usuários...</div>`;
 
             try {
-                let res = await fetch(`${FIREBASE_DB_URL}/perfis.json`);
-                let perfis = await res.json();
+                let resPerf = await fetch(`${FIREBASE_DB_URL}/perfis.json`);
+                let perfis = await resPerf.json();
 
-                if (!perfis || Object.keys(perfis).length === 0) {
-                    document.getElementById('modal-body').innerHTML = `<div style="text-align: center; color: #64748b;">Nenhum usuário cadastrado.</div>`;
-                    return;
+                let resBan = await fetch(`${FIREBASE_DB_URL}/banidos.json`);
+                let banidos = await resBan.json() || {};
+
+                let html = `<div style="font-size: 0.8rem; color: #38bdf8; margin-bottom: 6px;">Lista de Usuários Cadastrados:</div>`;
+                
+                if (perfis) {
+                    Object.keys(perfis).forEach(key => {
+                        let p = perfis[key];
+                        if (p.tagId && p.tagId.toUpperCase() !== ID_DONO_OFICIAL) {
+                            html += `
+                                <div class="info-row" style="margin-bottom: 6px; align-items: center;">
+                                    <div>
+                                        <b style="color: #f8fafc;">${p.nome || 'Sem Nome'}</b><br>
+                                        <span style="font-size: 0.75rem; color: #38bdf8;">${p.tagId}</span>
+                                    </div>
+                                    <button class="custom-btn" style="background: #dc2626; padding: 4px 10px; font-size: 0.75rem;" onclick="banirUsuario('${key}')">Banir</button>
+                                </div>
+                            `;
+                        }
+                    });
                 }
 
-                let html = `<div style="font-size: 0.8rem; color: #38bdf8; margin-bottom: 6px;">Lista de Usuários Cadastrados (Menos o ADM):</div>`;
-                
-                Object.keys(perfis).forEach(key => {
-                    let p = perfis[key];
-                    if (p.tagId && p.tagId.toUpperCase() !== ID_DONO_OFICIAL) {
-                        html += `
-                            <div class="info-row" style="margin-bottom: 6px; align-items: center;">
-                                <div>
-                                    <b style="color: #f8fafc;">${p.nome || 'Sem Nome'}</b><br>
-                                    <span style="font-size: 0.75rem; color: #38bdf8;">${p.tagId}</span>
+                html += `<div style="font-size: 0.8rem; color: #f87171; margin-top: 12px; margin-bottom: 6px;">Usuários Banidos (Liberar):</div>`;
+                let temBanido = false;
+                if (banidos) {
+                    Object.keys(banidos).forEach(key => {
+                        if (banidos[key]) {
+                            temBanido = true;
+                            html += `
+                                <div class="info-row" style="margin-bottom: 6px; align-items: center; border-color: #ef4444;">
+                                    <div>
+                                        <b style="color: #f87171;">@${key}</b>
+                                    </div>
+                                    <button class="custom-btn" style="background: #16a34a; padding: 4px 10px; font-size: 0.75rem;" onclick="liberarUsuario('${key}')">Liberar</button>
                                 </div>
-                                <button class="custom-btn" style="background: #dc2626; padding: 4px 10px; font-size: 0.75rem;" onclick="banirUsuario('${key}')">Banir</button>
-                            </div>
-                        `;
-                    }
-                });
+                            `;
+                        }
+                    });
+                }
+                if (!temBanido) {
+                    html += `<div style="font-size: 0.75rem; color: #64748b;">Nenhum usuário banido no momento.</div>`;
+                }
 
                 document.getElementById('modal-body').innerHTML = html;
             } catch(e) {
-                document.getElementById('modal-body').innerHTML = `<div style="color: #ef4444; text-align: center;">Erro ao carregar usuários.</div>`;
+                document.getElementById('modal-body').innerHTML = `<div style="color: #ef4444; text-align: center;">Erro ao carregar lista.</div>`;
             }
         }
 
@@ -1003,13 +1087,23 @@
                     method: 'PUT',
                     body: JSON.stringify(true)
                 });
-                await fetch(`${FIREBASE_DB_URL}/perfis/${userKey}.json`, {
-                    method: 'DELETE'
-                });
                 alert("Usuário banido com sucesso!");
                 abrirPainelGerenciamentoDono();
             } catch(e) {
                 alert("Erro ao banir usuário.");
+            }
+        }
+
+        async function liberarUsuario(userKey) {
+            if (!confirm("Deseja realmente remover o banimento deste usuário?")) return;
+            try {
+                await fetch(`${FIREBASE_DB_URL}/banidos/${userKey}.json`, {
+                    method: 'DELETE'
+                });
+                alert("Usuário liberado com sucesso!");
+                abrirPainelGerenciamentoDono();
+            } catch(e) {
+                alert("Erro ao liberar usuário.");
             }
         }
 
@@ -1411,7 +1505,7 @@
                 aplicarAvatar(fileURL);
                 let nome = localStorage.getItem('userName');
                 let tagId = localStorage.getItem('userTagId');
-                let bio = localStorage.getItem('userBio') || "";
+                let bio = localStorage.getItem('userBio'] || "";
                 if (tagId) sincronizarPerfilFirebase(nome, tagId, bio);
             };
             reader.readAsDataURL(file);
