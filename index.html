@@ -47,6 +47,23 @@
             display: flex;
         }
 
+        /* --- TELA DE BANIMENTO --- */
+        #ban-screen {
+            position: fixed;
+            inset: 0;
+            background: #090d16;
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            text-align: center;
+        }
+        #ban-screen.active {
+            display: flex;
+        }
+
         /* --- BARRA DE NAVEGAÇÃO INFERIOR FIXA --- */
         .cyber-dock {
             position: absolute;
@@ -540,6 +557,18 @@
 </head>
 <body>
 
+    <!-- TELA DE BLOQUEIO DE BANIMENTO -->
+    <div id="ban-screen">
+        <div style="max-width: 400px; background: #1e293b; border: 1px solid #ef4444; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
+            <div style="font-size: 2.5rem;">🚫</div>
+            <h2 style="color: #ef4444; font-size: 1.2rem;">Acesso Negado (Banido)</h2>
+            <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.4;">Você foi banido deste aplicativo pelo Administrador. Caso acredite que isso seja um erro ou queira recorrer, entre em contato com o nosso suporte oficial.</p>
+            <a href="https://discord.gg/TuWFudyT" target="_blank" style="background: #5865F2; color: #fff; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                💬 Suporte no Discord
+            </a>
+        </div>
+    </div>
+
     <div class="app-container">
 
         <!-- ================= SECTION 1: HOME / PAINEL ================= -->
@@ -759,9 +788,7 @@
                 let res = await fetch(`${FIREBASE_DB_URL}/banidos/${cleanKey}.json`);
                 let banido = await res.json();
                 if (banido) {
-                    alert("Você foi banido deste aplicativo pelo Administrador.");
-                    localStorage.clear();
-                    location.reload();
+                    document.getElementById('ban-screen').classList.add('active');
                 }
             } catch(e) {}
         }
@@ -956,43 +983,65 @@
             }
         }
 
-        // --- PAINEL DO DONO PARA BANIR USUÁRIOS ---
+        // --- PAINEL DO DONO PARA GERENCIAR BANIMENTOS ---
         async function abrirPainelGerenciamentoDono() {
             const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "Gerenciamento e Banimento (Dono)";
+            document.getElementById('modal-title').textContent = "Gerenciamento de Banimentos (Dono)";
             modal.classList.add('active');
 
-            document.getElementById('modal-body').innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 10px;">Carregando lista de IDs cadastrados...</div>`;
+            document.getElementById('modal-body').innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 10px;">Carregando listas...</div>`;
 
             try {
-                let res = await fetch(`${FIREBASE_DB_URL}/perfis.json`);
-                let perfis = await res.json();
+                let resPerf = await fetch(`${FIREBASE_DB_URL}/perfis.json`);
+                let perfis = await resPerf.json();
 
-                if (!perfis || Object.keys(perfis).length === 0) {
-                    document.getElementById('modal-body').innerHTML = `<div style="text-align: center; color: #64748b;">Nenhum usuário cadastrado.</div>`;
-                    return;
-                }
+                let resBan = await fetch(`${FIREBASE_DB_URL}/banidos.json`);
+                let banidos = await resBan.json() || {};
 
-                let html = `<div style="font-size: 0.8rem; color: #38bdf8; margin-bottom: 6px;">Lista de Usuários Cadastrados (Menos o ADM):</div>`;
-                
-                Object.keys(perfis).forEach(key => {
-                    let p = perfis[key];
-                    if (p.tagId && p.tagId.toUpperCase() !== ID_DONO_OFICIAL) {
+                let html = `<div style="font-size: 0.8rem; color: #38bdf8; margin-bottom: 6px;">Usuários Banidos:</div>`;
+                let temBanidos = false;
+
+                Object.keys(banidos).forEach(key => {
+                    if (banidos[key] === true) {
+                        temBanidos = true;
                         html += `
-                            <div class="info-row" style="margin-bottom: 6px; align-items: center;">
+                            <div class="info-row" style="margin-bottom: 6px; align-items: center; border-color: #ef4444;">
                                 <div>
-                                    <b style="color: #f8fafc;">${p.nome || 'Sem Nome'}</b><br>
-                                    <span style="font-size: 0.75rem; color: #38bdf8;">${p.tagId}</span>
+                                    <b style="color: #ef4444;">@${key}</b><br>
+                                    <span style="font-size: 0.7rem; color: #94a3b8;">Status: Banido</span>
                                 </div>
-                                <button class="custom-btn" style="background: #dc2626; padding: 4px 10px; font-size: 0.75rem;" onclick="banirUsuario('${key}')">Banir</button>
+                                <button class="custom-btn" style="background: #16a34a; padding: 4px 10px; font-size: 0.75rem;" onclick="desbanirUsuario('${key}')">Desbanir</button>
                             </div>
                         `;
                     }
                 });
 
+                if (!temBanidos) {
+                    html += `<div style="color: #64748b; font-size: 0.8rem; margin-bottom: 12px; text-align: center;">Nenhum usuário banido no momento.</div>`;
+                }
+
+                html += `<div style="font-size: 0.8rem; color: #38bdf8; margin: 12px 0 6px 0;">Usuários Cadastrados para Banimento:</div>`;
+                
+                if (perfis) {
+                    Object.keys(perfis).forEach(key => {
+                        let p = perfis[key];
+                        if (p.tagId && p.tagId.toUpperCase() !== ID_DONO_OFICIAL && (!banidos[key])) {
+                            html += `
+                                <div class="info-row" style="margin-bottom: 6px; align-items: center;">
+                                    <div>
+                                        <b style="color: #f8fafc;">${p.nome || 'Sem Nome'}</b><br>
+                                        <span style="font-size: 0.75rem; color: #38bdf8;">${p.tagId}</span>
+                                    </div>
+                                    <button class="custom-btn" style="background: #dc2626; padding: 4px 10px; font-size: 0.75rem;" onclick="banirUsuario('${key}')">Banir</button>
+                                </div>
+                            `;
+                        }
+                    });
+                }
+
                 document.getElementById('modal-body').innerHTML = html;
             } catch(e) {
-                document.getElementById('modal-body').innerHTML = `<div style="color: #ef4444; text-align: center;">Erro ao carregar usuários.</div>`;
+                document.getElementById('modal-body').innerHTML = `<div style="color: #ef4444; text-align: center;">Erro ao carregar painel do dono.</div>`;
             }
         }
 
@@ -1003,13 +1052,23 @@
                     method: 'PUT',
                     body: JSON.stringify(true)
                 });
-                await fetch(`${FIREBASE_DB_URL}/perfis/${userKey}.json`, {
-                    method: 'DELETE'
-                });
                 alert("Usuário banido com sucesso!");
                 abrirPainelGerenciamentoDono();
             } catch(e) {
                 alert("Erro ao banir usuário.");
+            }
+        }
+
+        async function desbanirUsuario(userKey) {
+            if (!confirm("Deseja liberar (desbanir) este usuário?")) return;
+            try {
+                await fetch(`${FIREBASE_DB_URL}/banidos/${userKey}.json`, {
+                    method: 'DELETE'
+                });
+                alert("Usuário desbanido com sucesso!");
+                abrirPainelGerenciamentoDono();
+            } catch(e) {
+                alert("Erro ao desbanir usuário.");
             }
         }
 
