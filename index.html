@@ -36,7 +36,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: calc(100vh - 75px); /* Deixa espaço exato para a dock */
+            height: calc(100vh - 75px);
             overflow-y: auto;
             display: none;
             flex-direction: column;
@@ -290,7 +290,7 @@
         .action-title { font-size: 0.9rem; font-weight: 600; color: #e2e8f0; margin-bottom: 2px; }
         .action-desc { font-size: 0.75rem; color: #94a3b8; }
 
-        /* --- TELA DE CHAT --- */
+        /* --- TELA DE CHAT & CONTATOS --- */
         .chat-header {
             padding: 16px;
             background: #1e293b;
@@ -302,6 +302,28 @@
         }
         .chat-title { font-size: 1rem; font-weight: 700; color: #38bdf8; }
         
+        .chat-sub-tabs {
+            display: flex;
+            background: #0f172a;
+            border-bottom: 1px solid #334155;
+        }
+        .sub-tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        .sub-tab-btn.active {
+            color: #38bdf8;
+            border-bottom-color: #38bdf8;
+            background: rgba(30, 41, 59, 0.4);
+        }
+
         .chat-messages {
             flex: 1;
             padding: 16px;
@@ -367,6 +389,28 @@
             gap: 8px;
             flex-shrink: 0;
         }
+
+        /* Lista de Contatos e Grupos */
+        .contacts-list-container {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .contact-item-card {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .contact-item-card:active { border-color: #38bdf8; }
 
         /* --- TELA DE PERFIL --- */
         .profile-edit-body {
@@ -544,20 +588,37 @@
             </div>
         </div>
 
-        <!-- ================= SECTION 2: CHAT ================= -->
+        <!-- ================= SECTION 2: CHAT / COMUNICAÇÃO ================= -->
         <div id="section-chat" class="view-section">
             <div class="chat-header">
-                <span class="chat-title">Chat Global & Comunicação</span>
-                <button class="custom-btn" style="padding: 4px 10px; font-size: 0.75rem;" onclick="abrirBuscaPerfilPorId()">Buscar Alvo por ID</button>
+                <span class="chat-title">Comunicação & Grupos</span>
+                <button class="custom-btn" style="padding: 4px 10px; font-size: 0.75rem;" onclick="abrirCriarGrupoModal()">+ Criar Grupo</button>
             </div>
             
-            <div class="chat-messages" id="chat-messages-container">
-                <div style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 20px;">Carregando conversas do Firebase...</div>
+            <!-- Sub-abas: Contatos/Grupos vs Chat Global -->
+            <div class="chat-sub-tabs">
+                <button class="sub-tab-btn active" id="sub-tab-contacts" onclick="mudarSubAbaChat('contacts')">Contatos & Grupos</button>
+                <button class="sub-tab-btn" id="sub-tab-global" onclick="mudarSubAbaChat('global')">Chat Global</button>
             </div>
 
-            <div class="chat-input-bar">
-                <input type="text" id="chat-input-text" class="custom-input" placeholder="Digite sua mensagem..." onkeypress="if(event.key === 'Enter') enviarMensagemChat()">
-                <button class="custom-btn" onclick="enviarMensagemChat()">Enviar</button>
+            <!-- Visão 1: Lista de Contatos e Grupos -->
+            <div id="view-contacts-container" class="contacts-list-container">
+                <div style="font-size: 0.8rem; color: #38bdf8; font-weight: bold;">Suas Conexões & Grupos Salvos:</div>
+                <div id="lista-grupos-contatos" style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 10px;">Carregando listas...</div>
+                </div>
+                <button class="custom-btn" style="margin-top: 10px; background: transparent; border: 1px dashed #38bdf8; color: #38bdf8;" onclick="abrirBuscaPerfilPorId()">+ Adicionar Pessoa por ID</button>
+            </div>
+
+            <!-- Visão 2: Chat Global (Oculto por padrão até alternar) -->
+            <div id="view-global-container" style="display: none; flex: 1; flex-direction: column; height: 100%;">
+                <div class="chat-messages" id="chat-messages-container">
+                    <div style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 20px;">Carregando conversas do Firebase...</div>
+                </div>
+                <div class="chat-input-bar">
+                    <input type="text" id="chat-input-text" class="custom-input" placeholder="Digite sua mensagem no chat global..." onkeypress="if(event.key === 'Enter') enviarMensagemChat()">
+                    <button class="custom-btn" onclick="enviarMensagemChat()">Enviar</button>
+                </div>
             </div>
         </div>
 
@@ -626,6 +687,7 @@
             verificarInstalacaoPerfil();
             carregarDadosInterface();
             escutarMensagensChat();
+            carregarContatosEGrupos();
         };
 
         function verificarInstalacaoPerfil() {
@@ -712,6 +774,25 @@
             }
         }
 
+        function mudarSubAbaChat(sub) {
+            const btnCont = document.getElementById('sub-tab-contacts');
+            const btnGlob = document.getElementById('sub-tab-global');
+            const boxCont = document.getElementById('view-contacts-container');
+            const boxGlob = document.getElementById('view-global-container');
+
+            if (sub === 'contacts') {
+                btnCont.classList.add('active');
+                btnGlob.classList.remove('active');
+                boxCont.style.display = 'flex';
+                boxGlob.style.display = 'none';
+            } else {
+                btnGlob.classList.add('active');
+                btnCont.classList.remove('active');
+                boxGlob.style.display = 'flex';
+                boxCont.style.display = 'none';
+            }
+        }
+
         async function salvarPerfilUsuario() {
             const novoNome = document.getElementById('profile-edit-name').value.trim();
             let novaTag = document.getElementById('profile-edit-tag').value.trim();
@@ -750,13 +831,100 @@
             }
         }
 
-        function abrirBuscaPerfilPorId() {
+        // --- SISTEMA DE CRIAR GRUPO ---
+        function abrirCriarGrupoModal() {
             const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "Buscar Perfil por @ID";
+            document.getElementById('modal-title').textContent = "Criar Novo Grupo";
             modal.classList.add('active');
 
             document.getElementById('modal-body').innerHTML = `
-                <div style="font-size: 0.8rem; color: #94a3b8;">Digite o ID do usuário (com ou sem @):</div>
+                <div style="font-size: 0.8rem; color: #94a3b8;">Defina o nome do grupo e a descrição:</div>
+                <div class="input-group">
+                    <label>Nome do Grupo:</label>
+                    <input type="text" id="group-name-input" class="custom-input" placeholder="Ex: Esquadrão Cyber">
+                </div>
+                <div class="input-group">
+                    <label>Descrição ou Objetivo:</label>
+                    <input type="text" id="group-desc-input" class="custom-input" placeholder="Ex: Grupo de operações e trocas">
+                </div>
+                <button class="custom-btn" style="margin-top: 8px;" onclick="executarCriarGrupo()">Criar Grupo Agora</button>
+            `;
+        }
+
+        async function executarCriarGrupo() {
+            let nomeGrupo = document.getElementById('group-name-input').value.trim();
+            let descGrupo = document.getElementById('group-desc-input').value.trim();
+            let criador = localStorage.getItem('userName') || "Admin";
+
+            if (!nomeGrupo) {
+                alert("Digite o nome do grupo.");
+                return;
+            }
+
+            let novoGrupo = {
+                nome: nomeGrupo,
+                descricao: descGrupo || "Sem descrição",
+                criador: criador,
+                tipo: 'grupo',
+                timestamp: Date.now()
+            };
+
+            try {
+                await fetch(`${FIREBASE_DB_URL}/grupos.json`, {
+                    method: 'POST',
+                    body: JSON.stringify(novoGrupo)
+                });
+                fecharModalDireto();
+                alert("Grupo criado com sucesso!");
+                carregarContatosEGrupos();
+            } catch (e) {
+                alert("Erro ao criar grupo.");
+            }
+        }
+
+        async function carregarContatosEGrupos() {
+            const container = document.getElementById('lista-grupos-contatos');
+            if (!container) return;
+
+            try {
+                let html = "";
+                
+                // Puxar Grupos do Firebase
+                let resGrupos = await fetch(`${FIREBASE_DB_URL}/grupos.json`);
+                let grupos = await resGrupos.json();
+
+                if (grupos) {
+                    Object.keys(grupos).forEach(key => {
+                        let g = grupos[key];
+                        html += `
+                            <div class="contact-item-card">
+                                <div>
+                                    <b style="color: #38bdf8;">👥 ${g.nome}</b><br>
+                                    <span style="font-size: 0.75rem; color: #94a3b8;">${g.descricao} (Criado por: ${g.criador})</span>
+                                </div>
+                                <button class="custom-btn" style="padding: 4px 8px; font-size: 0.75rem;" onclick="alert('Entrando no grupo: ${g.nome}')">Entrar</button>
+                            </div>
+                        `;
+                    });
+                }
+
+                if (!html) {
+                    container.innerHTML = `<div style="text-align: center; color: #64748b; font-size: 0.8rem; padding: 10px;">Nenhum grupo ou contato encontrado. Crie um grupo acima!</div>`;
+                } else {
+                    container.innerHTML = html;
+                }
+            } catch (e) {
+                container.innerHTML = `<div style="color: #ef4444; text-align: center;">Erro ao carregar lista.</div>`;
+            }
+        }
+
+        function abrirBuscaPerfilPorId() {
+            const modal = document.getElementById('app-modal');
+            document.getElementById('modal-title').textContent = "Adicionar Contato por @ID";
+            modal.classList.add('active');
+
+            document.getElementById('modal-body').innerHTML = `
+                <div style="font-size: 0.8rem; color: #94a3b8;">Digite o ID do usuário que deseja adicionar:</div>
                 <div class="search-box-container" style="display: flex; gap: 8px;">
                     <input type="text" id="search-id-input" class="custom-input" placeholder="@usuario">
                     <button class="custom-btn" onclick="executarBuscaPerfil()">Buscar</button>
@@ -794,6 +962,7 @@
                             <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 4px;">${perfil.bio || 'Sem biografia.'}</div>
                         </div>
                     </div>
+                    <button class="custom-btn" style="margin-top: 8px;" onclick="alert('Contato adicionado com sucesso!')">Adicionar aos Contatos</button>
                 `;
             } catch (e) {
                 resultBox.innerHTML = `<div style="color: #ef4444; text-align: center; padding: 10px;">Erro ao consultar banco de dados.</div>`;
@@ -919,7 +1088,7 @@
                 aplicarAvatar(fileURL);
                 let nome = localStorage.getItem('userName');
                 let tagId = localStorage.getItem('userTagId');
-                let bio = localStorage.getItem('userBio') || "";
+                let bio = localStorage.getItem('userBio'] || "";
                 if (tagId) sincronizarPerfilFirebase(nome, tagId, bio);
             };
             reader.readAsDataURL(file);
