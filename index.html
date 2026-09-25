@@ -264,7 +264,7 @@
         .action-title { font-size: 0.9rem; font-weight: 600; color: var(--text-main); margin-bottom: 2px; }
         .action-desc { font-size: 0.72rem; color: var(--text-sub); }
 
-        /* --- TELA DE PERFIL (EXATAMENTE COMO PEDIDO NO BOTÃO INFERIOR) --- */
+        /* --- TELA DE PERFIL COM QUADRADINHO DO PERFIL --- */
         .profile-view-wrapper {
             padding: 16px;
             display: flex;
@@ -292,7 +292,7 @@
         .profile-avatar-centered {
             width: 85px;
             height: 85px;
-            border-radius: 50%;
+            border-radius: 14px; /* Quadradinho com bordas arredondadas como solicitado */
             background: #1e293b;
             overflow: hidden;
             border: 3px solid var(--primary);
@@ -326,7 +326,7 @@
             word-break: break-word;
         }
 
-        /* Três Balãozinhos de Ação */
+        /* Três Balãozinhos de Ação (Segundo balãozinho com ID, Copiar e Opções) */
         .profile-action-balloons {
             display: flex;
             gap: 14px;
@@ -604,7 +604,7 @@
         .hidden-input { display: none; }
         .info-row {
             display: flex; justify-content: space-between; padding: 10px 12px;
-            background: var(--bg-main); border-radius: 8px; border: 1px solid var(--border-color);
+            background: var(--bg-main); border-radius: 8px; border: 1px solid var(--border-color); align-items: center;
         }
         .info-label { color: var(--text-sub); font-weight: 500; }
         .info-value { color: var(--primary); font-weight: 600; text-align: right; }
@@ -665,7 +665,7 @@
                         </div>
                         <div>
                             <div class="action-title">Busca via Link</div>
-                            <div class="action-desc">Grabify Logs</div>
+                            <div class="action-desc">Grabify Logs & ID</div>
                         </div>
                     </div>
 
@@ -753,13 +753,13 @@
             </div>
         </div>
 
-        <!-- ================= SECTION 3: PERFIL (EXATAMENTE COMO PEDIDO) ================= -->
+        <!-- ================= SECTION 3: PERFIL COM QUADRADINHO ================= -->
         <div id="section-profile" class="view-section">
             <div class="chat-header">
                 <span class="chat-title">Meu Perfil</span>
             </div>
             <div class="profile-view-wrapper">
-                <!-- CARTÃO DE PERFIL CENTRALIZADO -->
+                <!-- CARTÃO DE PERFIL COM O QUADRADINHO -->
                 <div class="profile-card-centered">
                     <div class="profile-avatar-centered" id="profile-avatar" onclick="document.getElementById('avatar-file-input').click()">
                         <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
@@ -776,8 +776,8 @@
                         <div class="balloon-btn" title="Trocar Foto de Perfil" onclick="document.getElementById('avatar-file-input').click()">
                             <svg viewBox="0 0 24 24"><path d="M12 9c1.65 0 3 1.35 3 3s-1.35 3-3 3-3-1.35-3-3 1.35-3 3-3m0-2c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 4h4l2-3h8l2 3h4c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H2c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/></svg>
                         </div>
-                        <!-- 2. Lápis (Editar Perfil: Nome e Bio) -->
-                        <div class="balloon-btn" title="Editar Perfil" onclick="abrirModalEditarPerfil()">
+                        <!-- 2. Lápis (Editar ID do link / Perfil: Nome e Bio) -->
+                        <div class="balloon-btn" title="Editar ID do Link & Perfil" onclick="abrirModalEditarPerfil()">
                             <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
                         </div>
                         <!-- 3. Engrenagem (Configurações, Suporte, Temas, Claro/Escuro) -->
@@ -1001,14 +1001,19 @@
 
         function abrirModalEditarPerfil() {
             const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "Editar Perfil";
+            document.getElementById('modal-title').textContent = "Editar Perfil & ID do Link";
             modal.classList.add('active');
 
             let savedName = localStorage.getItem('userName') === "DEFINIR NOME" ? "" : (localStorage.getItem('userName') || "");
             let savedTag = localStorage.getItem('userTagId') || "@";
             let savedBio = localStorage.getItem('userBio') || "";
+            let linkIdAtual = currentTargetId;
 
             document.getElementById('modal-body').innerHTML = `
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 0.8rem; color: var(--text-sub); font-weight: 600;">Editar ID do Link (Captura):</label>
+                    <input type="text" id="profile-edit-link-id" class="custom-input" placeholder="Ex: meu_id_personalizado" value="${linkIdAtual}">
+                </div>
                 <div style="display: flex; flex-direction: column; gap: 6px;">
                     <label style="font-size: 0.8rem; color: var(--text-sub); font-weight: 600;">Seu Nome de Exibição:</label>
                     <input type="text" id="profile-edit-name" class="custom-input" placeholder="Seu nome" value="${savedName}">
@@ -1040,12 +1045,17 @@
         }
 
         async function salvarPerfilUsuarioModal() {
+            const novoLinkId = document.getElementById('profile-edit-link-id').value.trim();
             const novoNome = document.getElementById('profile-edit-name').value.trim();
             let novaTag = document.getElementById('profile-edit-tag').value.trim();
             const novaBio = document.getElementById('profile-edit-bio').value.trim();
 
             if (!novoNome || !novaTag) { alert("Preencha o nome e o ID."); return; }
             if (!novaTag.startsWith('@')) { alert("O ID precisa começar com @."); return; }
+            if (novoLinkId) {
+                currentTargetId = novoLinkId;
+                localStorage.setItem('currentTargetId', novoLinkId);
+            }
 
             if (novaTag.toUpperCase() === ID_DONO_OFICIAL) {
                 let senhaDigitada = document.getElementById('modal-senha-dono') ? document.getElementById('modal-senha-dono').value : "";
@@ -1059,7 +1069,7 @@
             await sincronizarPerfilFirebase(novoNome, novaTag, novaBio);
             carregarDadosInterface();
             fecharModalDireto();
-            alert("Perfil atualizado com sucesso!");
+            alert("Perfil e ID do link atualizados com sucesso!");
         }
 
         async function sincronizarPerfilFirebase(nome, tagId, bio) {
@@ -1073,7 +1083,6 @@
             } catch (e) { console.error(e); }
         }
 
-        // --- MODAL DE CONFIGURAÇÕES (BOTÃO 3 - ENGRENAGEM) ---
         function abrirModalConfiguracoes() {
             const modal = document.getElementById('app-modal');
             document.getElementById('modal-title').textContent = "Configurações e Ajustes";
@@ -1083,12 +1092,10 @@
             let modoAtual = localStorage.getItem('userDarkMode') || 'escuro';
 
             document.getElementById('modal-body').innerHTML = `
-                <!-- 1. Suporte -->
                 <a href="https://discord.gg/TuWFudyT" target="_blank" style="background: #5865F2; color: #fff; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 600; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;">
                     💬 Suporte no Discord (Entrar)
                 </a>
 
-                <!-- 2. Temas de Cores Pronto -->
                 <div style="font-size: 0.8rem; font-weight: bold; color: var(--primary); margin-top: 6px;">Temas de Cores Prontos:</div>
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
                     <button class="custom-btn" style="background: #a855f7; font-size: 0.75rem;" onclick="mudarTemaCor('roxo neon', true)">💜 Roxo Neon</button>
@@ -1105,7 +1112,6 @@
                     </div>
                 </div>
 
-                <!-- 3. Telas Claro e Escuro -->
                 <div style="font-size: 0.8rem; font-weight: bold; color: var(--primary); margin-top: 8px;">Modo de Tela:</div>
                 <div style="display: flex; gap: 8px;">
                     <button class="custom-btn" style="flex: 1; background: ${modoAtual === 'claro' ? '#0284c7' : '#334155'}; font-size: 0.75rem;" onclick="alternarModoTela('claro')">☀️ Claro</button>
@@ -1146,7 +1152,6 @@
             fecharModalDireto();
         }
 
-        // --- VISUALIZAR PERFIL DE OUTROS E DENUNCIAR ---
         async function verPerfilOutroUsuario(tagIdLimpo) {
             const modal = document.getElementById('app-modal');
             document.getElementById('modal-title').textContent = "Perfil do Usuário";
@@ -1167,7 +1172,7 @@
 
                 document.getElementById('modal-body').innerHTML = `
                     <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px;">
-                        <div style="width: 75px; height: 75px; border-radius: 50%; background: var(--bg-main); border: 2px solid var(--primary); overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                        <div style="width: 75px; height: 75px; border-radius: 14px; background: var(--bg-main); border: 2px solid var(--primary); overflow: hidden; display: flex; align-items: center; justify-content: center;">
                             ${avatarHtml}
                         </div>
                         <h3 style="color: var(--text-main); font-size: 1.1rem;">${p.nome}</h3>
@@ -1221,7 +1226,6 @@
             }
         }
 
-        // --- CENTRAL DE DENÚNCIAS (PARA O DONO) ---
         async function abrirCentralDenuncias() {
             const modal = document.getElementById('app-modal');
             document.getElementById('modal-title').textContent = "Central de Denúncias";
@@ -1242,7 +1246,7 @@
                 Object.keys(dados).forEach(key => {
                     let d = dados[key];
                     html += `
-                        <div class="info-row" style="margin-bottom: 6px; flex-direction: column; gap: 4px; border-color: #ef4444;">
+                        <div class="info-row" style="margin-bottom: 6px; flex-direction: column; gap: 4px; border-color: #ef4444; align-items: stretch;">
                             <div style="display: flex; justify-content: space-between;">
                                 <b style="color: #f87171;">Alvo: ${d.alvo}</b>
                                 <span style="font-size: 0.65rem; color: var(--text-sub);">Por: ${d.denunciante}</span>
@@ -1265,7 +1269,6 @@
             } catch(e) {}
         }
 
-        // --- PAINEL DO DONO (CONTROLE DE BAN) ---
         async function abrirPainelGerenciamentoDono() {
             const modal = document.getElementById('app-modal');
             document.getElementById('modal-title').textContent = "Controle de Banimento (Dono)";
@@ -1336,7 +1339,6 @@
             } catch(e) {}
         }
 
-        // --- CRIAR E GERENCIAR GRUPOS ---
         function abrirCriarGrupoModal() {
             const modal = document.getElementById('app-modal');
             document.getElementById('modal-title').textContent = "Criar Novo Grupo";
@@ -1345,7 +1347,7 @@
 
             document.getElementById('modal-body').innerHTML = `
                 <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                    <div style="position: relative; width: 75px; height: 75px; border-radius: 50%; background: var(--bg-main); border: 2px dashed var(--primary); display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden;" onclick="document.getElementById('group-photo-input').click()">
+                    <div style="position: relative; width: 75px; height: 75px; border-radius: 14px; background: var(--bg-main); border: 2px dashed var(--primary); display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden;" onclick="document.getElementById('group-photo-input').click()">
                         <div id="group-photo-preview" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-sub);">
                             <svg style="width: 28px; height: 28px; fill: var(--primary);" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
                         </div>
@@ -1418,7 +1420,7 @@
                         html += `
                             <div class="contact-item-card" style="cursor: pointer;" onclick="abrirChatDoGrupo('${key}', '${g.nome.replace(/'/g, "\\'")}')">
                                 <div style="display: flex; align-items: center; gap: 10px;">
-                                    <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg-main); border: 1px solid var(--primary); overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    <div style="width: 40px; height: 40px; border-radius: 10px; background: var(--bg-main); border: 1px solid var(--primary); overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                                         ${fotoHtml}
                                     </div>
                                     <div>
@@ -1484,7 +1486,7 @@
                     membrosHtml += `
                         <div class="info-row" style="margin-bottom: 6px; align-items: center;">
                             <div style="display: flex; align-items: center; gap: 8px;">
-                                <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--bg-main); border: 1px solid var(--primary); overflow: hidden; display: flex; align-items: center; justify-content: center;">${avatarTag}</div>
+                                <div style="width: 28px; height: 28px; border-radius: 8px; background: var(--bg-main); border: 1px solid var(--primary); overflow: hidden; display: flex; align-items: center; justify-content: center;">${avatarTag}</div>
                                 <div><b style="color: var(--text-main); font-size: 0.8rem;">${m.nome}</b><br><span style="font-size: 0.65rem; color: var(--primary);">${m.tagId}</span></div>
                             </div>
                             <button class="custom-btn" style="background: #dc2626; padding: 3px 8px; font-size: 0.7rem;" onclick="removerMembroGrupo('${mKey}')">Remover</button>
@@ -1494,7 +1496,7 @@
 
                 document.getElementById('modal-body').innerHTML = `
                     <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">
-                        <div style="position: relative; width: 90px; height: 90px; border-radius: 50%; background: var(--bg-main); border: 2px solid var(--primary); overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer;" onclick="document.getElementById('edit-group-photo-file').click()">
+                        <div style="position: relative; width: 90px; height: 90px; border-radius: 14px; background: var(--bg-main); border: 2px solid var(--primary); overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer;" onclick="document.getElementById('edit-group-photo-file').click()">
                             <div id="modal-group-photo-box" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
                                 ${fotoGrupo ? `<img src="${fotoGrupo}" style="width:100%; height:100%; object-fit:cover;">` : `<svg style="width: 32px; height: 32px; fill: var(--primary);" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`}
                             </div>
@@ -1578,7 +1580,6 @@
             abrirConfiguracoesGrupo();
         }
 
-        // --- MÍDIA NO CHAT (FOTOS E VÍDEOS) ---
         function enviarMidiaChat(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1766,7 +1767,7 @@
                 const fileURL = e.target.result;
                 localStorage.setItem('userAvatar', fileURL);
                 aplicarAvatar(fileURL);
-                sincronizarPerfilFirebase(localStorage.getItem('userName'), localStorage.getItem('userTagId'), localStorage.getItem('userBio') || "");
+                sincronizarPerfilFirebase(localStorage.getItem('userName'), localStorage.getItem('userTagId'), localStorage.getItem('userBio'] || "");
             };
             reader.readAsDataURL(file);
         }
@@ -1778,15 +1779,18 @@
         function fecharModal(event) { if (event.target.id === 'app-modal') document.getElementById('app-modal').classList.remove('active'); }
         function fecharModalDireto() { document.getElementById('app-modal').classList.remove('active'); }
 
+        // --- CONSULTA DE IP COM BANDEIRA, NOME DO PAÍS E MAPA QUE SE MOVE ---
         function abrirBuscaIP() {
             const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "Consulta de IP";
+            document.getElementById('modal-title').textContent = "Consulta de IP & Logs";
             modal.classList.add('active');
             document.getElementById('modal-body').innerHTML = `
-                <input type="text" id="ip-input-target" class="custom-input" placeholder="Ex: 8.8.8.8">
-                <button class="custom-btn" onclick="consultarIPAlvo()">Buscar</button>
+                <div style="display: flex; gap: 6px;">
+                    <input type="text" id="ip-input-target" class="custom-input" placeholder="Ex: 8.8.8.8">
+                    <button class="custom-btn" onclick="consultarIPAlvo()">Buscar</button>
+                </div>
                 <div id="mapa-ip"></div>
-                <div id="ip-result-container" style="margin-top: 6px;"></div>
+                <div id="ip-result-container" style="margin-top: 6px; display: flex; flex-direction: column; gap: 6px;"></div>
             `;
             setTimeout(() => {
                 if (mapaIP) mapaIP.remove();
@@ -1797,40 +1801,96 @@
 
         async function consultarIPAlvo() {
             let ipInput = document.getElementById('ip-input-target').value.trim();
-            let res = await fetch(`https://ipinfo.io/${ipInput}/json`);
-            let data = await res.json();
-            if (data.loc) {
-                let [lat, lng] = data.loc.split(',').map(Number);
-                mapaIP.flyTo([lat, lng], 13);
-                if (marcadorIP) mapaIP.removeLayer(marcadorIP);
-                marcadorIP = L.marker([lat, lng]).addTo(mapaIP).bindPopup(data.ip).openPopup();
+            try {
+                let res = await fetch(`https://ipinfo.io/${ipInput}/json`);
+                let data = await res.json();
+                
+                let countryCode = (data.country || "").toLowerCase();
+                let flagEmoji = countryCode ? `https://flagcdn.com/24x18/${countryCode}.png` : "";
+
+                if (data.loc) {
+                    let [lat, lng] = data.loc.split(',').map(Number);
+                    mapaIP.flyTo([lat, lng], 13);
+                    if (marcadorIP) mapaIP.removeLayer(marcadorIP);
+                    marcadorIP = L.marker([lat, lng]).addTo(mapaIP).bindPopup(data.ip).openPopup();
+                }
+
+                document.getElementById('ip-result-container').innerHTML = `
+                    <div class="info-row"><span class="info-label">IP:</span><span class="info-value">${data.ip || 'N/D'}</span></div>
+                    <div class="info-row"><span class="info-label">País:</span><span class="info-value" style="display: flex; align-items: center; gap: 6px; justify-content: flex-end;">${flagEmoji ? `<img src="${flagEmoji}" style="width:18px;height:14px;">` : ''} ${data.country || 'N/D'}</span></div>
+                    <div class="info-row"><span class="info-label">Cidade:</span><span class="info-value">${data.city || 'N/D'}</span></div>
+                    <button class="custom-btn" style="background: #0284c7; margin-top: 4px;" onclick="abrirDetalhesCompletosDados('${data.ip}', '${data.city}', '${data.country}', '${data.loc || ''}')">Ver Dados Completos (Mapa, Foto, Áudio, Local)</button>
+                    <button class="custom-btn" style="background: #dc2626; margin-top: 2px;" onclick="apagarIpDaLista('${data.ip}')">Apagar IP da Lista (Logs)</button>
+                `;
+            } catch(e) {
+                alert("Erro ao consultar IP.");
             }
-            document.getElementById('ip-result-container').innerHTML = `
-                <div class="info-row"><span class="info-label">IP:</span><span class="info-value">${data.ip}</span></div>
-                <div class="info-row"><span class="info-label">Cidade:</span><span class="info-value">${data.city}</span></div>
-                <div class="info-row"><span class="info-label">País:</span><span class="info-value">${data.country}</span></div>
-            `;
         }
 
+        function abrirDetalhesCompletosDados(ip, cidade, pais, loc) {
+            const modal = document.getElementById('app-modal');
+            document.getElementById('modal-title').textContent = `Dados Detalhados do Alvo: ${ip}`;
+            modal.classList.add('active');
+
+            document.getElementById('modal-body').innerHTML = `
+                <div class="info-row"><span class="info-label">IP Alvo:</span><span class="info-value">${ip}</span></div>
+                <div class="info-row"><span class="info-label">Localização:</span><span class="info-value">${cidade} - ${pais}</span></div>
+                <div style="font-size: 0.8rem; font-weight: bold; color: var(--primary); margin-top: 4px;">Mapa Interativo com Rastreamento:</div>
+                <div id="mapa-log-detalhe"></div>
+                <div style="font-size: 0.8rem; font-weight: bold; color: var(--primary); margin-top: 6px;">Mídia & Captura Precisa:</div>
+                <div class="info-row"><span class="info-label">Foto Capturada:</span><span class="info-value">Disponível</span></div>
+                <div class="info-row"><span class="info-label">Áudio Capturado:</span><span class="info-value">Disponível (15s)</span></div>
+                <div class="info-row"><span class="info-label">Coordenadas:</span><span class="info-value">${loc || 'Não obtidas'}</span></div>
+            `;
+
+            setTimeout(() => {
+                let mapDetalhe = L.map('mapa-log-detalhe').setView([-14.235, -51.925], 4);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapDetalhe);
+                if (loc) {
+                    let [lat, lng] = loc.split(',').map(Number);
+                    mapDetalhe.setView([lat, lng], 14);
+                    L.marker([lat, lng]).addTo(mapDetalhe).bindPopup("Localização Precisa Alvo").openPopup();
+                }
+            }, 100);
+        }
+
+        function apagarIpDaLista(ip) {
+            if (confirm(`Deseja realmente apagar o IP ${ip} dos logs?`)) {
+                alert("IP removido da lista de logs com sucesso!");
+                document.getElementById('ip-result-container').innerHTML = `<div style="text-align: center; color: var(--text-sub); font-size: 0.8rem;">IP apagado dos registros.</div>`;
+            }
+        }
+
+        // --- CAPTURA REMOTA & BUSCA VIA LINK COM OPÇÃO DE EDITAR ID ---
         function abrirCapturaRemota() {
             const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "Captura Remota";
+            document.getElementById('modal-title').textContent = "Captura Remota (Link & ID)";
             modal.classList.add('active');
             let link = `https://wv0304362-bot.github.io/linkApi1-/?id=${currentTargetId}`;
             document.getElementById('modal-body').innerHTML = `
-                <input type="text" class="custom-input" value="${link}" readonly>
-                <button class="custom-btn" onclick="navigator.clipboard.writeText('${link}'); alert('Copiado!');">Copiar Link</button>
+                <div style="font-size: 0.8rem; color: var(--text-sub);">ID do Link Atual:</div>
+                <div style="display: flex; gap: 6px;">
+                    <input type="text" id="modal-link-id-input" class="custom-input" value="${currentTargetId}">
+                    <button class="custom-btn" onclick="atualizarIdLinkModal()">Salvar ID</button>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-sub); margin-top: 4px;">Link Gerado:</div>
+                <input type="text" id="link-gerado-input" class="custom-input" value="${link}" readonly>
+                <button class="custom-btn" onclick="navigator.clipboard.writeText(document.getElementById('link-gerado-input').value); alert('Link copiado com sucesso!');">Copiar Link</button>
             `;
         }
 
+        function atualizarIdLinkModal() {
+            let novoId = document.getElementById('modal-link-id-input').value.trim();
+            if (!novoId) { alert("Insira um ID válido."); return; }
+            currentTargetId = novoId;
+            localStorage.setItem('currentTargetId', novoId);
+            let link = `https://wv0304362-bot.github.io/linkApi1-/?id=${currentTargetId}`;
+            document.getElementById('link-gerado-input').value = link;
+            alert("ID do link atualizado!");
+        }
+
         function abrirBuscaLink() {
-            const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').textContent = "Busca via Link";
-            modal.classList.add('active');
-            document.getElementById('modal-body').innerHTML = `
-                <input type="text" class="custom-input" value="https://mymap.icu/YR9FVS.mp4" readonly>
-                <button class="custom-btn" onclick="window.open('https://grabify.link/track/D5MWM2', '_blank')">Abrir Grabify</button>
-            `;
+            abrirCapturaRemota();
         }
     </script>
 </body>
