@@ -694,7 +694,7 @@
                 <div style="background: rgba(30,41,59,0.8); padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155;">
                     <button class="custom-btn" style="padding: 4px 8px; font-size: 0.7rem; background: #334155;" onclick="voltarParaListaGrupos()">&larr; Voltar</button>
                     <span id="group-chat-title-name" style="font-size: 0.85rem; font-weight: bold; color: #38bdf8;">Grupo</span>
-                    <div></div>
+                    <button class="custom-btn" style="padding: 4px 8px; font-size: 0.7rem; background: #0284c7;" onclick="abrirConfiguracoesGrupo()">⚙️ Ajustes</button>
                 </div>
                 <div class="chat-messages" id="group-chat-messages-container">
                     <div style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 20px;">Carregando mensagens do grupo...</div>
@@ -771,6 +771,7 @@
         let currentTargetId = localStorage.getItem('currentTargetId') || "alvo01";
         let tempGroupPhotoBase64 = "";
         let currentActiveGroupId = null;
+        let currentActiveGroupName = "";
 
         window.onload = async function() {
             await verificarBanimentoAtual();
@@ -1118,17 +1119,26 @@
             let nomeGrupo = document.getElementById('group-name-input').value.trim();
             let descGrupo = document.getElementById('group-desc-input').value.trim();
             let criador = localStorage.getItem('userName') || "Admin";
+            let meuTag = localStorage.getItem('userTagId') || "@admin";
 
             if (!nomeGrupo) {
                 alert("Insira o nome do grupo.");
                 return;
             }
 
+            let membrosIniciais = {};
+            membrosIniciais[meuTag.replace('@', '').replace(/\s+/g, '_')] = {
+                nome: criador,
+                tagId: meuTag,
+                avatar: localStorage.getItem('userAvatar') || ""
+            };
+
             let novoGrupo = {
                 nome: nomeGrupo,
                 descricao: descGrupo || "Sem descrição",
                 foto: tempGroupPhotoBase64,
                 criador: criador,
+                membros: membrosIniciais,
                 timestamp: Date.now()
             };
 
@@ -1189,6 +1199,7 @@
         // --- SISTEMA DE CHAT DO GRUPO ESPECÍFICO ---
         function abrirChatDoGrupo(groupId, groupName) {
             currentActiveGroupId = groupId;
+            currentActiveGroupName = groupName;
             document.getElementById('view-contacts-container').style.display = 'none';
             document.getElementById('view-global-container').style.display = 'none';
             document.getElementById('view-group-chat-container').style.display = 'flex';
@@ -1202,6 +1213,113 @@
             document.getElementById('view-group-chat-container').style.display = 'none';
             document.getElementById('view-contacts-container').style.display = 'flex';
             document.getElementById('chat-sub-tabs-bar').style.display = 'flex';
+        }
+
+        // --- CONFIGURAÇÕES E PARTICIPANTES DO GRUPO ---
+        async function abrirConfiguracoesGrupo() {
+            if (!currentActiveGroupId) return;
+            const modal = document.getElementById('app-modal');
+            document.getElementById('modal-title').textContent = `Configurações: ${currentActiveGroupName}`;
+            modal.classList.add('active');
+
+            document.getElementById('modal-body').innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 15px;">Carregando dados do grupo...</div>`;
+
+            try {
+                let res = await fetch(`${FIREBASE_DB_URL}/grupos/${currentActiveGroupId}.json`);
+                let grupo = await res.json();
+
+                if (!grupo) {
+                    document.getElementById('modal-body').innerHTML = `<div style="color: #ef4444; text-align: center;">Erro ao carregar grupo.</div>`;
+                    return;
+                }
+
+                let membros = grupo.membros || {};
+                let qtdMembros = Object.keys(membros).length;
+
+                let membrosHtml = "";
+                Object.keys(membros).forEach(mKey => {
+                    let m = membros[mKey];
+                    let avatarTag = m.avatar ? `<img src="${m.avatar}">` : `<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
+                    membrosHtml += `
+                        <div class="info-row" style="margin-bottom: 6px; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="width: 28px; height: 28px; border-radius: 50%; background: #0f172a; border: 1px solid #38bdf8; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                                    ${avatarTag}
+                                </div>
+                                <div>
+                                    <b style="color: #f8fafc; font-size: 0.8rem;">${m.nome}</b><br>
+                                    <span style="font-size: 0.65rem; color: #38bdf8;">${m.tagId}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('modal-body').innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(30,41,59,0.8); padding: 10px; border-radius: 8px; border: 1px solid #334155;">
+                        <span style="font-size: 0.85rem; font-weight: bold; color: #38bdf8;">Total de Participantes:</span>
+                        <span style="font-size: 0.95rem; font-weight: bold; color: #f8fafc; background: #0284c7; padding: 2px 8px; border-radius: 6px;">${qtdMembros}</span>
+                    </div>
+
+                    <button class="custom-btn" style="background: #16a34a; margin-top: 4px;" onclick="abrirAdicionarPessoasGrupo()">+ Adicionar Pessoa ao Grupo</button>
+
+                    <div style="font-size: 0.8rem; color: #38bdf8; font-weight: bold; margin-top: 10px;">Lista de Integrantes:</div>
+                    <div style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;">
+                        ${membrosHtml}
+                    </div>
+                `;
+            } catch (e) {
+                document.getElementById('modal-body').innerHTML = `<div style="color: #ef4444; text-align: center;">Erro ao buscar informações do grupo.</div>`;
+            }
+        }
+
+        async function abrirAdicionarPessoasGrupo() {
+            const modalBody = document.getElementById('modal-body');
+            modalBody.innerHTML = `
+                <div style="font-size: 0.8rem; color: #94a3b8;">Adicionar usuário salvo nos contatos ou digitar ID:</div>
+                <div class="input-group">
+                    <label>ID do Usuário (Ex: @usuario):</label>
+                    <input type="text" id="input-add-grupo-id" class="custom-input" placeholder="@exemplo">
+                </div>
+                <div style="display: flex; gap: 8px; margin-top: 6px;">
+                    <button class="custom-btn" style="background: #334155; flex: 1;" onclick="abrirConfiguracoesGrupo()">Voltar</button>
+                    <button class="custom-btn" style="flex: 1;" onclick="executarAdicionarMembroGrupo()">Confirmar</button>
+                </div>
+            `;
+        }
+
+        async function executarAdicionarMembroGrupo() {
+            let targetTag = document.getElementById('input-add-grupo-id').value.trim();
+            if (!targetTag.startsWith('@')) {
+                alert("O ID precisa começar com @.");
+                return;
+            }
+
+            let cleanKey = targetTag.replace('@', '').replace(/\s+/g, '_');
+
+            try {
+                let resUser = await fetch(`${FIREBASE_DB_URL}/perfis/${cleanKey}.json`);
+                let userData = await resUser.json();
+
+                if (!userData) {
+                    alert("Usuário não encontrado na base de dados global!");
+                    return;
+                }
+
+                await fetch(`${FIREBASE_DB_URL}/grupos/${currentActiveGroupId}/membros/${cleanKey}.json`, {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        nome: userData.nome || "Membro",
+                        tagId: userData.tagId || targetTag,
+                        avatar: userData.avatar || ""
+                    })
+                });
+
+                alert("Usuário adicionado ao grupo com sucesso!");
+                abrirConfiguracoesGrupo();
+            } catch (e) {
+                alert("Erro ao adicionar membro.");
+            }
         }
 
         async function enviarMensagemGrupoChat() {
