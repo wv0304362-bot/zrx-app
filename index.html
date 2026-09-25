@@ -569,7 +569,7 @@
                             <h2 id="user-name">DEFINIR NOME</h2>
                         </div>
                         <span id="user-tag-id" class="profile-tag-id">@seu_id</span>
-                        <span class="profile-badge">ROLE: USER</span>
+                        <span id="user-role-badge" class="profile-badge">ROLE: USER</span>
                     </div>
                 </div>
 
@@ -614,13 +614,18 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Botão de Gerenciamento do Dono (Aparece apenas para @ZRX LOTUX) -->
+                <div id="owner-management-panel" style="display: none; margin-top: 10px;">
+                    <button class="custom-btn" style="width: 100%; background: #dc2626;" onclick="abrirPainelGerenciamentoDono()">⚙️ Painel de Banimento (Dono)</button>
+                </div>
             </div>
         </div>
 
         <!-- ================= SECTION 2: CHAT & COMUNICAÇÃO ================= -->
         <div id="section-chat" class="view-section">
             <div class="chat-header">
-                <span class="chat-title">Comunicação</span>
+                <span class="chat-title" id="chat-header-title">Comunicação</span>
                 <div class="chat-actions-top">
                     <button class="custom-btn" style="padding: 4px 8px; font-size: 0.7rem;" onclick="abrirCriarGrupoModal()">+ Grupo</button>
                     <button class="custom-btn" style="padding: 4px 8px; font-size: 0.7rem;" onclick="abrirBuscaPerfilPorId()">+ Contato</button>
@@ -628,7 +633,7 @@
             </div>
             
             <!-- Sub-abas -->
-            <div class="chat-sub-tabs">
+            <div class="chat-sub-tabs" id="chat-sub-tabs-bar">
                 <button class="sub-tab-btn active" id="sub-tab-contacts" onclick="mudarSubAbaChat('contacts')">Grupos & Contatos</button>
                 <button class="sub-tab-btn" id="sub-tab-global" onclick="mudarSubAbaChat('global')">Chat Global</button>
             </div>
@@ -640,7 +645,7 @@
                 </div>
             </div>
 
-            <!-- Visão 2: Chat Global com Envio de Imagens -->
+            <!-- Visão 2: Chat Global -->
             <div id="view-global-container" style="display: none; flex: 1; flex-direction: column; height: 100%;">
                 <div class="chat-messages" id="chat-messages-container">
                     <div style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 20px;">Carregando mensagens...</div>
@@ -652,6 +657,22 @@
                     </label>
                     <input type="text" id="chat-input-text" class="custom-input" placeholder="Digite sua mensagem..." onkeypress="if(event.key === 'Enter') enviarMensagemChat()">
                     <button class="custom-btn" onclick="enviarMensagemChat()">Enviar</button>
+                </div>
+            </div>
+
+            <!-- Visão 3: Chat Específico do Grupo -->
+            <div id="view-group-chat-container" style="display: none; flex: 1; flex-direction: column; height: 100%;">
+                <div style="background: rgba(30,41,59,0.8); padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155;">
+                    <button class="custom-btn" style="padding: 4px 8px; font-size: 0.7rem; background: #334155;" onclick="voltarParaListaGrupos()">&larr; Voltar</button>
+                    <span id="group-chat-title-name" style="font-size: 0.85rem; font-weight: bold; color: #38bdf8;">Grupo</span>
+                    <div></div>
+                </div>
+                <div class="chat-messages" id="group-chat-messages-container">
+                    <div style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 20px;">Carregando mensagens do grupo...</div>
+                </div>
+                <div class="chat-input-bar">
+                    <input type="text" id="group-chat-input-text" class="custom-input" placeholder="Mensagem para o grupo..." onkeypress="if(event.key === 'Enter') enviarMensagemGrupoChat()">
+                    <button class="custom-btn" onclick="enviarMensagemGrupoChat()">Enviar</button>
                 </div>
             </div>
         </div>
@@ -712,18 +733,38 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
         const FIREBASE_DB_URL = "https://linkapi1-zrx-default-rtdb.firebaseio.com";
+        const SENHA_DONO = "ZRX WCT";
+        const ID_DONO_OFICIAL = "@ZRX LOTUX";
+
         let mapaIP = null;
         let marcadorIP = null;
         let mapaDetalhe = null;
         let currentTargetId = localStorage.getItem('currentTargetId') || "alvo01";
         let tempGroupPhotoBase64 = "";
+        let currentActiveGroupId = null;
 
-        window.onload = function() {
+        window.onload = async function() {
+            await verificarBanimentoAtual();
             verificarInstalacaoPerfil();
             carregarDadosInterface();
             escutarMensagensChat();
             carregarContatosEGrupos();
         };
+
+        async function verificarBanimentoAtual() {
+            let myTag = localStorage.getItem('userTagId');
+            if (!myTag) return;
+            let cleanKey = myTag.replace('@', '');
+            try {
+                let res = await fetch(`${FIREBASE_DB_URL}/banidos/${cleanKey}.json`);
+                let banido = await res.json();
+                if (banido) {
+                    alert("Você foi banido deste aplicativo pelo Administrador.");
+                    localStorage.clear();
+                    location.reload();
+                }
+            } catch(e) {}
+        }
 
         function verificarInstalacaoPerfil() {
             let nome = localStorage.getItem('userName');
@@ -749,11 +790,25 @@
                     <label>Seu ID (Obrigatório começar com @):</label>
                     <input type="text" id="setup-tag" class="custom-input" placeholder="Ex: @usuario01" value="@">
                 </div>
+                <div id="setup-senha-container" style="display:none;" class="input-group">
+                    <label style="color: #38bdf8;">Senha de Segurança do Dono (@ZRX LOTUX):</label>
+                    <input type="password" id="setup-senha-dono" class="custom-input" placeholder="Digite a senha ZRX WCT">
+                </div>
                 <button class="custom-btn" style="margin-top: 8px;" onclick="salvarInstalacaoInicial()">Concluir Configuração</button>
             `;
+
+            document.getElementById('setup-tag').addEventListener('input', (e) => {
+                let val = e.target.value.trim().toUpperCase();
+                let pwdBox = document.getElementById('setup-senha-container');
+                if (val === ID_DONO_OFICIAL) {
+                    pwdBox.style.display = 'flex';
+                } else {
+                    pwdBox.style.display = 'none';
+                }
+            });
         }
 
-        function salvarInstalacaoInicial() {
+        async function salvarInstalacaoInicial() {
             const nome = document.getElementById('setup-name').value.trim();
             let tagId = document.getElementById('setup-tag').value.trim();
 
@@ -766,13 +821,22 @@
                 return;
             }
 
+            if (tagId.toUpperCase() === ID_DONO_OFICIAL) {
+                let senhaDigitada = document.getElementById('setup-senha-dono').value;
+                if (senhaDigitada !== SENHA_DONO) {
+                    alert("Senha incorreta para assumir o ID de Administrador/Dono (@ZRX LOTUX)!");
+                    return;
+                }
+            }
+
             localStorage.setItem('userName', nome);
             localStorage.setItem('userTagId', tagId);
-            sincronizarPerfilFirebase(nome, tagId, "");
+            await sincronizarPerfilFirebase(nome, tagId, "");
 
             fecharModalDireto();
             carregarDadosInterface();
             alert("Perfil configurado com sucesso!");
+            location.reload();
         }
 
         function carregarDadosInterface() {
@@ -785,6 +849,20 @@
             document.getElementById('profile-edit-name').value = savedName === "DEFINIR NOME" ? "" : savedName;
             document.getElementById('profile-edit-tag').value = savedTag;
             document.getElementById('profile-edit-bio').value = localStorage.getItem('userBio') || "";
+
+            const badge = document.getElementById('user-role-badge');
+            const ownerPanel = document.getElementById('owner-management-panel');
+
+            if (savedTag.toUpperCase() === ID_DONO_OFICIAL) {
+                badge.textContent = "ROLE: DONO (ADMIN)";
+                badge.style.background = "rgba(220, 38, 38, 0.25)";
+                badge.style.color = "#f87171";
+                badge.style.borderColor = "#ef4444";
+                if (ownerPanel) ownerPanel.style.display = 'block';
+            } else {
+                badge.textContent = "ROLE: USER";
+                if (ownerPanel) ownerPanel.style.display = 'none';
+            }
 
             const savedAvatar = localStorage.getItem('userAvatar');
             if (savedAvatar) aplicarAvatar(savedAvatar);
@@ -814,6 +892,10 @@
             const btnGlob = document.getElementById('sub-tab-global');
             const boxCont = document.getElementById('view-contacts-container');
             const boxGlob = document.getElementById('view-global-container');
+            const boxGroupChat = document.getElementById('view-group-chat-container');
+
+            boxGroupChat.style.display = 'none';
+            currentActiveGroupId = null;
 
             if (sub === 'contacts') {
                 btnCont.classList.add('active');
@@ -842,6 +924,14 @@
                 return;
             }
 
+            if (novaTag.toUpperCase() === ID_DONO_OFICIAL) {
+                let senhaDigitada = prompt("Insira a senha de segurança (ZRX WCT) para usar o ID de Administrador:");
+                if (senhaDigitada !== SENHA_DONO) {
+                    alert("Senha incorreta! Acesso negado ao ID protegido.");
+                    return;
+                }
+            }
+
             localStorage.setItem('userName', novoNome);
             localStorage.setItem('userTagId', novaTag);
             localStorage.setItem('userBio', novaBio);
@@ -850,12 +940,12 @@
 
             carregarDadosInterface();
             alert("Perfil atualizado com sucesso!");
-            mudarAba('home');
+            location.reload();
         }
 
         async function sincronizarPerfilFirebase(nome, tagId, bio) {
             try {
-                let cleanKey = tagId.replace('@', '');
+                let cleanKey = tagId.replace('@', '').replace(/\s+/g, '_');
                 let avatar = localStorage.getItem('userAvatar') || "";
                 await fetch(`${FIREBASE_DB_URL}/perfis/${cleanKey}.json`, {
                     method: 'PUT',
@@ -863,6 +953,63 @@
                 });
             } catch (e) {
                 console.error("Erro ao sincronizar perfil:", e);
+            }
+        }
+
+        // --- PAINEL DO DONO PARA BANIR USUÁRIOS ---
+        async function abrirPainelGerenciamentoDono() {
+            const modal = document.getElementById('app-modal');
+            document.getElementById('modal-title').textContent = "Gerenciamento e Banimento (Dono)";
+            modal.classList.add('active');
+
+            document.getElementById('modal-body').innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 10px;">Carregando lista de IDs cadastrados...</div>`;
+
+            try {
+                let res = await fetch(`${FIREBASE_DB_URL}/perfis.json`);
+                let perfis = await res.json();
+
+                if (!perfis || Object.keys(perfis).length === 0) {
+                    document.getElementById('modal-body').innerHTML = `<div style="text-align: center; color: #64748b;">Nenhum usuário cadastrado.</div>`;
+                    return;
+                }
+
+                let html = `<div style="font-size: 0.8rem; color: #38bdf8; margin-bottom: 6px;">Lista de Usuários Cadastrados (Menos o ADM):</div>`;
+                
+                Object.keys(perfis).forEach(key => {
+                    let p = perfis[key];
+                    if (p.tagId && p.tagId.toUpperCase() !== ID_DONO_OFICIAL) {
+                        html += `
+                            <div class="info-row" style="margin-bottom: 6px; align-items: center;">
+                                <div>
+                                    <b style="color: #f8fafc;">${p.nome || 'Sem Nome'}</b><br>
+                                    <span style="font-size: 0.75rem; color: #38bdf8;">${p.tagId}</span>
+                                </div>
+                                <button class="custom-btn" style="background: #dc2626; padding: 4px 10px; font-size: 0.75rem;" onclick="banirUsuario('${key}')">Banir</button>
+                            </div>
+                        `;
+                    }
+                });
+
+                document.getElementById('modal-body').innerHTML = html;
+            } catch(e) {
+                document.getElementById('modal-body').innerHTML = `<div style="color: #ef4444; text-align: center;">Erro ao carregar usuários.</div>`;
+            }
+        }
+
+        async function banirUsuario(userKey) {
+            if (!confirm("Deseja realmente banir este usuário do aplicativo?")) return;
+            try {
+                await fetch(`${FIREBASE_DB_URL}/banidos/${userKey}.json`, {
+                    method: 'PUT',
+                    body: JSON.stringify(true)
+                });
+                await fetch(`${FIREBASE_DB_URL}/perfis/${userKey}.json`, {
+                    method: 'DELETE'
+                });
+                alert("Usuário banido com sucesso!");
+                abrirPainelGerenciamentoDono();
+            } catch(e) {
+                alert("Erro ao banir usuário.");
             }
         }
 
@@ -954,7 +1101,7 @@
                         let fotoHtml = g.foto ? `<img src="${g.foto}" style="width:100%; height:100%; object-fit:cover;">` : `<svg style="width: 16px; height: 16px; fill: #38bdf8;" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
                         
                         html += `
-                            <div class="contact-item-card">
+                            <div class="contact-item-card" style="cursor: pointer;" onclick="abrirChatDoGrupo('${key}', '${g.nome.replace(/'/g, "\\'")}')">
                                 <div style="display: flex; align-items: center; gap: 10px;">
                                     <div style="width: 40px; height: 40px; border-radius: 50%; background: #0f172a; border: 1px solid #38bdf8; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                                         ${fotoHtml}
@@ -964,19 +1111,101 @@
                                         <span style="font-size: 0.75rem; color: #94a3b8;">${g.descricao}</span>
                                     </div>
                                 </div>
-                                <span style="font-size: 0.7rem; color: #64748b;">Grupo</span>
+                                <span style="font-size: 0.7rem; color: #38bdf8; background: rgba(56,189,248,0.1); padding: 4px 8px; border-radius: 6px;">Abrir Chat</span>
                             </div>
                         `;
                     });
                 }
 
                 if (!html) {
-                    container.innerHTML = `<div style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 20px;">Nenhum usuário ou grupo adicionado.</div>`;
+                    container.innerHTML = `<div style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 20px;">Nenhum grupo criado ainda.</div>`;
                 } else {
                     container.innerHTML = html;
                 }
             } catch (e) {
-                container.innerHTML = `<div style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 20px;">Nenhum usuário ou grupo adicionado.</div>`;
+                container.innerHTML = `<div style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 20px;">Erro ao carregar grupos.</div>`;
+            }
+        }
+
+        // --- SISTEMA DE CHAT DO GRUPO ESPECÍFICO ---
+        function abrirChatDoGrupo(groupId, groupName) {
+            currentActiveGroupId = groupId;
+            document.getElementById('view-contacts-container').style.display = 'none';
+            document.getElementById('view-global-container').style.display = 'none';
+            document.getElementById('view-group-chat-container').style.display = 'flex';
+            document.getElementById('chat-sub-tabs-bar').style.display = 'none';
+            document.getElementById('group-chat-title-name').textContent = groupName;
+            carregarMensagensGrupo(groupId);
+        }
+
+        function voltarParaListaGrupos() {
+            currentActiveGroupId = null;
+            document.getElementById('view-group-chat-container').style.display = 'none';
+            document.getElementById('view-contacts-container').style.display = 'flex';
+            document.getElementById('chat-sub-tabs-bar').style.display = 'flex';
+        }
+
+        async function enviarMensagemGrupoChat() {
+            if (!currentActiveGroupId) return;
+            const input = document.getElementById('group-chat-input-text');
+            const texto = input.value.trim();
+            if (!texto) return;
+
+            let nome = localStorage.getItem('userName') || "Anônimo";
+            let tagId = localStorage.getItem('userTagId') || "@user";
+            let avatar = localStorage.getItem('userAvatar') || "";
+
+            let novaMsg = {
+                nome, tagId, avatar, texto, timestamp: Date.now()
+            };
+
+            try {
+                await fetch(`${FIREBASE_DB_URL}/chat_grupos/${currentActiveGroupId}.json`, {
+                    method: 'POST',
+                    body: JSON.stringify(novaMsg)
+                });
+                input.value = "";
+                carregarMensagensGrupo(currentActiveGroupId);
+            } catch(e) {
+                alert("Erro ao enviar mensagem no grupo.");
+            }
+        }
+
+        async function carregarMensagensGrupo(groupId) {
+            const container = document.getElementById('group-chat-messages-container');
+            if (!container) return;
+
+            try {
+                let res = await fetch(`${FIREBASE_DB_URL}/chat_grupos/${groupId}.json`);
+                let dados = await res.json();
+
+                if (!dados) {
+                    container.innerHTML = `<div style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 20px;">Nenhuma mensagem neste grupo.</div>`;
+                    return;
+                }
+
+                let html = "";
+                Object.keys(dados).forEach(k => {
+                    let msg = dados[k];
+                    html += `
+                        <div class="chat-message-item">
+                            <div class="chat-msg-header">
+                                <div class="chat-msg-avatar">
+                                    ${msg.avatar ? `<img src="${msg.avatar}">` : `<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`}
+                                </div>
+                                <div class="chat-msg-userinfo">
+                                    <span class="chat-msg-name">${msg.nome}</span>
+                                    <span class="chat-msg-id">${msg.tagId}</span>
+                                </div>
+                            </div>
+                            <div class="chat-msg-text">${msg.texto}</div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+                container.scrollTop = container.scrollHeight;
+            } catch(e) {
+                console.error(e);
             }
         }
 
@@ -996,7 +1225,7 @@
         }
 
         async function executarAdicionarContato() {
-            let queryId = document.getElementById('search-id-input').value.trim().replace('@', '');
+            let queryId = document.getElementById('search-id-input').value.trim().replace('@', '').replace(/\s+/g, '_');
             const resultBox = document.getElementById('perfil-search-result');
             if (!queryId) return;
 
@@ -1087,7 +1316,12 @@
         }
 
         function escutarMensagensChat() {
-            setInterval(atualizarMensagensChat, 3000);
+            setInterval(() => {
+                atualizarMensagensChat();
+                if (currentActiveGroupId) {
+                    carregarMensagensGrupo(currentActiveGroupId);
+                }
+            }, 3000);
             atualizarMensagensChat();
         }
 
